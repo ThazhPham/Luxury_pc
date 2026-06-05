@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Luxury PC — Demo Hub Support (FAQ, Ticket & Contact)</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  
+  <style>
+    /* ==========================================================================
+       DEMO HUB STYLING — LUXURY PC
+       Curated dark gold glassmorphic theme with smooth animations & responsive grids
+       ========================================================================== */
+
+    :root {
+      --bg-color: #050508;
+      --panel-bg: rgba(18, 18, 24, 0.65);
+      --panel-border: rgba(201, 168, 76, 0.12);
+      --panel-border-hover: rgba(201, 168, 76, 0.3);
+      --gold: #c9a84c;
+      --gold-hover: #e0be5a;
+      --gold-glow: rgba(201, 168, 76, 0.15);
+      --cream: #f5f0e8;
+      --muted: #8e8d94;
+      --dark: #0a0a0f;
+      --deep: #121218;
+      --white: #ffffff;
+      --green: #10b981;
+      --blue: #3b82f6;
+      --red: #ef4444;
+      --sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      --font-serif: 'Playfair Display', Georgia, serif;
+    }
+
+    /* Base resets & layout */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(201, 168, 76, 0.03) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(201, 168, 76, 0.02) 0%, transparent 45%);
+      background-attachment: fixed;
+      color: var(--cream);
+      font-family: var(--sans);
+      overflow-x: hidden;
+      line-height: 1.6;
+      padding-bottom: 5rem;
+    }
+
+    /* CUSTOM CURSOR SYSTEM */
+    .cursor {
+      width: 8px;
+      height: 8px;
+      background: var(--gold);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 10000;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s;
+    }
+
+    .cursor-follower {
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s, height 0.3s;
+      opacity: 0.4;
+    }
+
+    body:hover .cursor,
+    body:hover .cursor-follower {
+      opacity: 1;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem;
+    }
+
+    /* Header Nav Mockup */
+    .nav-mockup {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 3rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      background: rgba(5, 5, 8, 0.85);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--white);
+    }
+
+    .logo-luxury {
+      font-family: var(--font-serif);
+      font-size: 1.6rem;
+      letter-spacing: 3px;
+      color: var(--gold);
+    }
+
+    .logo-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--gold);
+      opacity: 0.5;
+    }
+
+    .logo-pc {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--muted);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .nav-item {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: var(--transition-smooth);
+    }
+
+    .nav-item:hover {
+      color: var(--gold);
+    }
+
+    /* Page Header */
+    .page-header {
+      text-align: center;
+      margin-top: 3rem;
+      margin-bottom: 4rem;
+      position: relative;
+    }
+
+    .section-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: block;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .page-title {
+      font-family: var(--font-serif);
+      font-size: 2.8rem;
+      font-weight: 300;
+      color: var(--white);
+      line-height: 1.2;
+    }
+
+    .page-title em {
+      font-style: italic;
+      font-weight: 400;
+      color: var(--gold);
+      position: relative;
+    }
+
+    /* Custom Tabs Navigation */
+    .demo-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 3.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 1.5rem;
+    }
+
+    .demo-tab-btn {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--muted);
+      padding: 0.8rem 2rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .demo-tab-btn:hover {
+      color: var(--cream);
+      border-color: var(--panel-border-hover);
+      background: rgba(201, 168, 76, 0.03);
+    }
+
+    .demo-tab-btn.active {
+      color: var(--dark);
+      background: var(--gold);
+      border-color: var(--gold);
+      box-shadow: 0 4px 20px var(--gold-glow);
+    }
+
+    /* Sections visibility */
+    .tab-content {
+      display: none;
+      animation: tabFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes tabFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ==========================================================================
+       1. FAQ (Accordion) Style
+       ========================================================================== */
+    .faq-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .faq-item {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 6px;
+      overflow: hidden;
+      transition: var(--transition-smooth);
+      backdrop-filter: blur(10px);
+    }
+
+    .faq-item:hover {
+      border-color: var(--panel-border-hover);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .faq-header {
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .faq-question {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--white);
+      letter-spacing: 0.5px;
+    }
+
+    .faq-icon {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      border: 1px solid rgba(201, 168, 76, 0.2);
+      color: var(--gold);
+      font-size: 0.8rem;
+      transition: var(--transition-smooth);
+    }
+
+    .faq-item.open .faq-icon {
+      transform: rotate(180deg);
+      background: var(--gold);
+      color: var(--dark);
+      border-color: var(--gold);
+    }
+
+    .faq-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .faq-content {
+      padding: 0 2rem 1.8rem;
+      font-size: 0.88rem;
+      color: var(--cream);
+      opacity: 0.85;
+      line-height: 1.8;
+      border-top: 1px dashed rgba(255, 255, 255, 0.03);
+      padding-top: 1rem;
+    }
+
+    /* ==========================================================================
+       2. Support Ticket & Chat tracking Style
+       ========================================================================== */
+    .ticket-container {
+      display: grid;
+      grid-template-columns: 1.2fr 1.8fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .ticket-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 8px;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+
+    .panel-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.5px;
+      border-left: 3px solid var(--gold);
+      padding-left: 10px;
+    }
+
+    /* Forms general */
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .form-group.half-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--white);
+      padding: 0.75rem 1rem;
+      font-family: var(--sans);
+      font-size: 0.85rem;
+      border-radius: 4px;
+      transition: var(--transition-smooth);
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 10px rgba(201, 168, 76, 0.15);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 110px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--gold);
+      color: var(--dark);
+      border: none;
+      padding: 0.85rem 1.5rem;
+      font-family: var(--sans);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-primary:hover {
+      background: var(--gold-hover);
+      box-shadow: 0 5px 20px rgba(201, 168, 76, 0.3);
+    }
+
+    /* Tracking Chat panel */
+    .tracking-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      height: 100%;
+    }
+
+    .track-input-row {
+      display: flex;
+      gap: 0.8rem;
+    }
+
+    .btn-track {
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 0.75rem 1.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      white-space: nowrap;
+    }
+
+    .btn-track:hover {
+      background: var(--gold);
+      color: var(--dark);
+      box-shadow: 0 4px 15px rgba(201, 168, 76, 0.2);
+    }
+
+    /* Chat-style ticket log */
+    .chat-log-box {
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 6px;
+      padding: 1.5rem;
+      min-height: 320px;
+      max-height: 520px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* Message styling */
+    .ticket-thread {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+      padding-bottom: 1.5rem;
+    }
+
+    .ticket-thread:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .thread-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+    }
+
+    .ticket-id-tag {
+      font-weight: bold;
+      color: var(--gold);
+    }
+
+    .ticket-subject {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--white);
+      margin-top: 0.2rem;
+    }
+
+    .ticket-status-badge {
+      padding: 0.15rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .status-open {
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--blue);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .status-in-progress {
+      background: rgba(201, 168, 76, 0.15);
+      color: var(--gold);
+      border: 1px solid rgba(201, 168, 76, 0.3);
+    }
+
+    .status-closed {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--green);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    /* Chat bubble style for messages */
+    .chat-bubbles {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      margin-top: 0.8rem;
+    }
+
+    .bubble {
+      max-width: 85%;
+      padding: 0.9rem 1.2rem;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      position: relative;
+    }
+
+    /* Customer message (Sent) */
+    .bubble.sent {
+      align-self: flex-end;
+      background: var(--deep);
+      color: var(--cream);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom-right-radius: 1px;
+    }
+
+    /* Staff response (Received) */
+    .bubble.received {
+      align-self: flex-start;
+      background: rgba(201, 168, 76, 0.06);
+      color: var(--cream);
+      border: 1px solid rgba(201, 168, 76, 0.15);
+      border-bottom-left-radius: 1px;
+    }
+
+    .bubble-time {
+      display: block;
+      font-size: 0.65rem;
+      color: var(--muted);
+      margin-top: 0.4rem;
+      text-align: right;
+    }
+
+    .received .bubble-time {
+      text-align: left;
+    }
+
+    .empty-chat-msg {
+      color: var(--muted);
+      font-size: 0.82rem;
+      text-align: center;
+      margin-top: auto;
+      margin-bottom: auto;
+      font-style: italic;
+      padding: 2rem;
+    }
+
+    /* ==========================================================================
+       3. Contact Form & Details Style
+       ========================================================================== */
+    .contact-container {
+      display: grid;
+      grid-template-columns: 1.2fr 1.8fr;
+      gap: 2rem;
+    }
+
+    @media (max-width: 900px) {
+      .contact-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .contact-info-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .info-item-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 6px;
+      padding: 1.5rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .info-item-icon {
+      font-size: 1.5rem;
+      color: var(--gold);
+    }
+
+    .info-item-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 1px;
+      margin-bottom: 0.3rem;
+    }
+
+    .info-item-value {
+      font-size: 0.92rem;
+      color: var(--white);
+      font-weight: 500;
+    }
+
+    /* Map Mockup */
+    .map-mockup {
+      height: 200px;
+      border-radius: 4px;
+      border: 1px solid var(--panel-border);
+      background: linear-gradient(135deg, #0e0e15 0%, #151522 100%);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .map-grid-deco {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        radial-gradient(var(--gold-glow) 1px, transparent 1px),
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 20px 20px;
+      opacity: 0.6;
+    }
+
+    .map-pin {
+      width: 14px;
+      height: 14px;
+      background: var(--gold);
+      border-radius: 50%;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 0 15px var(--gold);
+      animation: pulsePin 2s infinite;
+    }
+
+    .map-pin::after {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      right: -10px;
+      bottom: -10px;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      animation: pulseRing 2s infinite;
+    }
+
+    @keyframes pulsePin {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes pulseRing {
+      0% { transform: scale(0.6); opacity: 1; }
+      100% { transform: scale(2.2); opacity: 0; }
+    }
+
+    .map-label {
+      position: absolute;
+      bottom: 12px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 1px solid var(--panel-border);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.65rem;
+      color: var(--gold);
+      letter-spacing: 0.5px;
+      z-index: 2;
+    }
+
+    /* Toast alert notification */
+    .toast-notice {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--deep);
+      border: 1px solid var(--gold);
+      padding: 1rem 1.8rem;
+      border-radius: 4px;
+      color: var(--white);
+      font-size: 0.85rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s;
+      z-index: 9999;
+    }
+
+    .toast-notice.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast-success-icon {
+      color: var(--green);
+      font-weight: bold;
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CURSOR ELEMENT -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-follower" id="cursor-follower"></div>
+
+  <!-- NAVIGATION HEADER MOCK -->
+  <header class="nav-mockup">
+    <a href="#" class="brand-logo">
+      <span class="logo-luxury">LUXURY</span>
+      <div class="logo-divider"></div>
+      <span class="logo-pc">PC</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-item">Trang Chủ</a>
+      <a href="products.html" class="nav-item">Sản Phẩm</a>
+      <a href="build-pc.html" class="nav-item">Build PC</a>
+      <a href="#" class="nav-item" style="color: var(--gold);">Trợ Giúp (Demo)</a>
+    </div>
+  </header>
+
+  <main class="container">
+    
+    <!-- PAGE HEADER -->
+    <header class="page-header">
+      <span class="section-label">Demo Prototype Hub</span>
+      <h1 class="page-title">FAQ, Chat Ticket & <em>Liên Hệ</em></h1>
+    </header>
+
+    <!-- TABS NAVIGATION -->
+    <nav class="demo-tabs">
+      <button class="demo-tab-btn active" id="btn-faq" onclick="switchDemoTab('faq', this)">❓ Câu hỏi thường gặp</button>
+      <button class="demo-tab-btn" id="btn-tickets" onclick="switchDemoTab('tickets', this)">💬 Gửi & Tra cứu Ticket</button>
+      <button class="demo-tab-btn" id="btn-contact" onclick="switchDemoTab('contact', this)">📍 Liên hệ tổng đài</button>
+    </nav>
+
+    <!-- 1. FAQ TAB CONTENT -->
+    <section class="tab-content active" id="tab-faq">
+      <div class="faq-grid">
+        
+        <div class="faq-item">
+          <div class="faq-header" onclick="toggleFaq(this)">
+            <span class="faq-question">Làm sao để sử dụng tính năng 3D PC Builder?</span>
+            <span class="faq-icon">▼</span>
+          </div>
+          <div class="faq-body">
+            <div class="faq-content">
+              Bạn chỉ cần bấm nút <b>Build PC</b> trên thanh điều hướng, chọn linh kiện tương ứng cho từng khía cạnh (CPU, RAM, GPU, Cooler, v.v.). Trình mô phỏng 3D sẽ lắp ráp trực quan các linh kiện thời gian thực. Sau khi hoàn tất, bạn có thể bấm <b>Thêm vào giỏ hàng</b> để mua trọn bộ hoặc bấm <b>Lưu cấu hình</b>.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-header" onclick="toggleFaq(this)">
+            <span class="faq-question">Luxury PC hỗ trợ những hình thức thanh toán nào?</span>
+            <span class="faq-icon">▼</span>
+          </div>
+          <div class="faq-body">
+            <div class="faq-content">
+              Chúng tôi chấp nhận thanh toán bằng Thẻ Quốc tế (Visa, Mastercard), Ví Điện tử chuyển khoản (Momo, VNPAY) hoặc ship COD tận nơi trên toàn quốc đối với các đơn hàng linh kiện lẻ có giá trị dưới 50 triệu VNĐ.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-header" onclick="toggleFaq(this)">
+            <span class="faq-question">Thời gian bảo hành linh kiện và lắp ráp là bao lâu?</span>
+            <span class="faq-icon">▼</span>
+          </div>
+          <div class="faq-body">
+            <div class="faq-content">
+              Tất cả linh kiện tại Luxury PC đều là sản phẩm chính hãng, hưởng trọn thời gian bảo hành từ nhà sản xuất (thường từ 24 - 36 tháng). Ngoài ra, Luxury PC hỗ trợ bảo hành tận nơi miễn phí 12 tháng đầu tiên cho khách hàng khu vực nội thành.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-header" onclick="toggleFaq(this)">
+            <span class="faq-question">Tôi có được hoàn tiền hoặc đổi trả sản phẩm không?</span>
+            <span class="faq-icon">▼</span>
+          </div>
+          <div class="faq-body">
+            <div class="faq-content">
+              Trong vòng 30 ngày kể từ khi nhận sản phẩm, nếu phát sinh lỗi phần cứng do nhà sản xuất hoặc linh kiện không đúng như mô tả giao dịch, Luxury PC hỗ trợ chính sách <b>1 đổi 1</b> hoặc hoàn trả 100% tiền mua hàng miễn phí.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-header" onclick="toggleFaq(this)">
+            <span class="faq-question">Cấu hình PC gợi ý (Preset Builds) khác gì tự chọn linh kiện?</span>
+            <span class="faq-icon">▼</span>
+          </div>
+          <div class="faq-body">
+            <div class="faq-content">
+              Cấu hình gợi ý là các combo đã được đội ngũ chuyên viên kỹ thuật cấu hình tối ưu về hiệu năng, TDP, băng thông và khả năng tương thích phần cứng cho từng nhóm nhu cầu (Gaming, Thiết kế đồ họa, AI Workstation). Lựa chọn này giúp bạn tiết kiệm thời gian nghiên cứu và đảm bảo hệ thống hoạt động ổn định nhất.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 2. SUPPORT TICKET TAB CONTENT -->
+    <section class="tab-content" id="tab-tickets">
+      <div class="ticket-container">
+        
+        <!-- Left Column: Submit Ticket Form -->
+        <div class="panel-card">
+          <h2 class="panel-title">Tạo Ticket CSKH</h2>
+          <form id="ticket-submit-form" onsubmit="simulateTicketSubmit(event)">
+            
+            <div class="form-group">
+              <label class="form-label" for="ticket-name">Họ Tên</label>
+              <input type="text" id="ticket-name" class="form-input" placeholder="Nguyễn Văn A" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="ticket-email">Địa Chỉ Email</label>
+              <input type="email" id="ticket-email" class="form-input" placeholder="nguyenvana@gmail.com" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="ticket-phone">Số Điện Thoại</label>
+              <input type="tel" id="ticket-phone" class="form-input" placeholder="0901234567" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="ticket-category">Danh mục hỗ trợ</label>
+              <select id="ticket-category" class="form-select">
+                <option value="Tư Vấn Build PC">Tư Vấn Build PC</option>
+                <option value="Hỗ Trợ Kỹ Thuật">Hỗ Trợ Kỹ Thuật</option>
+                <option value="Bảo Hành">Bảo Hành & Đổi Trả</option>
+                <option value="Khác">Góp ý / Khác</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="ticket-subject">Tiêu đề yêu cầu</label>
+              <input type="text" id="ticket-subject" class="form-input" placeholder="Cần tư vấn bộ PC khoảng 50 triệu chơi game..." required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="ticket-message">Nội dung chi tiết</label>
+              <textarea id="ticket-message" class="form-textarea" placeholder="Hãy miêu tả chi tiết cấu hình mong muốn hoặc lỗi kỹ thuật gặp phải..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn-primary"><span>Gửi Yêu Cầu Hỗ Trợ</span></button>
+          </form>
+        </div>
+
+        <!-- Right Column: Track Ticket Status Chat Log -->
+        <div class="panel-card">
+          <h2 class="panel-title">Hộp Thư Phản Hồi (Chat Live)</h2>
+          <div class="tracking-wrapper">
+            
+            <div class="track-input-row">
+              <input type="email" id="track-email" class="form-input" placeholder="Nhập email đã gửi ticket để tra cứu..." />
+              <button class="btn-track" onclick="trackTickets()">Tra Cứu</button>
+            </div>
+
+            <!-- Scrollable chat thread log -->
+            <div class="chat-log-box" id="chat-log-container">
+              <p class="empty-chat-msg">Hãy gửi yêu cầu hỗ trợ bên cạnh hoặc nhập email để tra cứu lịch sử phản hồi từ nhân viên kỹ thuật.</p>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3. CONTACT TAB CONTENT -->
+    <section class="tab-content" id="tab-contact">
+      <div class="contact-container">
+        
+        <!-- Left: Details and Map -->
+        <div class="contact-info-grid">
+          
+          <div class="info-item-card">
+            <span class="info-item-icon">📍</span>
+            <div>
+              <h4 class="info-item-title">Địa Chỉ Trụ Sở</h4>
+              <p class="info-item-value">123 Nguyễn Huệ, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh</p>
+            </div>
+          </div>
+
+          <div class="info-item-card">
+            <span class="info-item-icon">📞</span>
+            <div>
+              <h4 class="info-item-title">Tổng đài CSKH</h4>
+              <p class="info-item-value">1800-LUXURY (Miễn phí, 9:00 - 21:00)</p>
+            </div>
+          </div>
+
+          <div class="info-item-card">
+            <span class="info-item-icon">✉️</span>
+            <div>
+              <h4 class="info-item-title">Hòm thư tiếp nhận</h4>
+              <p class="info-item-value">support@luxurypc.vn (Phản hồi trong 24 giờ)</p>
+            </div>
+          </div>
+
+          <!-- Mockup Map Visualizer -->
+          <div class="map-mockup">
+            <div class="map-grid-deco"></div>
+            <div class="map-pin"></div>
+            <span class="map-label">📍 Trụ sở Luxury PC</span>
+          </div>
+
+        </div>
+
+        <!-- Right: Contact Message Form -->
+        <div class="panel-card">
+          <h2 class="panel-title">Gửi Lời Nhắn Trực Tiếp</h2>
+          <form id="contact-message-form" onsubmit="simulateContactSubmit(event)">
+            
+            <div class="form-group half-row">
+              <div>
+                <label class="form-label" for="contact-name">Họ Tên</label>
+                <input type="text" id="contact-name" class="form-input" placeholder="Nguyễn Văn A" required />
+              </div>
+              <div>
+                <label class="form-label" for="contact-email">Email</label>
+                <input type="email" id="contact-email" class="form-input" placeholder="nguyenvana@gmail.com" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="contact-subject">Chủ đề góp ý</label>
+              <input type="text" id="contact-subject" class="form-input" placeholder="Hợp tác thương mại, phản ánh dịch vụ..." required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="contact-body">Nội dung tin nhắn</label>
+              <textarea id="contact-body" class="form-textarea" placeholder="Nhập lời nhắn của bạn gửi đến ban giám đốc..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn-primary"><span>Gửi Lời Nhắn</span></button>
+          </form>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- TOAST ALERT -->
+  <div class="toast-notice" id="demo-toast">
+    <span class="toast-success-icon">✓</span>
+    <span id="demo-toast-text">Yêu cầu đã được xử lý thành công!</span>
+  </div>
+
+  <!-- JS INTERACTIVE SIMULATOR CONTROLS -->
+  <script>
+    // --------------------------------------------------------------------------
+    // MOUSE CURSOR EFFECT
+    // --------------------------------------------------------------------------
+    const cur = document.getElementById('cursor');
+    const follower = document.getElementById('cursor-follower');
+    document.addEventListener('mousemove', (e) => {
+      cur.style.left = e.clientX + 'px';
+      cur.style.top = e.clientY + 'px';
+      follower.style.left = e.clientX + 'px';
+      follower.style.top = e.clientY + 'px';
+    });
+
+    // Cursor hover enlargements
+    document.querySelectorAll('a, button, input, select, textarea, .faq-header').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cur.style.transform = 'translate(-50%,-50%) scale(2.0)';
+        follower.style.width = '50px';
+        follower.style.height = '50px';
+        follower.style.borderColor = 'var(--white)';
+      });
+      el.addEventListener('mouseleave', () => {
+        cur.style.transform = 'translate(-50%,-50%) scale(1.0)';
+        follower.style.width = '32px';
+        follower.style.height = '32px';
+        follower.style.borderColor = 'var(--gold)';
+      });
+    });
+
+    // --------------------------------------------------------------------------
+    // TAB CONTROLLERS
+    // --------------------------------------------------------------------------
+    function switchDemoTab(tabId, btnElement) {
+      document.querySelectorAll('.demo-tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(section => section.classList.remove('active'));
+      
+      btnElement.classList.add('active');
+      document.getElementById('tab-' + tabId).classList.add('active');
+    }
+
+    // --------------------------------------------------------------------------
+    // FAQ ACCORDION CONTROLLERS
+    // --------------------------------------------------------------------------
+    function toggleFaq(headerElement) {
+      const item = headerElement.parentElement;
+      const isOpen = item.classList.contains('open');
+      const body = item.querySelector('.faq-body');
+
+      document.querySelectorAll('.faq-item').forEach(el => {
+        el.classList.remove('open');
+        el.querySelector('.faq-body').style.maxHeight = null;
+      });
+
+      if (!isOpen) {
+        item.classList.add('open');
+        body.style.maxHeight = body.scrollHeight + 'px';
+      }
+    }
+
+    // --------------------------------------------------------------------------
+    // MOCK DATA SIMULATION ENGINE
+    // --------------------------------------------------------------------------
+    function showDemoToast(msg) {
+      const toast = document.getElementById('demo-toast');
+      const text = document.getElementById('demo-toast-text');
+      text.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 4000);
+    }
+
+    // Initialize LocalStorage database with some defaults if empty
+    if (!localStorage.getItem('demo_tickets')) {
+      const defaultTickets = [
+        {
+          id: 1024,
+          name: "Trần Thế Minh",
+          email: "customer@demo.com",
+          phone: "0901234567",
+          category: "Tư Vấn Build PC",
+          subject: "Cần tối ưu cấu hình Workstation AI",
+          message: "Tôi đã chọn combo i9-14900K với RTX 4090. Nhờ kỹ thuật kiểm tra xem nguồn 850W có đủ cân không?",
+          status: "IN_PROGRESS",
+          createdAt: new Date(Date.now() - 3600000 * 2).toISOString(),
+          reply: "Chào anh Minh! Với cấu hình i9-14900K chạy hết công suất và RTX 4090, TDP của máy có thể đạt đỉnh 700W-750W. Để an toàn tuyệt đối và chạy lâu dài ổn định, chúng tôi khuyến nghị anh nâng cấp nguồn lên Seasonic hoặc Corsair công suất thực tối thiểu 1000W."
+        },
+        {
+          id: 1018,
+          name: "Trần Thế Minh",
+          email: "customer@demo.com",
+          phone: "0901234567",
+          category: "Bảo Hành",
+          subject: "Máy kêu to khi render",
+          message: "Máy của em mua hồi tháng 12, dạo này render video Premiere thấy quạt tản nhiệt nước kêu rột rột rất to.",
+          status: "CLOSED",
+          createdAt: new Date(Date.now() - 3600000 * 48).toISOString(),
+          reply: "Dạ Luxury PC đã tiếp nhận yêu cầu. Kỹ thuật viên bảo hành lưu động đã liên hệ và qua kiểm tra quạt AIO bị lỏng ốc. Đã căn chỉnh tra keo lại quạt êm ái bình thường cho anh rồi ạ."
+        }
+      ];
+      localStorage.setItem('demo_tickets', JSON.stringify(defaultTickets));
+    }
+
+    // Submit a ticket (Simulated)
+    function simulateTicketSubmit(event) {
+      event.preventDefault();
+      
+      const name = document.getElementById('ticket-name').value;
+      const email = document.getElementById('ticket-email').value;
+      const phone = document.getElementById('ticket-phone').value;
+      const category = document.getElementById('ticket-category').value;
+      const subject = document.getElementById('ticket-subject').value;
+      const message = document.getElementById('ticket-message').value;
+
+      const newId = Math.floor(1000 + Math.random() * 9000);
+      const newTicket = {
+        id: newId,
+        name,
+        email,
+        phone,
+        category,
+        subject,
+        message,
+        status: "OPEN",
+        createdAt: new Date().toISOString(),
+        reply: null
+      };
+
+      let db = JSON.parse(localStorage.getItem('demo_tickets'));
+      db.unshift(newTicket);
+      localStorage.setItem('demo_tickets', JSON.stringify(db));
+
+      showDemoToast(`Ticket #${newId} được gửi thành công! Hãy đợi phản hồi từ CSKH.`);
+      document.getElementById('ticket-submit-form').reset();
+
+      // Automatically focus on search field and set the email
+      document.getElementById('track-email').value = email;
+      
+      // Simulate real-time bot response from admin after 3 seconds!
+      setTimeout(() => {
+        let currentDb = JSON.parse(localStorage.getItem('demo_tickets'));
+        const ticketIdx = currentDb.findIndex(t => t.id === newId);
+        if (ticketIdx !== -1) {
+          currentDb[ticketIdx].status = "IN_PROGRESS";
+          currentDb[ticketIdx].reply = `Cảm ơn anh/chị ${name}! Nhân viên kỹ thuật của Luxury PC đã tiếp nhận ticket #${newId}. Yêu cầu tư vấn của bạn về "${subject}" đang được phân bổ kỹ thuật xử lý chi tiết. Chúng tôi sẽ gọi lại cho bạn qua SĐT ${phone} hoặc chat phản hồi tại đây trong chốc lát.`;
+          localStorage.setItem('demo_tickets', JSON.stringify(currentDb));
+          
+          if (document.getElementById('track-email').value === email) {
+            trackTickets(); // Refresh chat log
+            showDemoToast(`Nhân viên hỗ trợ vừa phản hồi vào Ticket #${newId}!`);
+          }
+        }
+      }, 3000);
+
+      // Render tickets immediately
+      trackTickets();
+    }
+
+    // Search and display simulated tickets (Chat window)
+    function trackTickets() {
+      const email = document.getElementById('track-email').value.trim();
+      const container = document.getElementById('chat-log-container');
+      
+      if (!email) {
+        showDemoToast('Vui lòng nhập địa chỉ email để tra cứu!');
+        return;
+      }
+
+      const db = JSON.parse(localStorage.getItem('demo_tickets'));
+      const matches = db.filter(t => t.email.toLowerCase() === email.toLowerCase());
+
+      if (matches.length > 0) {
+        container.innerHTML = '';
+        matches.forEach(ticket => {
+          const dateStr = new Date(ticket.createdAt).toLocaleString('vi-VN');
+          
+          // Class mappings
+          let statusClass = 'status-open';
+          let statusLabel = 'Mở';
+          if (ticket.status === 'IN_PROGRESS') {
+            statusClass = 'status-in-progress';
+            statusLabel = 'Đang xử lý';
+          } else if (ticket.status === 'CLOSED') {
+            statusClass = 'status-closed';
+            statusLabel = 'Hoàn thành';
+          }
+
+          let replyHtml = '';
+          if (ticket.reply) {
+            replyHtml = `
+              <div class="bubble received">
+                <strong>Luxury Support Staff:</strong><br/>
+                ${ticket.reply}
+                <span class="bubble-time">${dateStr}</span>
+              </div>
+            `;
+          } else {
+            replyHtml = `
+              <div class="bubble received" style="font-style: italic; color: var(--muted); background: none; border-color: rgba(201,168,76,0.08)">
+                Đang chờ điều phối kỹ thuật viên chuyên trách...
+              </div>
+            `;
+          }
+
+          const thread = document.createElement('div');
+          thread.className = 'ticket-thread';
+          thread.innerHTML = `
+            <div class="thread-header">
+              <div>
+                <span class="ticket-id-tag">#Ticket-${ticket.id}</span>
+                <span style="color:var(--muted); margin-left: 10px;">${dateStr}</span>
+              </div>
+              <span class="ticket-status-badge ${statusClass}">${statusLabel}</span>
+            </div>
+            <div class="ticket-subject">Chủ đề: [${ticket.category}] ${ticket.subject}</div>
+            <div class="chat-bubbles">
+              <div class="bubble sent">
+                ${ticket.message}
+                <span class="bubble-time">${dateStr}</span>
+              </div>
+              ${replyHtml}
+            </div>
+          `;
+          container.appendChild(thread);
+        });
+        
+        // Auto scroll to bottom
+        container.scrollTop = container.scrollHeight;
+      } else {
+        container.innerHTML = `
+          <div class="empty-chat-msg">
+            Không tìm thấy dữ liệu yêu cầu hỗ trợ cho email: "${email}".<br/>
+            (Thử nhập email demo: <strong>customer@demo.com</strong> để xem lịch sử mẫu)
+          </div>
+        `;
+      }
+    }
+
+    // Submit general contact form (simulates successful submission)
+    function simulateContactSubmit(event) {
+      event.preventDefault();
+      const name = document.getElementById('contact-name').value;
+      showDemoToast(`Cảm ơn ${name}! Ý kiến liên hệ của bạn đã được gửi đến ban quản lý.`);
+      document.getElementById('contact-message-form').reset();
+    }
+  </script>
+</body>
+</html>
