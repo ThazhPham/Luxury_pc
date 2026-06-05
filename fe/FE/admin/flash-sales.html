@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -6,7 +6,7 @@
     <title>Quản Lý Flash Sale — Luxury PC</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" th:href="@{/css/admin/admin-global.css}">
+    <link rel="stylesheet" href="../css/admin/admin-global.css">
     
     <!-- React & Babel -->
     <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
@@ -36,17 +36,20 @@
 
     <script th:inline="javascript">
         window.INITIAL_DATA = {
-            flashSales: /*[[${flashSales}]]*/ [],
-            successMsg: /*[[${success}]]*/ '',
-            errorMsg: /*[[${error}]]*/ '',
-            username: /*[[${#authentication.name}]]*/ 'Admin'
+            flashSales: [
+                { id: 1, name: 'Flash Sale Tháng 4', startTime: '2026-04-01T00:00:00Z', endTime: '2026-04-05T23:59:59Z', status: 'ENDED' },
+                { id: 2, name: 'Flash Sale Black Friday', startTime: '2026-11-20T00:00:00Z', endTime: '2026-11-25T23:59:59Z', status: 'UPCOMING' }
+            ],
+            successMsg: '',
+            errorMsg: '',
+            username: 'Admin'
         };
     </script>
 </head>
 <body>
     <div id="root"></div>
 
-    <script type="text/babel" th:src="@{/js/react/AdminComponents.jsx}"></script>
+    <script type="text/babel" src="../js/react/AdminComponents.jsx"></script>
 
     <script type="text/babel">
 /*<![CDATA[*/

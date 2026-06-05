@@ -2,17 +2,17 @@
 const AdminSidebar = ({ active }) => {
     return (
         <div className="sidebar">
-            <a href="/" className="logo">LUXURY<span style={{fontWeight: 300}}>PC</span></a>
+            <a href="../index.html" className="logo">LUXURY<span style={{fontWeight: 300}}>PC</span></a>
             <nav>
-                <a href="/admin/dashboard" className={`nav-link ${active === 'dashboard' ? 'active' : ''}`}><i className="fa-solid fa-chart-line"></i> Tổng Quan</a>
-                <a href="/admin/orders" className={`nav-link ${active === 'orders' ? 'active' : ''}`}><i className="fa-solid fa-box"></i> Đơn Hàng</a>
-                <a href="/admin/inventory" className={`nav-link ${active === 'inventory' ? 'active' : ''}`}><i className="fa-solid fa-warehouse"></i> Kho Hàng</a>
-                <a href="/admin/categories" className={`nav-link ${active === 'categories' ? 'active' : ''}`}><i className="fa-solid fa-layer-group"></i> Danh Mục</a>
-                <a href="/admin/products" className={`nav-link ${active === 'products' ? 'active' : ''}`}><i className="fa-solid fa-microchip"></i> Sản Phẩm</a>
-                <a href="/admin/vouchers" className={`nav-link ${active === 'vouchers' ? 'active' : ''}`}><i className="fa-solid fa-ticket"></i> Voucher</a>
-                <a href="/admin/flash-sales" className={`nav-link ${active === 'flash-sales' ? 'active' : ''}`}><i className="fa-solid fa-bolt"></i> Flash Sale</a>
-                <a href="/admin/account" className={`nav-link ${active === 'account' ? 'active' : ''}`}><i className="fa-solid fa-users"></i> Người Dùng</a>
-                <a href="/logout" className="nav-link" style={{marginTop: '3rem', color: 'var(--red)'}}><i className="fa-solid fa-arrow-right-from-bracket"></i> Đăng Xuất</a>
+                <a href="./dashboard.html" className={`nav-link ${active === 'dashboard' ? 'active' : ''}`}><i className="fa-solid fa-chart-line"></i> Tổng Quan</a>
+                <a href="./orders.html" className={`nav-link ${active === 'orders' ? 'active' : ''}`}><i className="fa-solid fa-box"></i> Đơn Hàng</a>
+                <a href="./inventory.html" className={`nav-link ${active === 'inventory' ? 'active' : ''}`}><i className="fa-solid fa-warehouse"></i> Kho Hàng</a>
+                <a href="./categories.html" className={`nav-link ${active === 'categories' ? 'active' : ''}`}><i className="fa-solid fa-layer-group"></i> Danh Mục</a>
+                <a href="./products.html" className={`nav-link ${active === 'products' ? 'active' : ''}`}><i className="fa-solid fa-microchip"></i> Sản Phẩm</a>
+                <a href="./vouchers.html" className={`nav-link ${active === 'vouchers' ? 'active' : ''}`}><i className="fa-solid fa-ticket"></i> Voucher</a>
+                <a href="./flash-sales.html" className={`nav-link ${active === 'flash-sales' ? 'active' : ''}`}><i className="fa-solid fa-bolt"></i> Flash Sale</a>
+                <a href="./account.html" className={`nav-link ${active === 'account' ? 'active' : ''}`}><i className="fa-solid fa-users"></i> Người Dùng</a>
+                <a href="../account/auth.html" className="nav-link" style={{marginTop: '3rem', color: 'var(--red)'}}><i className="fa-solid fa-arrow-right-from-bracket"></i> Đăng Xuất</a>
             </nav>
         </div>
     );
