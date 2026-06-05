@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Apex  PC — Build PC Configurator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--black:#0a0a0a;--deep:#111;--dark:#1a1a1a;--mid:#2a2a2a;--gold:#c9a84c;--gold-l:#e8c97a;--cream:#f5f0e8;--white:#fff;--muted:#888;--red:#ef4444;--green:#22c55e;--serif:'Cormorant Garamond',Georgia,serif;--sans:'Montserrat',sans-serif;--ease:.4s cubic-bezier(.25,.46,.45,.94);}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{font-size:16px;scroll-behavior:smooth;}
+    body{background:var(--black);color:var(--cream);font-family:var(--sans);font-weight:300;cursor:none;overflow-x:hidden;}
+    a{color:inherit;text-decoration:none;}
+    .cursor{position:fixed;width:8px;height:8px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);}
+    .cursor-f{position:fixed;width:36px;height:36px;border:1px solid var(--gold);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);opacity:.5;transition:width .25s,height .25s;}
+
+    /* NAVBAR */
+    .navbar{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:1.2rem 4rem;background:rgba(10,10,10,.96);backdrop-filter:blur(16px);border-bottom:1px solid rgba(201,168,76,.12);}
+    .nav-logo{font-family:var(--serif);font-size:1.6rem;letter-spacing:.25em;color:var(--gold);}
+    .nav-logo b{font-family:var(--sans);font-size:.65rem;letter-spacing:.5em;color:var(--muted);font-weight:300;margin-left:6px;}
+    .nav-links{display:flex;align-items:center;gap:2rem;}
+    .nav-link{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);transition:color var(--ease);cursor:none;}
+    .nav-link:hover{color:var(--gold);}
+
+    /* HERO */
+    .build-hero{padding:7rem 6rem 4rem;background:var(--deep);border-bottom:1px solid rgba(201,168,76,.1);position:relative;overflow:hidden;}
+    .build-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 50%,rgba(201,168,76,.08) 0%,transparent 60%);}
+    .hero-tag{font-size:.62rem;letter-spacing:.45em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;position:relative;}
+    .hero-title{font-family:var(--serif);font-size:clamp(2.5rem,5vw,4.5rem);font-weight:300;color:var(--white);line-height:1.1;margin-bottom:1rem;position:relative;}
+    .hero-title em{color:var(--gold);font-style:italic;}
+    .hero-sub{font-size:.85rem;color:rgba(245,240,232,.5);max-width:520px;line-height:1.8;position:relative;}
+    .hero-deco{position:absolute;right:6rem;top:50%;transform:translateY(-50%);font-family:var(--serif);font-size:12rem;color:rgba(201,168,76,.04);font-weight:300;user-select:none;line-height:1;}
+
+    /* PRESET BUILDS */
+    .preset-section{padding:3rem 6rem;}
+    .section-tag{font-size:.6rem;letter-spacing:.4em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem;}
+    .section-h{font-family:var(--serif);font-size:1.8rem;font-weight:300;color:var(--white);margin-bottom:1.5rem;}
+    .preset-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(201,168,76,.07);margin-bottom:3rem;}
+    .preset-card{background:var(--deep);padding:1.8rem;cursor:none;transition:background var(--ease);border:2px solid transparent;}
+    .preset-card:hover,.preset-card.active{background:var(--dark);border-color:var(--gold);}
+    .preset-icon{font-size:2.5rem;margin-bottom:1rem;}
+    .preset-name{font-family:var(--serif);font-size:1.3rem;color:var(--white);margin-bottom:.3rem;}
+    .preset-desc{font-size:.72rem;color:var(--muted);line-height:1.6;margin-bottom:1rem;}
+    .preset-price{font-family:var(--serif);font-size:1.3rem;color:var(--gold);}
+    .preset-badge{display:inline-block;font-size:.55rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:.2rem .5rem;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.25);color:var(--gold);margin-bottom:.8rem;}
+
+    /* CONFIGURATOR LAYOUT */
+    .config-layout{display:grid;grid-template-columns:1fr 360px;gap:0;min-height:80vh;}
+
+    /* PARTS PANEL */
+    .parts-panel{padding:3rem 6rem;border-right:1px solid rgba(201,168,76,.1);}
+    .parts-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;}
+
+    /* Component slot */
+    .comp-slot{border:1px solid rgba(201,168,76,.1);margin-bottom:1px;transition:border-color var(--ease);}
+    .comp-slot.has-item{border-color:rgba(201,168,76,.25);}
+    .comp-slot.compat-error{border-color:var(--red);}
+    .slot-header{display:flex;align-items:center;gap:1.2rem;padding:1.1rem 1.5rem;cursor:none;background:var(--deep);transition:background var(--ease);}
+    .slot-header:hover{background:var(--dark);}
+    .slot-icon{font-size:1.4rem;width:36px;text-align:center;flex-shrink:0;}
+    .slot-info{flex:1;}
+    .slot-type{font-size:.58rem;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:.15rem;}
+    .slot-name{font-size:.88rem;color:var(--white);font-weight:400;}
+    .slot-price{font-family:var(--serif);font-size:.95rem;color:var(--gold);flex-shrink:0;margin-right:1rem;}
+    .slot-toggle{color:var(--muted);font-size:.8rem;flex-shrink:0;transition:transform var(--ease);}
+    .comp-slot.open .slot-toggle{transform:rotate(180deg);}
+
+    /* Component picker dropdown */
+    .comp-picker{display:none;padding:0 1.5rem 1.2rem;background:var(--deep);}
+    .comp-slot.open .comp-picker{display:block;}
+    .picker-label{font-size:.55rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin-bottom:.8rem;}
+    .picker-list{display:flex;flex-direction:column;gap:.5rem;}
+    .picker-item{display:flex;align-items:center;gap:1rem;padding:.85rem 1rem;background:var(--dark);border:1px solid rgba(201,168,76,.08);cursor:none;transition:border-color var(--ease);}
+    .picker-item:hover{border-color:rgba(201,168,76,.3);}
+    .picker-item.selected{border-color:var(--gold);background:rgba(201,168,76,.04);}
+    .pi-icon{font-size:1.4rem;flex-shrink:0;}
+    .pi-info{flex:1;}
+    .pi-name{font-size:.82rem;color:var(--white);margin-bottom:.12rem;}
+    .pi-spec{font-size:.65rem;color:var(--muted);}
+    .pi-price{font-family:var(--serif);font-size:.92rem;color:var(--gold);flex-shrink:0;}
+    .pi-check{width:18px;height:18px;border:1px solid rgba(201,168,76,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.7rem;color:transparent;transition:var(--ease);}
+    .picker-item.selected .pi-check{background:var(--gold);border-color:var(--gold);color:var(--black);}
+    .compat-badge{font-size:.58rem;padding:.1rem .45rem;margin-left:auto;flex-shrink:0;}
+    .badge-ok{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);color:var(--green);}
+    .badge-warn{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:var(--red);}
+
+    /* SUMMARY PANEL */
+    .summary-panel{padding:3rem 2.5rem;background:var(--deep);border-left:1px solid rgba(201,168,76,.1);position:sticky;top:74px;height:calc(100vh - 74px);overflow-y:auto;display:flex;flex-direction:column;}
+    .sum-h{font-family:var(--serif);font-size:1.4rem;font-weight:300;color:var(--white);margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid rgba(201,168,76,.1);}
+    .sum-list{flex:1;}
+    .sum-item{display:flex;justify-content:space-between;align-items:center;padding:.65rem 0;border-bottom:1px solid rgba(201,168,76,.06);font-size:.75rem;gap:1rem;}
+    .sum-type{font-size:.57rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.1rem;}
+    .sum-name{color:var(--cream);}
+    .sum-price{color:var(--gold);font-family:var(--serif);font-size:.9rem;flex-shrink:0;}
+    .sum-empty{color:rgba(245,240,232,.25);font-style:italic;font-size:.75rem;}
+
+    /* Performance meter */
+    .perf-section{margin-top:1.5rem;padding:1.2rem;background:rgba(201,168,76,.04);border:1px solid rgba(201,168,76,.1);}
+    .perf-label{font-size:.57rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;}
+    .perf-metric{margin-bottom:.8rem;}
+    .perf-row{display:flex;justify-content:space-between;font-size:.68rem;color:var(--muted);margin-bottom:.35rem;}
+    .perf-bar{height:4px;background:var(--mid);border-radius:2px;overflow:hidden;}
+    .perf-fill{height:100%;background:linear-gradient(90deg,var(--gold-l),var(--gold));border-radius:2px;transition:width .6s ease;}
+
+    /* Total + actions */
+    .sum-total-section{margin-top:1.5rem;padding-top:1.2rem;border-top:1px solid rgba(201,168,76,.15);}
+    .sum-total-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.3rem;}
+    .sum-total-lbl{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);}
+    .sum-total-num{font-family:var(--serif);font-size:2rem;font-weight:300;color:var(--gold);}
+    .sum-count{font-size:.68rem;color:var(--muted);}
+    .btn-full{width:100%;padding:.95rem;border:none;font-family:var(--sans);font-size:.72rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;cursor:none;margin-top:.8rem;transition:var(--ease);position:relative;overflow:hidden;}
+    .btn-full.gold{background:var(--gold);color:var(--black);}
+    .btn-full.gold::before{content:'';position:absolute;inset:0;background:var(--gold-l);transform:translateX(-100%);transition:transform var(--ease);}
+    .btn-full.gold:hover::before{transform:translateX(0);}
+    .btn-full.gold span{position:relative;z-index:1;}
+    .btn-full.out{background:none;color:var(--muted);border:1px solid rgba(201,168,76,.15);}
+    .btn-full.out:hover{border-color:rgba(201,168,76,.4);color:var(--cream);}
+
+    /* Compatibility alert */
+    .compat-alert{padding:.8rem 1rem;font-size:.72rem;line-height:1.5;margin-top:.8rem;display:none;}
+    .compat-alert.warn{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:var(--red);}
+    .compat-alert.ok{background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2);color:var(--green);}
+
+    /* TOAST */
+    .toast{position:fixed;bottom:2.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--dark);border:1px solid rgba(201,168,76,.35);color:var(--cream);font-size:.8rem;padding:.9rem 2rem;z-index:3000;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;white-space:nowrap;}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+    @media(max-width:1100px){.config-layout{grid-template-columns:1fr;}.summary-panel{position:static;height:auto;}.parts-panel,.preset-section,.build-hero{padding-left:2rem;padding-right:2rem;}.preset-grid{grid-template-columns:1fr 1fr;}.hero-deco{display:none;}}
+    @media(max-width:640px){.navbar{padding:1rem 1.5rem;}.preset-grid{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-f" id="cursor-f"></div>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">Apex <b>PC</b></a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link">Trang Chủ</a>
+    <a href="#" class="nav-link" style="color:var(--gold)">Build PC</a>
+    <a href="checkout.html" class="nav-link">Giỏ Hàng</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="build-hero">
+  <div class="hero-tag">Apex  PC Configurator</div>
+  <h1 class="hero-title">Thiết Kế<br/><em>Bộ PC Hoàn Hảo</em></h1>
+  <p class="hero-sub">Chọn từng linh kiện theo nhu cầu của bạn. Hệ thống kiểm tra tương thích tự động, đảm bảo mọi thứ hoạt động hoàn hảo cùng nhau.</p>
+  <div class="hero-deco">PC</div>
+</div>
+
+<!-- PRESET BUILDS -->
+<div class="preset-section">
+  <div class="section-tag">Cấu Hình Gợi Ý</div>
+  <div class="section-h">Chọn Build Phù Hợp</div>
+  <div class="preset-grid">
+    <div class="preset-card active" onclick="loadPreset('gaming',this)">
+      <div class="preset-badge">Phổ Biến Nhất</div>
+      <div class="preset-icon">🎮</div>
+      <div class="preset-name">Gaming Beast</div>
+      <div class="preset-desc">Tối ưu cho gaming 4K/144Hz. RTX 4090 + i9-14900K — bộ đôi không có đối thủ.</div>
+      <div class="preset-price">từ 74.960.000₫</div>
+    </div>
+    <div class="preset-card" onclick="loadPreset('creator',this)">
+      <div class="preset-badge">Cho Sáng Tạo</div>
+      <div class="preset-icon">🎨</div>
+      <div class="preset-name">Creator Pro</div>
+      <div class="preset-desc">Render 8K, 3D animation, AI generation. Workstation đẳng cấp chuyên nghiệp.</div>
+      <div class="preset-price">từ 95.000.000₫</div>
+    </div>
+    <div class="preset-card" onclick="loadPreset('budget',this)">
+      <div class="preset-badge">Tối Ưu Chi Phí</div>
+      <div class="preset-icon">⚡</div>
+      <div class="preset-name">Performance</div>
+      <div class="preset-desc">Hiệu năng cao, giá hợp lý. Lý tưởng cho gaming 1440p và làm việc đa nhiệm.</div>
+      <div class="preset-price">từ 32.000.000₫</div>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIGURATOR -->
+<div class="config-layout">
+
+  <!-- PARTS PICKER -->
+  <div class="parts-panel">
+    <div class="parts-header">
+      <div>
+        <div class="section-tag">Tùy Chỉnh</div>
+        <div class="section-h" style="margin-bottom:0;">Chọn Linh Kiện</div>
+      </div>
+      <button onclick="resetBuild()" style="background:none;border:1px solid rgba(201,168,76,.15);color:var(--muted);font-size:.62rem;letter-spacing:.15em;padding:.5rem 1rem;text-transform:uppercase;cursor:none;transition:var(--ease);" onmouseenter="this.style.borderColor='rgba(201,168,76,.4)';this.style.color='var(--cream)'" onmouseleave="this.style.borderColor='rgba(201,168,76,.15)';this.style.color='var(--muted)'">↺ Reset</button>
+    </div>
+
+    <!-- CPU -->
+    <div class="comp-slot has-item open" id="slot-cpu">
+      <div class="slot-header" onclick="toggleSlot('cpu')">
+        <div class="slot-icon">⚙️</div>
+        <div class="slot-info"><div class="slot-type">Bộ Xử Lý</div><div class="slot-name" id="sel-cpu-name">Intel Core i9-14900K</div></div>
+        <div class="slot-price" id="sel-cpu-price">18.990.000₫</div>
+        <div class="slot-toggle">▾</div>
+      </div>
+      <div class="comp-picker">
+        <div class="picker-label">Chọn CPU</div>
+        <div class="picker-list">
+          <div class="picker-item selected" onclick="selectComp('cpu',this,'Intel Core i9-14900K','18.990.000₫',18990000,'Chọn đây!','ok')">
+            <span class="pi-icon">⚙️</span>
+            <div class="pi-info"><div class="pi-name">Intel Core i9-14900K</div><div class="pi-spec">24 Cores · 32 Threads · 6.0 GHz · Socket LGA1700</div></div>
+            <span class="compat-badge badge-ok">✓ Tương thích</span>
+            <div class="pi-price">18.990.000₫</div>
+            <div class="pi-check">✓</div>
+          </div>
+          <div class="picker-item" onclick="selectComp('cpu',this,'Intel Core i7-14700K','11.475.000₫',11475000,'Hiệu năng tốt, tiết kiệm hơn','ok')">
+            <span class="pi-icon">⚙️</span>
+            <div class="pi-info"><div class="pi-name">Intel Core i7-14700K</div><div class="pi-spec">20 Cores · 28 Threads · 5.6 GHz · Socket LGA1700</div></div>
+            <span class="compat-badge badge-ok">✓ Tương thích</span>
+            <div class="pi-price">11.475.000₫</div>
+            <div class="pi-check">✓</div>
+          </div>
+          <div class="picker-item" onclick="selectComp('cpu',this,'AMD Ryzen 9 7950X','16.500.000₫',16500000,'Cần đổi Mainboard AM5!','warn')">
+            <span class="pi-icon">⚙️</span>
+            <div class="pi-info"><div class="pi-name">AMD Ryzen 9 7950X</div><div class="pi-spec">16 Cores · 32 Threads · 5.7 GHz · Socket AM5</div></div>
+            <span class="compat-badge badge-warn">⚠ Cần đổi MB</span>
+            <div class="pi-price">16.500.000₫</div>
+            <div class="pi-check">✓</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAINBOARD -->
+    <div class="comp-slot has-item" id="slot-mb">
+      <div class="slot-header" onclick="toggleSlot('mb')">
+        <div class="slot-icon">🔌</div>
+        <div class="slot-info"><div class="slot-type">Bo Mạch Chủ</div><div class="slot-name" id="sel-mb-name">ASUS ROG Maximus Z790 Apex </div></div>
+        <div class="slot-price" id="sel-mb-price">12.490.000₫</div>
+        <div class="slot-toggle">▾</div>
+      </div>
+      <div class="comp-picker">
+        <div class="picker-label">Chọn Mainboard</div>
+        <div class="picker-list">
+          <div class="picker-item selected" onclick="selectComp('mb',this,'ASUS ROG Maximus Z790 Apex ','12.490.000₫',12490000,'','ok')">
+            <span class="pi-icon">🔌</span>
+            <div class="pi-info"><div class="pi-name">ASUS ROG Maximus Z790 Apex </div><div class="pi-spec">LGA1700 · DDR5 · PCIe 5.0 · WiFi 6E</div></div>
+            <span class="compat-badge badge-ok">✓ Tương thích</span>
+            <div class="pi-price">12.490.000₫</div>
+            <div class="pi-check">✓</div>
+          </div>
+          <div class="picker-item" onclick="selectComp('mb',this,'MSI MEG Z790 ACE','9.800.000₫',9800000,'','ok')">
+            <span class="pi-icon">🔌</span>
+            <div class="pi-info"><div class="pi-name">MSI MEG Z790 ACE</div><div class="pi-spec">LGA1700 · DDR5 · PCIe 5.0 · WiFi 6E</div></div>
+            <span class="compat-badge badge-ok">✓ Tương thích</span>
+            <div class="pi-price">9.800.000₫</div>
+            <div class="pi-check">✓</div>
+          </div>
+          <div class="picker-item" onclick="selectComp('mb',this,'Gigabyte Z790 AORUS Master','8.200.000₫',8200000,'','ok')">
+            <span class="pi-icon">🔌</span>
+            <div class="pi-info"><div class="pi-name">Gigabyte Z790 AORUS Master</div><div class="pi-spec">LGA1700 · DDR5 · PCIe 4.0 · WiFi 6</div></div>
+            <span class="compat-badge badge-ok">✓ Tương thích</span>
+            <div class="pi-price">8.200.000₫</div>
+            <div class="pi-check">✓</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GPU -->
+    <div class="comp-slot has-item" id="slot-gpu">
+      <div class="slot-header" onclick="toggleSlot('gpu')">
+        <div class="slot-icon">🎮</div>
+        <div class="slot-info"><div class="slot-type">Card Đồ Họa</div><div class="slot-name" id="sel-gpu-name">RTX 4090 Titan Edition</div></div>
+        <div class="slot-price" id="sel-gpu-price">42.990.000₫</div>
+        <div class="slot-toggle">▾</div>
+      </div>
+      <div class="comp-picker">
+        <div class="picker-label">Chọn GPU</div>
+        <div class="picker-list">
+          <div class="picker-item selected" onclick="selectComp('gpu',this,'RTX 4090 Titan Edition','42.990.000₫',42990000,'','ok')">
+            <span class="pi-icon">🎮</span>
+            <div class="pi-info"><div class="pi-name">RTX 4090 Titan Edition</div><div class="pi-spec">24GB GDDR6X · 16384 CUDA · Cần 850W PSU</div></div>
+            <span class="compat-badge badge-ok">✓ Tương thích</span>
+            <div class="pi-price">42.990.000₫</div>
+            <div class="pi-check">✓</div>
+          </div>
+          <div class="picker-item" onclick="selectComp('gpu',this,'RTX 4080 Super','24.500.000₫',24500000,'','ok')">
+            <span class="pi-icon">🎮</span>
+            <div class="pi-info"><div class="pi-name">NVIDIA RTX 4080 Super</div><div class="pi-spec">16GB GDDR6X · 10240 CUDA · Cần 750W PSU</div></div>
+            <span class="compat-badge badge-ok">✓ Tương thích</span>
+            <div class="pi-price">24.500.000₫</div>
+            <div class="pi-check">✓</div>
+          </div>
+          <div class="picker-item" onclick="selectComp('gpu',this,'RX 7900 XTX','18.900.000₫',18900000,'','ok')">
+            <span class="pi-icon">🎮</span>
+            <div class="pi-info"><div class="pi-name">AMD Radeon RX 7900 XTX</div><div class="pi-spec">24GB GDDR6 · 6144 SP · Cần 800W PSU</div></div>
+            <span class="compat-badge badge-ok">✓ Tương thích</span>
+            <div class="pi-price">18.900.000₫</div>
+            <div class="pi-check">✓</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RAM -->
+    <div class="comp-slot has-item" id="slot-ram">
+      <div class="slot-header" onclick="toggleSlot('ram')">
+        <div class="slot-icon">💾</div>
+        <div class="slot-info"><div class="slot-type">RAM</div><div class="slot-name" id="sel-ram-name">Corsair Dominator Platinum DDR5</div></div>
+        <div class="slot-price" id="sel-ram-price">6.490.000₫</div>
+        <div class="slot-toggle">▾</div>
+      </div>
+      <div class="comp-picker">
+        <div class="picker-label">Chọn RAM</div>
+        <div class="picker-list">
+          <div class="picker-item selected" onclick="selectComp('ram',this,'Corsair Dominator Platinum DDR5','6.490.000₫',6490000,'','ok')">
+            <span class="pi-icon">💾</span>
+            <div class="pi-info"><div class="pi-name">Corsair Dominator Platinum DDR5</div><div class="pi-spec">32GB (2×16) · DDR5-6000 · CL36</div></div>
+            <span class="compat-badge badge-ok">✓ Tương thích</span>
+            <div class="pi-price">6.490.000₫</div><div class="pi-check">✓</div>
+          </div>
+          <div class="picker-item" onclick="selectComp('ram',this,'G.Skill Trident Z5 RGB 64GB','9.800.000₫',9800000,'','ok')">
+            <span class="pi-icon">💾</span>
+            <div class="pi-info"><div class="pi-name">G.Skill Trident Z5 RGB 64GB</div><div class="pi-spec">64GB (2×32) · DDR5-6400 · CL32</div></div>
+            <span class="compat-badge badge-ok">✓ Tương thích</span>
+            <div class="pi-price">9.800.000₫</div><div class="pi-check">✓</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SSD -->
+    <div class="comp-slot" id="slot-ssd">
+      <div class="slot-header" onclick="toggleSlot('ssd')">
+        <div class="slot-icon">💿</div>
+        <div class="slot-info"><div class="slot-type">Ổ Cứng SSD</div><div class="slot-name" id="sel-ssd-name" style="color:var(--muted);font-style:italic;">Chưa chọn</div></div>
+        <div class="slot-price" id="sel-ssd-price" style="color:var(--muted);">+</div>
+        <div class="slot-toggle">▾</div>
+      </div>
+      <div class="comp-picker">
+        <div class="picker-label">Chọn SSD</div>
+        <div class="picker-list">
+          <div class="picker-item" onclick="selectComp('ssd',this,'Samsung 990 Pro 2TB','3.360.000₫',3360000,'','ok')">
+            <span class="pi-icon">💿</span>
+            <div class="pi-info"><div class="pi-name">Samsung 990 Pro 2TB</div><div class="pi-spec">NVMe PCIe 4.0 · 7,450 MB/s read · M.2</div></div>
+            <span class="compat-badge badge-ok">✓ Tương thích</span>
+            <div class="pi-price">3.360.000₫</div><div class="pi-check">✓</div>
+          </div>
+          <div class="picker-item" onclick="selectComp('ssd',this,'WD Black SN850X 1TB','2.100.000₫',2100000,'','ok')">
+            <span class="pi-icon">💿</span>
+            <div class="pi-info"><div class="pi-name">WD Black SN850X 1TB</div><div class="pi-spec">NVMe PCIe 4.0 · 7,300 MB/s read · M.2</div></div>
+            <span class="compat-badge badge-ok">✓ Tương thích</span>
+            <div class="pi-price">2.100.000₫</div><div class="pi-check">✓</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PSU -->
+    <div class="comp-slot" id="slot-psu">
+      <div class="slot-header" onclick="toggleSlot('psu')">
+        <div class="slot-icon">⚡</div>
+        <div class="slot-info"><div class="slot-type">Nguồn Điện (PSU)</div><div class="slot-name" id="sel-psu-name" style="color:var(--muted);font-style:italic;">Chưa chọn</div></div>
+        <div class="slot-price" id="sel-psu-price" style="color:var(--muted);">+</div>
+        <div class="slot-toggle">▾</div>
+      </div>
+      <div class="comp-picker">
+        <div class="picker-label">Chọn PSU</div>
+        <div class="picker-list">
+          <div class="picker-item" onclick="selectComp('psu',this,'Seasonic Focus GX-1000W','3.850.000₫',3850000,'','ok')">
+            <span class="pi-icon">⚡</span>
+            <div class="pi-info"><div class="pi-name">Seasonic Focus GX-1000W</div><div class="pi-spec">1000W · 80+ Gold · Full Modular</div></div>
+            <span class="compat-badge badge-ok">✓ Đủ cho RTX 4090</span>
+            <div class="pi-price">3.850.000₫</div><div class="pi-check">✓</div>
+          </div>
+          <div class="picker-item" onclick="selectComp('psu',this,'Corsair HX1200 Platinum','5.200.000₫',5200000,'','ok')">
+            <span class="pi-icon">⚡</span>
+            <div class="pi-info"><div class="pi-name">Corsair HX1200 Platinum</div><div class="pi-spec">1200W · 80+ Platinum · Full Modular</div></div>
+            <span class="compat-badge badge-ok">✓ Đủ công suất</span>
+            <div class="pi-price">5.200.000₫</div><div class="pi-check">✓</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COOLING -->
+    <div class="comp-slot" id="slot-cool">
+      <div class="slot-header" onclick="toggleSlot('cool')">
+        <div class="slot-icon">🌬️</div>
+        <div class="slot-info"><div class="slot-type">Tản Nhiệt CPU</div><div class="slot-name" id="sel-cool-name" style="color:var(--muted);font-style:italic;">Chưa chọn</div></div>
+        <div class="slot-price" id="sel-cool-price" style="color:var(--muted);">+</div>
+        <div class="slot-toggle">▾</div>
+      </div>
+      <div class="comp-picker">
+        <div class="picker-label">Chọn Tản Nhiệt</div>
+        <div class="picker-list">
+          <div class="picker-item" onclick="selectComp('cool',this,'Noctua NH-D15 Chromax','1.890.000₫',1890000,'','ok')">
+            <span class="pi-icon">🌬️</span>
+            <div class="pi-info"><div class="pi-name">Noctua NH-D15 Chromax Black</div><div class="pi-spec">Air Cooler · 165W TDP · Dual Fan</div></div>
+            <span class="compat-badge badge-ok">✓ Tương thích</span>
+            <div class="pi-price">1.890.000₫</div><div class="pi-check">✓</div>
+          </div>
+          <div class="picker-item" onclick="selectComp('cool',this,'ASUS ROG Ryujin III 360','4.200.000₫',4200000,'','ok')">
+            <span class="pi-icon">🌬️</span>
+            <div class="pi-info"><div class="pi-name">ASUS ROG Ryujin III 360</div><div class="pi-spec">AIO 360mm · LCD Screen · ARGB</div></div>
+            <span class="compat-badge badge-ok">✓ Tương thích</span>
+            <div class="pi-price">4.200.000₫</div><div class="pi-check">✓</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end parts-panel -->
+
+  <!-- SUMMARY PANEL -->
+  <div class="summary-panel">
+    <div class="sum-h">Cấu Hình Của Bạn</div>
+    <div class="sum-list" id="sum-list">
+      <div class="sum-item"><div><div class="sum-type">CPU</div><div class="sum-name" id="sum-cpu">Core i9-14900K</div></div><div class="sum-price" id="sump-cpu">18.990.000₫</div></div>
+      <div class="sum-item"><div><div class="sum-type">Mainboard</div><div class="sum-name" id="sum-mb">ROG Maximus Z790</div></div><div class="sum-price" id="sump-mb">12.490.000₫</div></div>
+      <div class="sum-item"><div><div class="sum-type">GPU</div><div class="sum-name" id="sum-gpu">RTX 4090 Titan</div></div><div class="sum-price" id="sump-gpu">42.990.000₫</div></div>
+      <div class="sum-item"><div><div class="sum-type">RAM</div><div class="sum-name" id="sum-ram">Dominator DDR5 32GB</div></div><div class="sum-price" id="sump-ram">6.490.000₫</div></div>
+      <div class="sum-item"><div><div class="sum-type">SSD</div><div class="sum-name sum-empty" id="sum-ssd">Chưa chọn</div></div><div class="sum-price" id="sump-ssd" style="color:var(--muted);">—</div></div>
+      <div class="sum-item"><div><div class="sum-type">PSU</div><div class="sum-name sum-empty" id="sum-psu">Chưa chọn</div></div><div class="sum-price" id="sump-psu" style="color:var(--muted);">—</div></div>
+      <div class="sum-item"><div><div class="sum-type">Tản Nhiệt</div><div class="sum-name sum-empty" id="sum-cool">Chưa chọn</div></div><div class="sum-price" id="sump-cool" style="color:var(--muted);">—</div></div>
+    </div>
+
+    <!-- Performance meters -->
+    <div class="perf-section">
+      <div class="perf-label">Hiệu Năng Ước Tính</div>
+      <div class="perf-metric">
+        <div class="perf-row"><span>Gaming 4K</span><span id="perf-gaming-v">95%</span></div>
+        <div class="perf-bar"><div class="perf-fill" id="perf-gaming" style="width:95%"></div></div>
+      </div>
+      <div class="perf-metric">
+        <div class="perf-row"><span>Render / 3D</span><span id="perf-render-v">88%</span></div>
+        <div class="perf-bar"><div class="perf-fill" id="perf-render" style="width:88%"></div></div>
+      </div>
+      <div class="perf-metric">
+        <div class="perf-row"><span>AI / ML</span><span id="perf-ai-v">92%</span></div>
+        <div class="perf-bar"><div class="perf-fill" id="perf-ai" style="width:92%"></div></div>
+      </div>
+      <div class="perf-metric">
+        <div class="perf-row"><span>Đa Nhiệm</span><span id="perf-multi-v">90%</span></div>
+        <div class="perf-bar"><div class="perf-fill" id="perf-multi" style="width:90%"></div></div>
+      </div>
+    </div>
+
+    <div class="compat-alert ok" id="compat-ok" style="display:flex;">✓ Tất cả linh kiện tương thích hoàn toàn</div>
+    <div class="compat-alert warn" id="compat-warn"></div>
+
+    <div class="sum-total-section">
+      <div class="sum-total-row">
+        <div class="sum-total-lbl">Tổng Chi Phí</div>
+        <div class="sum-total-num" id="grand-total">80.960.000₫</div>
+      </div>
+      <div class="sum-count" id="part-count">4 linh kiện đã chọn</div>
+      <button class="btn-full gold" onclick="addBuildToCart()"><span>Thêm Vào Giỏ Hàng</span></button>
+      <button class="btn-full out" onclick="saveBuild()" style="margin-top:.5rem;">💾 Lưu Cấu Hình</button>
+      <button class="btn-full out" onclick="shareBuild()" style="margin-top:.5rem;">🔗 Chia Sẻ Build</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+  // CURSOR
+  const cur=document.getElementById('cursor'),curF=document.getElementById('cursor-f');
+  let mx=0,my=0,fx=0,fy=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+  (function loop(){fx+=(mx-fx)*.12;fy+=(my-fy)*.12;curF.style.left=fx+'px';curF.style.top=fy+'px';requestAnimationFrame(loop);})();
+  document.querySelectorAll('a,button,.picker-item,.slot-header,.preset-card').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{cur.style.transform='translate(-50%,-50%) scale(2)';curF.style.width='60px';curF.style.height='60px';});
+    el.addEventListener('mouseleave',()=>{cur.style.transform='translate(-50%,-50%) scale(1)';curF.style.width='36px';curF.style.height='36px';});
+  });
+
+  // TOAST
+  let toastT;
+  function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),3000);}
+
+  // BUILD STATE
+  let build={
+    cpu:{name:'Intel Core i9-14900K',price:18990000},
+    mb:{name:'ASUS ROG Maximus Z790 Apex ',price:12490000},
+    gpu:{name:'RTX 4090 Titan Edition',price:42990000},
+    ram:{name:'Corsair Dominator Platinum DDR5',price:6490000},
+    ssd:null,psu:null,cool:null
+  };
+
+  // TOGGLE SLOT
+  function toggleSlot(id){
+    const slot=document.getElementById('slot-'+id);
+    slot.classList.toggle('open');
+  }
+
+  // SELECT COMPONENT
+  function selectComp(type,el,name,priceStr,priceNum,msg,compat){
+    const slot=document.getElementById('slot-'+type);
+    slot.querySelectorAll('.picker-item').forEach(p=>p.classList.remove('selected'));
+    el.classList.add('selected');
+    build[type]={name,price:priceNum};
+    document.getElementById('sel-'+type+'-name').textContent=name;
+    document.getElementById('sel-'+type+'-name').style.color='var(--white)';
+    document.getElementById('sel-'+type+'-name').style.fontStyle='normal';
+    document.getElementById('sel-'+type+'-price').textContent=priceStr;
+    document.getElementById('sel-'+type+'-price').style.color='var(--gold)';
+    slot.classList.add('has-item');
+    // Summary update
+    const shortName=name.length>22?name.substring(0,22)+'…':name;
+    document.getElementById('sum-'+type).textContent=shortName;
+    document.getElementById('sum-'+type).className='sum-name';
+    document.getElementById('sump-'+type).textContent=priceStr;
+    document.getElementById('sump-'+type).style.color='var(--gold)';
+    if(compat==='warn'){
+      document.getElementById('compat-ok').style.display='none';
+      document.getElementById('compat-warn').style.display='block';
+      document.getElementById('compat-warn').textContent='⚠ '+name+': '+msg;
+      slot.classList.add('compat-error');
+    } else {
+      slot.classList.remove('compat-error');
+      checkAllCompat();
+    }
+    updateTotal();
+    updatePerf();
+    toast('✓ Đã chọn: '+name);
+  }
+
+  function checkAllCompat(){
+    const hasWarn=document.querySelector('.comp-slot.compat-error');
+    document.getElementById('compat-ok').style.display=hasWarn?'none':'flex';
+    document.getElementById('compat-warn').style.display=hasWarn?'block':'none';
+  }
+
+  // UPDATE TOTAL
+  function updateTotal(){
+    let total=0,count=0;
+    Object.values(build).forEach(v=>{if(v){total+=v.price;count++;}});
+    document.getElementById('grand-total').textContent=total.toLocaleString('vi-VN')+'₫';
+    document.getElementById('part-count').textContent=count+' linh kiện đã chọn';
+  }
+
+  // UPDATE PERF (mock based on GPU/CPU)
+  function updatePerf(){
+    const gpuP=build.gpu?build.gpu.price:0;
+    const cpuP=build.cpu?build.cpu.price:0;
+    const gaming=Math.min(99,Math.round(40+gpuP/580000));
+    const render=Math.min(99,Math.round(35+gpuP/650000+cpuP/350000));
+    const ai=Math.min(99,Math.round(40+gpuP/560000));
+    const multi=Math.min(99,Math.round(45+cpuP/260000+gpuP/900000));
+    ['gaming','render','ai','multi'].forEach((k,i)=>{
+      const v=[gaming,render,ai,multi][i];
+      document.getElementById('perf-'+k).style.width=v+'%';
+      document.getElementById('perf-'+k+'-v').textContent=v+'%';
+    });
+  }
+
+  // PRESET LOADS
+  function loadPreset(type,card){
+    document.querySelectorAll('.preset-card').forEach(c=>c.classList.remove('active'));
+    card.classList.add('active');
+    if(type==='gaming'){
+      toast('🎮 Đã tải cấu hình Gaming Beast!');
+    } else if(type==='creator'){
+      toast('🎨 Đã tải cấu hình Creator Pro!');
+    } else {
+      toast('⚡ Đã tải cấu hình Performance!');
+    }
+  }
+
+  function resetBuild(){
+    toast('↺ Đã reset cấu hình. Bắt đầu lại từ đầu.');
+  }
+
+  // CART
+  function addBuildToCart(){
+    const count=Object.values(build).filter(v=>v).length;
+    if(count<4){toast('⚠️ Vui lòng chọn ít nhất: CPU, Mainboard, GPU và RAM.');return;}
+    toast('✓ Đã thêm toàn bộ cấu hình vào giỏ hàng!');
+    setTimeout(()=>location.href='checkout.html',1000);
+  }
+  function saveBuild(){toast('💾 Đã lưu cấu hình vào tài khoản của bạn!');}
+  function shareBuild(){
+    navigator.clipboard?.writeText(window.location.href).catch(()=>{});
+    toast('🔗 Đã sao chép link cấu hình!');
+  }
+</script>
+</body>
+</html>

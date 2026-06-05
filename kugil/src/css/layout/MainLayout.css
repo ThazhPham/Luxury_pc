@@ -1,0 +1,44 @@
+/* ============================================================
+   DASHBOARD LAYOUT
+   ============================================================ */
+
+:root {
+  --sidebar-width: 290px;
+  --sidebar-collapsed-width: 90px;
+  --sidebar-bg: #fff;
+  --sidebar-bg-dark: #fff;
+  --accent-pink: var(--primary-color);        /* vivid magenta theo ảnh */
+  --accent-pink-light: rgba(255, 0, 204, 0.08);
+  --accent-blue: #2f6fed;
+  --accent-blue-hover: #1a57d6;
+  --header-height: 46px;
+  --border: #e8e8e8;
+  --text-main: #222;
+  --text-sub: #555;
+  --content-bg: #f3f4f6;
+  --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dashboard-layout {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  font-family: var(--font-main, 'Poppins', sans-serif);
+}
+
+.dashboard-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.dashboard-content {
+  flex: 1;
+  overflow: auto;
+  padding: 16px;
+  background: var(--content-bg);
+  position: relative;
+}

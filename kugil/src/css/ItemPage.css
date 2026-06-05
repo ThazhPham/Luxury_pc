@@ -1,0 +1,123 @@
+/* ================================================================
+   ItemPage.css — ITEM LIST grid giống 100% ảnh tham chiếu
+   ================================================================ */
+
+/* ── Page container ─────────────────────────────────────── */
+.item-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: #f5f6fa;
+  position: relative;
+}
+
+/* ── Toolbar ────────────────────────────────────────────── */
+.item-toolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 10px 18px 8px;
+  background: #fff;
+  border-bottom: 1px solid #e8e8e8;
+  flex-shrink: 0;
+}
+
+.item-toolbar__left { flex: 1; }
+
+.item-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #888;
+}
+.item-breadcrumb__home { font-size: 14px; }
+.item-breadcrumb__sep { color: #ccc; }
+.item-breadcrumb__active { color: var(--primary-color); font-weight: 600; }
+
+.item-title {
+  margin: 4px 0 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--primary-color);
+  letter-spacing: 0.5px;
+}
+
+.item-subtitle {
+  margin: 2px 0 0;
+  font-size: 11px;
+  color: var(--primary-color);
+  opacity: 0.7;
+}
+
+/* Action buttons */
+.item-toolbar__right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.item-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: var(--primary-color);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+.item-action-btn:hover { background: var(--primary-color); transform: scale(1.05); }
+
+.item-action-btn--export {
+  width: auto;
+  border-radius: 16px;
+  padding: 0 14px;
+  font-size: 12px;
+  font-weight: 600;
+  gap: 5px;
+}
+.item-action-btn__caret { font-size: 10px; opacity: 0.7; }
+
+/* ── Content Wrapper ────────────────────────────────────── */
+.item-content-wrapper {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  background: #fff;
+  position: relative;
+}
+
+.item-grid-section {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.item-create-section {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  z-index: 10;
+  transition: width 0.3s ease;
+  box-shadow: -2px 0 10px rgba(0,0,0,0.05);
+}
+
+.item-create-section.split {
+  width: 55%;
+}
+
+.item-create-section.full {
+  width: 100%;
+}

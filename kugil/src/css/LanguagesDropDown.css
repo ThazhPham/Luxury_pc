@@ -1,0 +1,133 @@
+.language-dropdown {
+  position: relative;
+}
+
+.language-dropdown__button {
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: inherit;
+  color: inherit;
+}
+
+.language-dropdown__button img {
+  width: 18px;
+  height: 18px;
+  object-fit: cover;
+}
+
+.language-dropdown__arrow {
+  font-size: 10px;
+}
+
+.language-dropdown__menu {
+
+  position: absolute;
+
+  top: calc(100% + 8px);
+
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  min-width: 156px;
+
+  overflow: hidden;
+
+  border: 0;
+
+  border-radius: 8px;
+
+  background: #fff;
+
+  box-shadow: 0 10px 24px #00000038;
+
+  z-index: 999;
+}
+
+.language-dropdown__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 12px;
+
+  color: #333;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.language-dropdown__item img {
+  width: 18px;
+}
+
+/* ── Variant dùng trong Header (nền trắng) ──────────────── */
+.language-dropdown--header .language-dropdown__button {
+  background: transparent;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  border-radius: 999px;
+  height: 27px;
+  padding: 0 12px;
+  font-size: 13px;
+  gap: 6px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.language-dropdown--header .language-dropdown__button:hover {
+  background: var(--primary-color);
+  color: #fff !important;
+}
+
+.language-dropdown--header .language-dropdown__menu {
+
+  border-radius: 8px;
+  top: calc(100% + 8px);
+
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  min-width: 60px;
+  
+
+  overflow: hidden;
+
+  border: 1px solid var(--primary-color);
+
+  border-radius: 10px;
+
+  background: #fff;
+
+  box-shadow: 0 10px 24px #00000038;
+
+  z-index: 9;
+
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.language-dropdown--header .language-dropdown__item {
+  font-size: 10px;
+  font-weight: 500;
+  gap: 5px;
+  width: 120px;
+  color: var(--primary-color);
+}
+
+.language-dropdown--header .language-dropdown__item img {
+  width: 15px;
+  border-radius: 3px;
+}
+
+.language-dropdown--header .language-dropdown__item:hover{
+  background-color: var(--primary-color);
+  color: #fff !important;
+}

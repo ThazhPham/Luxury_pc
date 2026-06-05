@@ -1,0 +1,191 @@
+/* ── Filter Popup Panel ─────────────────────────────────── */
+.filter-anchor {
+  position: relative;
+  display: inline-block;
+}
+
+.filter-popup {
+  position: absolute;
+  top: 45px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 480px;
+  max-width: 90vw;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  z-index: 1000;
+}
+
+/* Triangle pointer */
+.filter-popup::before {
+  content: "";
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 7px solid #fff;
+  filter: drop-shadow(0 -2px 1px rgba(0,0,0,0.05));
+}
+
+.filter-popup__header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 14px 4px;
+}
+.filter-popup__close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #666;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.filter-popup__body {
+  padding: 0 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+/* Custom scrollbar for filter body */
+.filter-popup__body::-webkit-scrollbar {
+  width: 6px;
+}
+.filter-popup__body::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 10px;
+}
+.filter-popup__body::-webkit-scrollbar-thumb:hover {
+  background: #bbb;
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.filter-input-wrap {
+  flex: 1;
+}
+
+/* ── Floating Label Input ──────────────────────────────── */
+.floating-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.floating-input {
+  width: 100%;
+  height: 36px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0 10px;
+  font-size: 13px;
+  outline: none;
+  background: #fff;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.floating-input:focus {
+  border-color: var(--primary-color);
+}
+
+.floating-label {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 13px;
+  color: #888;
+  transition: 0.2s ease all;
+  pointer-events: none;
+  background: #fff;
+  padding: 0 4px;
+  margin-left: -4px;
+}
+
+.floating-input:focus ~ .floating-label,
+.floating-input:not(:placeholder-shown) ~ .floating-label {
+  top: 0;
+  transform: translateY(-50%);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--primary-color);
+}
+
+.filter-type-box {
+  position: relative;
+  width: 120px;
+  height: 36px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  cursor: pointer;
+  background: #fff;
+}
+.filter-type-box__legend {
+  position: absolute;
+  top: -8px;
+  left: 8px;
+  background: #fff;
+  padding: 0 4px;
+  font-size: 10px;
+  color: #666;
+  font-weight: 500;
+  line-height: 1;
+}
+.filter-type-box__val {
+  font-size: 12px;
+  color: #333;
+}
+.filter-type-box__actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #999;
+}
+.filter-type-box__clear {
+  font-size: 14px;
+  line-height: 1;
+}
+.filter-type-box__arrow {
+  font-size: 10px;
+}
+
+.filter-popup__footer {
+  padding: 12px 20px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.filter-search-btn {
+  background: var(--primary-color-light);
+  color: var(--primary-color);
+  border: none;
+  border-radius: 20px;
+  padding: 10px 0;
+  width: 100%;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.filter-search-btn:hover {
+  background: var(--primary-color-light);
+}

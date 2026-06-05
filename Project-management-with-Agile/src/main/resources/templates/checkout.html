@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Luxury PC — Giỏ Hàng & Thanh Toán</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root{--black:#0a0a0a;--deep:#111;--dark:#1a1a1a;--mid:#2a2a2a;--gold:#c9a84c;--gold-l:#e8c97a;--cream:#f5f0e8;--white:#fff;--muted:#888;--red:#ef4444;--green:#22c55e;--serif:'Inter',sans-serif;--sans:'Inter',sans-serif;--ease:.4s cubic-bezier(.25,.46,.45,.94);}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{font-size:16px;}
+    body{background:var(--black);color:var(--cream);font-family:var(--sans);font-weight:400;min-height:100vh;cursor:none;overflow-x:hidden;}
+    a{color:inherit;text-decoration:none;}
+    .cursor{position:fixed;width:8px;height:8px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);}
+    .cursor-f{position:fixed;width:36px;height:36px;border:1px solid var(--gold);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);opacity:.5;transition:width .25s,height .25s;}
+    .navbar{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:1.2rem 4rem;background:rgba(10,10,10,.96);backdrop-filter:blur(16px);border-bottom:1px solid rgba(201,168,76,.12);}
+    .nav-logo{font-family:var(--serif);font-size:1.6rem;letter-spacing:.25em;color:var(--gold);}
+    .nav-logo b{font-family:var(--sans);font-size:.65rem;letter-spacing:.5em;color:var(--muted);font-weight:300;margin-left:6px;}
+    .back-link{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);cursor:none;transition:color var(--ease);}
+    .back-link:hover{color:var(--gold);}
+    /* STEPS */
+    .checkout-steps{display:flex;align-items:center;justify-content:center;gap:0;padding:5.5rem 4rem 0;flex-wrap:wrap;gap:.5rem;}
+    .cstep{display:flex;align-items:center;gap:.5rem;}
+    .cstep-dot{width:28px;height:28px;border-radius:50%;border:1px solid rgba(201,168,76,.25);display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--muted);transition:var(--ease);background:var(--black);}
+    .cstep-dot.active{border-color:var(--gold);color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.1);}
+    .cstep-dot.done{background:var(--gold);border-color:var(--gold);color:var(--black);}
+    .cstep-name{font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);}
+    .cstep-name.active{color:var(--gold);}
+    .cstep-line{width:50px;height:1px;background:rgba(201,168,76,.12);margin:0 .5rem;}
+    /* LAYOUT */
+    .checkout-layout{display:grid;grid-template-columns:1fr 400px;gap:3rem;padding:2.5rem 4rem 4rem;max-width:1400px;margin:0 auto;}
+    .section-tag{font-size:.58rem;letter-spacing:.35em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;}
+    .section-h{font-family:var(--serif);font-size:1.5rem;font-weight:300;color:var(--white);margin-bottom:1.5rem;}
+    /* CART */
+    .cart-item{display:flex;align-items:center;gap:1.5rem;padding:1.2rem 0;border-bottom:1px solid rgba(201,168,76,.08);transition:opacity .3s;}
+    .ci-img{width:70px;height:70px;background:var(--dark);border:1px solid rgba(201,168,76,.1);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;}
+    .ci-info{flex:1;min-width:0;}
+    .ci-cat{font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.2rem;}
+    .ci-name{font-family:var(--serif);font-size:1rem;color:var(--white);margin-bottom:.15rem;}
+    .ci-spec{font-size:.68rem;color:var(--muted);}
+    .ci-qty{display:flex;align-items:center;border:1px solid rgba(201,168,76,.15);margin-top:.6rem;width:fit-content;}
+    .ci-qty button{width:28px;height:28px;background:none;border:none;color:var(--cream);cursor:none;transition:color var(--ease);}
+    .ci-qty button:hover{color:var(--gold);}
+    .ci-qty span{width:32px;text-align:center;font-size:.85rem;}
+    .ci-right{text-align:right;flex-shrink:0;}
+    .ci-price{font-family:var(--serif);font-size:1.05rem;color:var(--gold);}
+    .ci-remove{background:none;border:none;color:var(--muted);cursor:none;font-size:.65rem;margin-top:.4rem;transition:color var(--ease);}
+    .ci-remove:hover{color:var(--red);}
+    /* VOUCHER */
+    .voucher-box{display:flex;gap:.8rem;margin:1.5rem 0;}
+    .voucher-input{flex:1;background:var(--dark);border:1px solid rgba(201,168,76,.15);color:var(--cream);font-family:var(--sans);font-size:.82rem;padding:.7rem 1rem;outline:none;caret-color:var(--gold);transition:border-color var(--ease);}
+    .voucher-input:focus{border-color:var(--gold);}
+    .voucher-btn{padding:.7rem 1.5rem;background:none;border:1px solid rgba(201,168,76,.3);color:var(--gold);font-size:.65rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;cursor:none;transition:var(--ease);}
+    .voucher-btn:hover{background:rgba(201,168,76,.08);}
+    .voucher-ok{background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.2);padding:.7rem 1rem;font-size:.78rem;color:var(--green);display:none;align-items:center;justify-content:space-between;}
+    /* SHIPPING */
+    .ship-opt{display:flex;align-items:center;gap:1rem;padding:1rem 1.2rem;background:var(--dark);border:1px solid rgba(201,168,76,.1);cursor:none;transition:border-color var(--ease);margin-bottom:.8rem;}
+    .ship-opt.sel{border-color:var(--gold);}
+    .ship-opt input{accent-color:var(--gold);cursor:none;width:15px;height:15px;}
+    .ship-name{font-size:.82rem;color:var(--white);margin-bottom:.12rem;}
+    .ship-eta{font-size:.66rem;color:var(--muted);}
+    .ship-price{margin-left:auto;font-family:var(--serif);font-size:.95rem;color:var(--gold);flex-shrink:0;}
+    /* FORM */
+    .form-2col{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+    .fg{display:flex;flex-direction:column;gap:.4rem;margin-bottom:1rem;}
+    .fg.full{grid-column:span 2;}
+    .flabel{font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:500;}
+    .finput{width:100%;background:var(--dark);border:1px solid rgba(201,168,76,.15);color:var(--cream);font-family:var(--sans);font-size:.83rem;padding:.75rem 1rem;outline:none;caret-color:var(--gold);transition:border-color var(--ease);}
+    .finput::placeholder{color:rgba(245,240,232,.2);}
+    .finput:focus{border-color:var(--gold);}
+    select.finput{appearance:none;cursor:none;}
+    /* PAYMENT */
+    .pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1.2rem;}
+    .pay-opt{padding:.9rem 1rem;background:var(--dark);border:1px solid rgba(201,168,76,.1);display:flex;align-items:center;gap:.7rem;cursor:none;transition:border-color var(--ease);}
+    .pay-opt.sel{border-color:var(--gold);}
+    .pay-opt input{accent-color:var(--gold);cursor:none;}
+    .pay-icon{font-size:1.3rem;}
+    .pay-name{font-size:.78rem;color:var(--white);}
+    .pay-sub{font-size:.6rem;color:var(--muted);}
+    .card-box{background:var(--deep);border:1px solid rgba(201,168,76,.1);padding:1.5rem;margin-bottom:1rem;}
+    .card-2col{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+    /* BUTTONS */
+    .btn-g{padding:.95rem;background:var(--gold);color:var(--black);border:none;font-family:var(--sans);font-size:.72rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;cursor:none;transition:var(--ease);width:100%;position:relative;overflow:hidden;}
+    .btn-g::before{content:'';position:absolute;inset:0;background:var(--gold-l);transform:translateX(-100%);transition:transform var(--ease);}
+    .btn-g:hover::before{transform:translateX(0);}
+    .btn-g span{position:relative;z-index:1;}
+    .btn-back{padding:.85rem 1.2rem;background:none;border:1px solid rgba(201,168,76,.15);color:var(--muted);font-family:var(--sans);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;cursor:none;transition:var(--ease);}
+    .btn-back:hover{border-color:rgba(201,168,76,.4);color:var(--cream);}
+    .btn-row{display:flex;gap:.8rem;margin-top:1.2rem;}
+    /* ORDER SUMMARY */
+    .order-sum{background:var(--deep);border:1px solid rgba(201,168,76,.12);padding:2rem;position:sticky;top:90px;align-self:start;}
+    .os-h{font-family:var(--serif);font-size:1.4rem;font-weight:300;color:var(--white);margin-bottom:1.2rem;padding-bottom:1rem;border-bottom:1px solid rgba(201,168,76,.1);}
+    .os-item{display:flex;justify-content:space-between;font-size:.79rem;margin-bottom:.7rem;gap:1rem;}
+    .os-item-name{color:var(--cream);}
+    .os-item-price{color:var(--gold);font-family:var(--serif);flex-shrink:0;}
+    .os-div{height:1px;background:rgba(201,168,76,.1);margin:1rem 0;}
+    .os-row{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin-bottom:.5rem;}
+    .os-row.green{color:var(--green);}
+    .os-total{display:flex;justify-content:space-between;align-items:baseline;margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(201,168,76,.15);}
+    .os-total-lbl{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);}
+    .os-total-num{font-family:var(--serif);font-size:1.8rem;font-weight:300;color:var(--gold);}
+    .os-vat{font-size:.62rem;color:var(--muted);text-align:right;margin-top:.2rem;}
+    .apex-guarantee{margin-top:1.5rem;background:rgba(201,168,76,.04);border:1px solid rgba(201,168,76,.1);padding:1rem;}
+    .ag-tag{font-size:.55rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;}
+    .ag-list{font-size:.7rem;color:var(--muted);line-height:2;}
+    .badges{display:flex;justify-content:center;gap:1rem;margin-top:1rem;}
+    .badge{font-size:.6rem;color:var(--muted);display:flex;align-items:center;gap:.3rem;}
+    /* SUCCESS */
+    .success-ov{position:fixed;inset:0;background:rgba(10,10,10,.97);z-index:1000;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:2rem;opacity:0;visibility:hidden;transition:opacity .4s;}
+    .success-ov.show{opacity:1;visibility:visible;}
+    .suc-icon{width:90px;height:90px;border-radius:50%;background:rgba(34,197,94,.1);border:2px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin:0 auto 1.5rem;animation:popIn .5s ease;}
+    @keyframes popIn{from{transform:scale(.5);opacity:0;}to{transform:scale(1);opacity:1;}}
+    .suc-id{font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;}
+    .suc-title{font-family:var(--serif);font-size:2.2rem;font-weight:300;color:var(--white);margin-bottom:.8rem;}
+    .suc-sub{font-size:.82rem;color:var(--muted);max-width:380px;line-height:1.8;margin-bottom:2rem;}
+    .suc-btns{display:flex;gap:.8rem;flex-wrap:wrap;justify-content:center;}
+    .toast{position:fixed;bottom:2.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--dark);border:1px solid rgba(201,168,76,.35);color:var(--cream);font-size:.8rem;padding:.9rem 2rem;z-index:3000;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;white-space:nowrap;}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+    @media(max-width:1024px){.checkout-layout{grid-template-columns:1fr;}.order-sum{position:static;}}
+    @media(max-width:640px){.navbar{padding:1rem 1.5rem;}.checkout-layout{padding:2rem 1.2rem;}.form-2col,.card-2col,.pay-grid{grid-template-columns:1fr;}.fg.full{grid-column:span 1;}}
+  </style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-f" id="cursor-f"></div>
+
+<!-- SUCCESS -->
+<div class="success-ov" id="suc">
+  <div class="suc-icon">✓</div>
+  <div class="suc-id">Mã đơn hàng: #LUXURY-2604</div>
+  <h1 class="suc-title">Đặt Hàng Thành Công!</h1>
+  <p class="suc-sub">Cảm ơn bạn đã tin tưởng Luxury PC. Đơn hàng đang xử lý, giao trong 2–4 giờ. Email xác nhận đã được gửi.</p>
+  <div class="suc-btns">
+    <button onclick="location.href='profile.html'" style="padding:.9rem 2rem;background:var(--gold);color:var(--black);border:none;font-family:var(--sans);font-size:.7rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;cursor:none;">Xem Đơn Hàng</button>
+    <button onclick="location.href='index.html'" style="padding:.9rem 2rem;background:none;color:var(--cream);border:1px solid rgba(201,168,76,.3);font-family:var(--sans);font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;cursor:none;">Tiếp Tục Mua Sắm</button>
+  </div>
+</div>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">LUXURY<b>PC</b></a>
+  <a href="index.html" class="back-link">← Tiếp tục mua sắm</a>
+</nav>
+
+<div class="checkout-steps">
+  <div class="cstep"><div class="cstep-dot done" id="sd1">✓</div><div class="cstep-name">Giỏ hàng</div></div>
+  <div class="cstep-line"></div>
+  <div class="cstep"><div class="cstep-dot active" id="sd2">2</div><div class="cstep-name active" id="sn2">Thông tin</div></div>
+  <div class="cstep-line"></div>
+  <div class="cstep"><div class="cstep-dot" id="sd3">3</div><div class="cstep-name" id="sn3">Vận chuyển</div></div>
+  <div class="cstep-line"></div>
+  <div class="cstep"><div class="cstep-dot" id="sd4">4</div><div class="cstep-name" id="sn4">Thanh toán</div></div>
+</div>
+
+<div class="checkout-layout">
+  <div class="checkout-left">
+
+    <!-- STEP 1: CART -->
+    <div id="step-cart">
+      <div class="section-tag">Bước 1</div>
+      <div class="section-h">Giỏ Hàng Của Bạn</div>
+      <div class="cart-item">
+        <div class="ci-img">🎮</div>
+        <div class="ci-info">
+          <div class="ci-cat">VGA · NVIDIA</div>
+          <div class="ci-name">RTX 4090 Titan Edition</div>
+          <div class="ci-spec">24GB GDDR6X · ASUS ROG × LUXURY PC</div>
+          <div class="ci-qty"><button onclick="cqty(this,-1)">−</button><span>1</span><button onclick="cqty(this,1)">+</button></div>
+        </div>
+        <div class="ci-right"><div class="ci-price">42.990.000₫</div><button class="ci-remove" onclick="rmItem(this)">✕ Xóa</button></div>
+      </div>
+      <div class="cart-item">
+        <div class="ci-img">⚙️</div>
+        <div class="ci-info">
+          <div class="ci-cat">CPU · Intel</div>
+          <div class="ci-name">Core i9-14900K</div>
+          <div class="ci-spec">24 Cores · 32 Threads · 6.0GHz</div>
+          <div class="ci-qty"><button onclick="cqty(this,-1)">−</button><span>1</span><button onclick="cqty(this,1)">+</button></div>
+        </div>
+        <div class="ci-right"><div class="ci-price">18.990.000₫</div><button class="ci-remove" onclick="rmItem(this)">✕ Xóa</button></div>
+      </div>
+      <div class="section-tag" style="margin-top:1.5rem;">Mã Khuyến Mãi</div>
+      <div class="voucher-box">
+        <input class="voucher-input" id="vc-input" placeholder="Nhập mã voucher (LUXURY10, VIP20...)"/>
+        <button class="voucher-btn" onclick="applyVC()">Áp Dụng</button>
+      </div>
+      <div class="voucher-ok" id="vc-ok">
+        <span>🎉 Mã <b id="vc-name"></b> — Giảm <b id="vc-amt"></b></span>
+        <button style="background:none;border:none;color:var(--muted);cursor:none;font-size:.8rem;" onclick="rmVC()">✕</button>
+      </div>
+      <button class="btn-g" style="margin-top:2rem;" onclick="goStep(2)"><span>Tiếp Theo: Thông Tin Giao Hàng →</span></button>
+    </div>
+
+    <!-- STEP 2: INFO -->
+    <div id="step-info" style="display:none;">
+      <div class="section-tag">Bước 2</div>
+      <div class="section-h">Thông Tin Giao Hàng</div>
+      <div class="form-2col">
+        <div class="fg"><label class="flabel">Họ</label><input type="text" class="finput" value="Nguyễn"/></div>
+        <div class="fg"><label class="flabel">Tên</label><input type="text" class="finput" value="Thanh Minh"/></div>
+        <div class="fg"><label class="flabel">Số điện thoại</label><input type="tel" class="finput" value="0901 234 567"/></div>
+        <div class="fg"><label class="flabel">Email</label><input type="email" class="finput" value="thanh.minh@email.com"/></div>
+        <div class="fg full"><label class="flabel">Địa chỉ</label><input type="text" class="finput" value="123 Nguyễn Huệ, Phường Bến Nghé"/></div>
+        <div class="fg"><label class="flabel">Quận / Huyện</label><select class="finput"><option selected>Quận 1</option><option>Quận 2</option><option>Bình Thạnh</option></select></div>
+        <div class="fg"><label class="flabel">Thành phố</label><select class="finput"><option selected>TP. Hồ Chí Minh</option><option>Hà Nội</option><option>Đà Nẵng</option></select></div>
+        <div class="fg full"><label class="flabel">Ghi chú (tùy chọn)</label><input type="text" class="finput" placeholder="Gọi trước 30 phút, giao giờ hành chính..."/></div>
+      </div>
+      <div class="btn-row"><button class="btn-back" onclick="goStep(1)">← Quay lại</button><button class="btn-g" onclick="goStep(3)"><span>Tiếp Theo: Vận Chuyển →</span></button></div>
+    </div>
+
+    <!-- STEP 3: SHIPPING -->
+    <div id="step-shipping" style="display:none;">
+      <div class="section-tag">Bước 3</div>
+      <div class="section-h">Phương Thức Vận Chuyển</div>
+      <div class="ship-opt sel" onclick="selShip(this)"><input type="radio" name="ship" checked/><div style="flex:1"><div class="ship-name">🚀 Giao Hỏa Tốc (2–4 giờ)</div><div class="ship-eta">Nhận hàng trước 21:00 hôm nay</div></div><div class="ship-price">49.000₫</div></div>
+      <div class="ship-opt" onclick="selShip(this)"><input type="radio" name="ship"/><div style="flex:1"><div class="ship-name">📦 Giao Tiêu Chuẩn (1–2 ngày)</div><div class="ship-eta">Thứ 6, 13/03/2026</div></div><div class="ship-price">Miễn phí</div></div>
+      <div class="ship-opt" onclick="selShip(this)"><input type="radio" name="ship"/><div style="flex:1"><div class="ship-name">🏪 Nhận tại cửa hàng LUXURY</div><div class="ship-eta">123 Nguyễn Huệ, Q1 — Sẵn trong 1h</div></div><div class="ship-price">Miễn phí</div></div>
+      <div class="btn-row"><button class="btn-back" onclick="goStep(2)">← Quay lại</button><button class="btn-g" onclick="goStep(4)"><span>Tiếp Theo: Thanh Toán →</span></button></div>
+    </div>
+
+    <!-- STEP 4: PAYMENT -->
+    <div id="step-payment" style="display:none;">
+      <div class="section-tag">Bước 4</div>
+      <div class="section-h">Phương Thức Thanh Toán</div>
+      <div class="pay-grid">
+        <div class="pay-opt sel" id="pp-card" onclick="selPay('card')"><input type="radio" name="pay" checked/><span class="pay-icon">💳</span><div><div class="pay-name">Thẻ tín dụng</div><div class="pay-sub">Visa, Mastercard, JCB</div></div></div>
+        <div class="pay-opt" id="pp-momo" onclick="selPay('momo')"><input type="radio" name="pay"/><span class="pay-icon">💜</span><div><div class="pay-name">MoMo</div><div class="pay-sub">Ví điện tử MoMo</div></div></div>
+        <div class="pay-opt" id="pp-vnpay" onclick="selPay('vnpay')"><input type="radio" name="pay"/><span class="pay-icon">🏦</span><div><div class="pay-name">VNPay QR</div><div class="pay-sub">Quét mã ngân hàng</div></div></div>
+        <div class="pay-opt" id="pp-cod" onclick="selPay('cod')"><input type="radio" name="pay"/><span class="pay-icon">💵</span><div><div class="pay-name">COD</div><div class="pay-sub">Thanh toán khi nhận</div></div></div>
+      </div>
+      <div class="card-box" id="card-box">
+        <div class="fg"><label class="flabel">Số thẻ</label><input type="text" class="finput" placeholder="1234 5678 9012 3456" maxlength="19" oninput="fmtCard(this)"/></div>
+        <div class="card-2col">
+          <div class="fg"><label class="flabel">Hết hạn</label><input type="text" class="finput" placeholder="MM/YY" maxlength="5"/></div>
+          <div class="fg"><label class="flabel">CVV</label><input type="text" class="finput" placeholder="•••" maxlength="4"/></div>
+        </div>
+        <div class="fg"><label class="flabel">Tên chủ thẻ</label><input type="text" class="finput" placeholder="NGUYEN THANH MINH" style="text-transform:uppercase"/></div>
+      </div>
+      <div id="qr-box" style="display:none;background:var(--deep);border:1px solid rgba(201,168,76,.1);padding:2rem;text-align:center;margin-bottom:1rem;">
+        <div style="font-size:4rem;margin-bottom:.8rem;">📱</div>
+        <div style="font-family:var(--serif);font-size:1.2rem;color:var(--white);margin-bottom:.4rem;">Quét mã QR</div>
+        <div style="font-size:.75rem;color:var(--muted);">Mở app → Quét → Xác nhận <b style="color:var(--gold)">62.029.000₫</b></div>
+      </div>
+      <div class="btn-row"><button class="btn-back" onclick="goStep(3)">← Quay lại</button><button class="btn-g" onclick="placeOrder()"><span>🔒 Đặt Hàng & Thanh Toán</span></button></div>
+    </div>
+  </div>
+
+  <!-- ORDER SUMMARY -->
+  <div class="order-sum">
+    <div class="os-h">Tóm Tắt Đơn Hàng</div>
+    <div class="os-item"><span class="os-item-name">RTX 4090 Titan × 1</span><span class="os-item-price">42.990.000₫</span></div>
+    <div class="os-item"><span class="os-item-name">Core i9-14900K × 1</span><span class="os-item-price">18.990.000₫</span></div>
+    <div class="os-div"></div>
+    <div class="os-row"><span>Tạm tính</span><span>61.980.000₫</span></div>
+    <div class="os-row green" id="os-disc" style="display:none;"><span id="os-disc-l">Voucher</span><span id="os-disc-v">−0₫</span></div>
+    <div class="os-row"><span>Phí vận chuyển</span><span>49.000₫</span></div>
+    <div class="os-total"><div class="os-total-lbl">Tổng thanh toán</div><div class="os-total-num">62.029.000₫</div></div>
+    <div class="os-vat">Đã bao gồm VAT 10%</div>
+    <div class="apex-guarantee"><div class="ag-tag">Bảo Đảm LUXURY PC</div><div class="ag-list">✓ Hàng chính hãng 100%<br/>✓ Bảo hành 3 năm<br/>✓ Đổi trả 30 ngày<br/>✓ Hỗ trợ 24/7</div></div>
+    <div class="badges"><span class="badge">🔒 SSL</span><span class="badge">💳 PCI DSS</span><span class="badge">✓ Verified</span></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+  const cur=document.getElementById('cursor'),curF=document.getElementById('cursor-f');
+  let mx=0,my=0,fx=0,fy=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+  (function loop(){fx+=(mx-fx)*.12;fy+=(my-fy)*.12;curF.style.left=fx+'px';curF.style.top=fy+'px';requestAnimationFrame(loop);})();
+  document.querySelectorAll('a,button,input,select,label').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{cur.style.transform='translate(-50%,-50%) scale(2)';curF.style.width='60px';curF.style.height='60px';});
+    el.addEventListener('mouseleave',()=>{cur.style.transform='translate(-50%,-50%) scale(1)';curF.style.width='36px';curF.style.height='36px';});
+  });
+  let toastT;
+  function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),3000);}
+  const steps=['cart','info','shipping','payment'];
+  function goStep(n){
+    steps.forEach((s,i)=>document.getElementById('step-'+s).style.display=i+1===n?'block':'none');
+    [1,2,3,4].forEach(i=>{
+      const d=document.getElementById('sd'+i),nm=document.getElementById('sn'+i);
+      if(d){d.className='cstep-dot'+(i<n?' done':i===n?' active':'');d.textContent=i<n?'✓':i;}
+      if(nm)nm.className='cstep-name'+(i===n?' active':'');
+    });
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  function cqty(btn,d){const sp=btn.parentElement.querySelector('span');sp.textContent=Math.max(1,parseInt(sp.textContent)+d);}
+  function rmItem(btn){const ci=btn.closest('.cart-item');ci.style.opacity='0';setTimeout(()=>ci.remove(),300);toast('✓ Đã xóa khỏi giỏ hàng');}
+  const vcs={APEX10:{n:'APEX10',a:'6.198.000₫'},VIP20:{n:'VIP20',a:'12.396.000₫'},FREESHIP:{n:'FREESHIP',a:'49.000₫'}};
+  function applyVC(){
+    const code=document.getElementById('vc-input').value.trim().toUpperCase();
+    const v=vcs[code];
+    if(!v){toast('⚠️ Mã voucher không hợp lệ!');return;}
+    document.getElementById('vc-name').textContent=v.n;document.getElementById('vc-amt').textContent=v.a;
+    document.getElementById('vc-ok').style.display='flex';
+    document.getElementById('os-disc-l').textContent='Voucher '+v.n;document.getElementById('os-disc-v').textContent='−'+v.a;
+    document.getElementById('os-disc').style.display='flex';
+    toast('🎉 Áp dụng mã '+v.n+' thành công!');
+  }
+  function rmVC(){document.getElementById('vc-ok').style.display='none';document.getElementById('os-disc').style.display='none';document.getElementById('vc-input').value='';}
+  function selShip(el){document.querySelectorAll('.ship-opt').forEach(s=>s.classList.remove('sel'));el.classList.add('sel');}
+  function selPay(t){
+    document.querySelectorAll('.pay-opt').forEach(p=>p.classList.remove('sel'));
+    document.getElementById('pp-'+t).classList.add('sel');
+    document.getElementById('card-box').style.display=t==='card'?'block':'none';
+    document.getElementById('qr-box').style.display=(t==='momo'||t==='vnpay')?'block':'none';
+  }
+  function fmtCard(inp){const v=inp.value.replace(/\D/g,'').substring(0,16);inp.value=v.replace(/(.{4})/g,'$1 ').trim();}
+  function placeOrder(){document.getElementById('suc').classList.add('show');}
+</script>
+</body>
+</html>

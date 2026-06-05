@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Luxury PC — RTX 4090 Titan Edition</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root{--black:#0a0a0a;--deep:#111;--dark:#1a1a1a;--mid:#2a2a2a;--gold:#c9a84c;--gold-l:#e8c97a;--cream:#f5f0e8;--white:#fff;--muted:#888;--red:#ef4444;--green:#22c55e;--serif:'Inter',sans-serif;--sans:'Inter',sans-serif;--ease:.4s cubic-bezier(.25,.46,.45,.94);}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{font-size:16px;scroll-behavior:smooth;}
+    body{background:var(--black);color:var(--cream);font-family:var(--sans);font-weight:400;min-height:100vh;cursor:none;overflow-x:hidden;}
+    a{color:inherit;text-decoration:none;}
+    img{display:block;width:100%;object-fit:cover;}
+
+    /* CURSOR */
+    .cursor{position:fixed;width:8px;height:8px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .1s;}
+    .cursor-f{position:fixed;width:36px;height:36px;border:1px solid var(--gold);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);opacity:.5;transition:width .25s,height .25s,opacity .25s;}
+
+    /* NAVBAR */
+    .navbar{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:1.2rem 4rem;background:rgba(10,10,10,.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(201,168,76,.12);}
+    .nav-logo{font-family:var(--serif);font-size:1.6rem;letter-spacing:.25em;color:var(--gold);display:flex;align-items:center;gap:8px;}
+    .nav-logo span{font-family:var(--sans);font-size:.65rem;letter-spacing:.5em;color:var(--muted);}
+    .nav-links{display:flex;align-items:center;gap:2rem;}
+    .nav-link{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);transition:color var(--ease);cursor:none;}
+    .nav-link:hover{color:var(--gold);}
+    .nav-cart-btn{background:none;border:1px solid rgba(201,168,76,.4);color:var(--cream);padding:.4rem .9rem;display:flex;align-items:center;gap:6px;font-size:.72rem;cursor:none;transition:var(--ease);}
+    .nav-cart-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+    /* BREADCRUMB */
+    .breadcrumb{padding:6.5rem 6rem 0;display:flex;align-items:center;gap:.6rem;font-size:.65rem;letter-spacing:.1em;color:var(--muted);}
+    .breadcrumb a:hover{color:var(--gold);}
+    .breadcrumb span{color:rgba(201,168,76,.4);}
+    .breadcrumb .current{color:var(--cream);}
+
+    /* PRODUCT LAYOUT */
+    .product-layout{display:grid;grid-template-columns:1fr 1fr;gap:0;min-height:calc(100vh - 80px);padding-top:2rem;}
+
+    /* IMAGE PANEL */
+    .img-panel{padding:3rem 4rem 3rem 6rem;position:sticky;top:74px;height:calc(100vh - 74px);display:flex;flex-direction:column;gap:1.2rem;}
+    .main-img-wrap{flex:1;background:var(--deep);border:1px solid rgba(201,168,76,.1);display:flex;align-items:center;justify-content:center;font-size:8rem;position:relative;overflow:hidden;min-height:0;}
+    .main-img-wrap::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 60%,rgba(201,168,76,.06) 0%,transparent 70%);}
+    .img-badge-wrap{position:absolute;top:1rem;left:1rem;display:flex;flex-direction:column;gap:.4rem;}
+    .img-badge{font-size:.58rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:.25rem .7rem;}
+    .badge-top{background:var(--gold);color:var(--black);}
+    .badge-new{background:var(--dark);border:1px solid rgba(201,168,76,.4);color:var(--gold);}
+    .thumb-row{display:flex;gap:.8rem;}
+    .thumb{flex:1;aspect-ratio:1;background:var(--deep);border:1px solid rgba(201,168,76,.1);display:flex;align-items:center;justify-content:center;font-size:1.6rem;cursor:none;transition:border-color var(--ease);}
+    .thumb.active,.thumb:hover{border-color:var(--gold);}
+
+    /* INFO PANEL */
+    .info-panel{padding:3rem 6rem 3rem 4rem;border-left:1px solid rgba(201,168,76,.1);overflow-y:auto;}
+    .prod-tag{font-size:.62rem;letter-spacing:.35em;text-transform:uppercase;color:var(--gold);margin-bottom:.8rem;}
+    .prod-title{font-family:var(--serif);font-size:clamp(1.8rem,3vw,2.8rem);font-weight:300;color:var(--white);line-height:1.15;margin-bottom:.5rem;}
+    .prod-sub{font-size:.8rem;color:var(--muted);margin-bottom:1.5rem;letter-spacing:.05em;}
+
+    /* Stars */
+    .rating-row{display:flex;align-items:center;gap:.8rem;margin-bottom:1.5rem;}
+    .stars{color:var(--gold);font-size:.9rem;letter-spacing:.05em;}
+    .rating-count{font-size:.72rem;color:var(--muted);}
+    .rating-link{font-size:.72rem;color:var(--gold);border-bottom:1px solid rgba(201,168,76,.3);}
+
+    /* Price */
+    .price-block{padding:1.5rem 0;border-top:1px solid rgba(201,168,76,.1);border-bottom:1px solid rgba(201,168,76,.1);margin-bottom:1.8rem;}
+    .price-main{font-family:var(--serif);font-size:2.4rem;font-weight:300;color:var(--gold);line-height:1;}
+    .price-old{font-size:.85rem;color:var(--muted);text-decoration:line-through;margin-top:.3rem;}
+    .price-save{display:inline-block;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);color:var(--red);font-size:.65rem;font-weight:700;letter-spacing:.1em;padding:.2rem .6rem;margin-top:.5rem;}
+    .installment{font-size:.73rem;color:var(--muted);margin-top:.6rem;}
+    .installment b{color:var(--cream);}
+
+    /* Specs quick */
+    .specs-quick{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1.8rem;}
+    .spec-chip{background:var(--deep);border:1px solid rgba(201,168,76,.1);padding:.7rem 1rem;}
+    .spec-chip-key{font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:.2rem;}
+    .spec-chip-val{font-size:.82rem;color:var(--cream);font-weight:500;}
+
+    /* Quantity */
+    .qty-row{display:flex;align-items:center;gap:1.2rem;margin-bottom:1.5rem;}
+    .qty-label{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);}
+    .qty-ctrl{display:flex;align-items:center;border:1px solid rgba(201,168,76,.2);}
+    .qty-btn{width:38px;height:38px;background:none;border:none;color:var(--cream);font-size:1.1rem;cursor:none;transition:var(--ease);}
+    .qty-btn:hover{background:rgba(201,168,76,.08);color:var(--gold);}
+    .qty-num{width:48px;text-align:center;font-family:var(--serif);font-size:1.1rem;color:var(--white);}
+    .stock-label{font-size:.68rem;color:var(--green);}
+
+    /* Action buttons */
+    .action-buttons{display:flex;flex-direction:column;gap:.8rem;margin-bottom:2rem;}
+    .btn-primary-lg{padding:1.1rem;background:var(--gold);color:var(--black);border:none;font-family:var(--sans);font-size:.75rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;cursor:none;transition:var(--ease);position:relative;overflow:hidden;}
+    .btn-primary-lg::before{content:'';position:absolute;inset:0;background:var(--gold-light);transform:translateX(-100%);transition:transform var(--ease);}
+    .btn-primary-lg:hover::before{transform:translateX(0);}
+    .btn-primary-lg span{position:relative;z-index:1;}
+    .btn-outline-lg{padding:1rem;background:none;color:var(--cream);border:1px solid rgba(201,168,76,.3);font-family:var(--sans);font-size:.72rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;cursor:none;transition:var(--ease);}
+    .btn-outline-lg:hover{border-color:var(--gold);color:var(--gold);}
+
+    /* Perks */
+    .perks-row{display:flex;gap:1rem;margin-bottom:2rem;flex-wrap:wrap;}
+    .perk{display:flex;align-items:center;gap:.5rem;font-size:.7rem;color:var(--muted);}
+    .perk-icon{color:var(--gold);}
+
+    /* Tabs (specs, review) */
+    .detail-tabs{display:flex;border-bottom:1px solid rgba(201,168,76,.1);margin-bottom:1.5rem;}
+    .detail-tab{padding:.7rem 1.2rem;font-size:.65rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);background:none;border:none;cursor:none;transition:color var(--ease);position:relative;}
+    .detail-tab::after{content:'';position:absolute;bottom:-1px;left:0;width:0;height:2px;background:var(--gold);transition:width var(--ease);}
+    .detail-tab.active{color:var(--gold);}
+    .detail-tab.active::after{width:100%;}
+    .detail-section{display:none;}
+    .detail-section.active{display:block;}
+
+    /* Spec table */
+    .spec-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+    .spec-table tr{border-bottom:1px solid rgba(201,168,76,.07);}
+    .spec-table tr:last-child{border:none;}
+    .spec-table td{padding:.8rem 1rem;}
+    .spec-table td:first-child{color:var(--muted);width:40%;font-size:.72rem;letter-spacing:.05em;}
+    .spec-table td:last-child{color:var(--cream);}
+
+    /* Reviews */
+    .review-summary{display:flex;align-items:center;gap:2rem;padding:1.2rem;background:var(--deep);border:1px solid rgba(201,168,76,.1);margin-bottom:1.2rem;}
+    .review-big-num{font-family:var(--serif);font-size:3.5rem;font-weight:300;color:var(--gold);line-height:1;}
+    .review-out{font-size:.7rem;color:var(--muted);margin-top:.2rem;}
+    .review-bars{flex:1;}
+    .bar-row{display:flex;align-items:center;gap:.6rem;margin-bottom:.3rem;font-size:.65rem;color:var(--muted);}
+    .bar-track{flex:1;height:4px;background:var(--mid);position:relative;}
+    .bar-fill{height:100%;background:var(--gold);}
+    .review-card{background:var(--deep);border:1px solid rgba(201,168,76,.08);padding:1.2rem;margin-bottom:.8rem;}
+    .rv-header{display:flex;align-items:center;gap.8rem;justify-content:space-between;margin-bottom:.6rem;}
+    .rv-name{font-size:.8rem;font-weight:600;color:var(--white);}
+    .rv-date{font-size:.65rem;color:var(--muted);}
+    .rv-stars{color:var(--gold);font-size:.75rem;}
+    .rv-text{font-size:.78rem;color:rgba(245,240,232,.7);line-height:1.7;}
+    .rv-verified{font-size:.6rem;color:var(--green);letter-spacing:.1em;margin-top:.4rem;}
+
+    /* Related products */
+    .related{padding:4rem 6rem;background:var(--deep);border-top:1px solid rgba(201,168,76,.08);}
+    .related-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(201,168,76,.07);}
+    .rel-card{background:var(--deep);padding:1.5rem;cursor:none;transition:background var(--ease);border:1px solid rgba(201,168,76,.05);}
+    .rel-card:hover{background:var(--dark);}
+    .rel-img{height:100px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin-bottom:1rem;}
+    .rel-cat{font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem;}
+    .rel-name{font-family:var(--serif);font-size:1rem;color:var(--white);margin-bottom:.4rem;}
+    .rel-price{font-family:var(--serif);font-size:.95rem;color:var(--gold);}
+
+    /* TOAST */
+    .toast{position:fixed;bottom:2.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--dark);border:1px solid rgba(201,168,76,.35);color:var(--cream);font-size:.8rem;padding:.9rem 2rem;z-index:3000;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;white-space:nowrap;}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+    @media(max-width:1024px){
+      .product-layout{grid-template-columns:1fr;}.img-panel{position:static;height:auto;padding:6rem 2rem 2rem;}.info-panel{padding:2rem;border-left:none;border-top:1px solid rgba(201,168,76,.1);}
+      .breadcrumb,.related{padding-left:2rem;padding-right:2rem;}
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-f" id="cursor-f"></div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-logo">LUXURY<span>PC</span></a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Trang Chủ</a>
+      <a href="index.html#products" class="nav-link">Sản Phẩm</a>
+      <a href="build-pc.html" class="nav-link">Build PC</a>
+    </div>
+    <button class="nav-cart-btn" onclick="location.href='checkout.html'">⊡ Giỏ Hàng <span id="cart-num">0</span></button>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <a href="index.html">Trang chủ</a>
+    <span>›</span>
+    <a href="#">VGA</a>
+    <span>›</span>
+    <span class="current">RTX 4090 Titan Edition</span>
+  </div>
+
+  <!-- PRODUCT LAYOUT -->
+  <div class="product-layout">
+
+    <!-- LEFT: Images -->
+    <div class="img-panel">
+      <div class="main-img-wrap" id="main-img">
+        <div class="img-badge-wrap">
+          <span class="img-badge badge-top">Đỉnh Cao</span>
+          <span class="img-badge badge-new">Mới 2024</span>
+        </div>
+        🎮
+      </div>
+      <div class="thumb-row">
+        <div class="thumb active" onclick="setImg('🎮',this)">🎮</div>
+        <div class="thumb" onclick="setImg('💡',this)">💡</div>
+        <div class="thumb" onclick="setImg('🔩',this)">🔩</div>
+        <div class="thumb" onclick="setImg('📦',this)">📦</div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Info -->
+    <div class="info-panel">
+      <div class="prod-tag">VGA · NVIDIA · LUXURY Exclusive</div>
+      <h1 class="prod-title">RTX 4090<br/>Titan Edition</h1>
+      <div class="prod-sub">ASUS ROG × LUXURY PC Limited — Chỉ 50 chiếc tại Việt Nam</div>
+
+      <div class="rating-row">
+        <span class="stars">★★★★★</span>
+        <span class="rating-count">4.9/5</span>
+        <a href="#reviews" class="rating-link" onclick="setDetailTab('reviews')">128 đánh giá</a>
+      </div>
+
+      <div class="price-block">
+        <div class="price-main">42.990.000₫</div>
+        <div class="price-old">49.990.000₫</div>
+        <div class="price-save">Tiết kiệm 7.000.000₫</div>
+        <div class="installment">Trả góp 0%: <b>3.582.500₫/tháng</b> × 12 tháng</div>
+      </div>
+
+      <div class="specs-quick">
+        <div class="spec-chip">
+          <div class="spec-chip-key">VRAM</div>
+          <div class="spec-chip-val">24GB GDDR6X</div>
+        </div>
+        <div class="spec-chip">
+          <div class="spec-chip-key">CUDA Cores</div>
+          <div class="spec-chip-val">16,384</div>
+        </div>
+        <div class="spec-chip">
+          <div class="spec-chip-key">Boost Clock</div>
+          <div class="spec-chip-val">2.61 GHz</div>
+        </div>
+        <div class="spec-chip">
+          <div class="spec-chip-key">TDP</div>
+          <div class="spec-chip-val">450W</div>
+        </div>
+      </div>
+
+      <div class="qty-row">
+        <span class="qty-label">Số lượng</span>
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="changeQty(-1)">−</button>
+          <div class="qty-num" id="qty">1</div>
+          <button class="qty-btn" onclick="changeQty(1)">+</button>
+        </div>
+        <span class="stock-label">● Còn 7 sản phẩm</span>
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn-primary-lg" onclick="addToCart()"><span>Thêm Vào Giỏ Hàng</span></button>
+        <button class="btn-outline-lg" onclick="buyNow()">Mua Ngay — Giao Hỏa Tốc</button>
+        <button class="btn-outline-lg" onclick="toast('♥ Đã thêm vào danh sách yêu thích!')">♡ Thêm Vào Yêu Thích</button>
+      </div>
+
+      <div class="perks-row">
+        <div class="perk"><span class="perk-icon">✈</span> Miễn phí giao hàng</div>
+        <div class="perk"><span class="perk-icon">🛡</span> Bảo hành 3 năm</div>
+        <div class="perk"><span class="perk-icon">↩</span> Đổi trả 30 ngày</div>
+        <div class="perk"><span class="perk-icon">✓</span> Hàng chính hãng</div>
+      </div>
+
+      <!-- Detail Tabs -->
+      <div class="detail-tabs">
+        <button class="detail-tab active" onclick="setDetailTab('specs')">Thông Số Kỹ Thuật</button>
+        <button class="detail-tab" onclick="setDetailTab('desc')">Mô Tả</button>
+        <button class="detail-tab" id="tab-reviews" onclick="setDetailTab('reviews')">Đánh Giá (128)</button>
+      </div>
+
+      <!-- SPECS -->
+      <div class="detail-section active" id="ds-specs">
+        <table class="spec-table">
+          <tr><td>Kiến trúc</td><td>Ada Lovelace</td></tr>
+          <tr><td>CUDA Cores</td><td>16,384</td></tr>
+          <tr><td>Bộ nhớ</td><td>24GB GDDR6X</td></tr>
+          <tr><td>Băng thông bộ nhớ</td><td>1,008 GB/s</td></tr>
+          <tr><td>Bus bộ nhớ</td><td>384-bit</td></tr>
+          <tr><td>Xung nhịp Base / Boost</td><td>2.23 GHz / 2.61 GHz</td></tr>
+          <tr><td>TDP</td><td>450W</td></tr>
+          <tr><td>Kết nối</td><td>3× DisplayPort 1.4a, 1× HDMI 2.1</td></tr>
+          <tr><td>PCIe</td><td>PCIe 4.0 × 16</td></tr>
+          <tr><td>Nguồn yêu cầu</td><td>Tối thiểu 850W</td></tr>
+          <tr><td>Kích thước</td><td>348 × 140 × 58 mm</td></tr>
+          <tr><td>Trọng lượng</td><td>2.18 kg</td></tr>
+          <tr><td>Bảo hành</td><td>36 tháng (LUXURY PC + ASUS)</td></tr>
+        </table>
+      </div>
+
+      <!-- DESCRIPTION -->
+      <div class="detail-section" id="ds-desc">
+        <p style="font-size:.85rem;color:rgba(245,240,232,.75);line-height:2;margin-bottom:1rem;">RTX 4090 Titan Edition là đỉnh cao của kiến trúc Ada Lovelace — được thiết kế lại đặc biệt bởi LUXURY PC với hệ thống tản nhiệt 3 quạt ROG Strix, backplate nhôm CNC anodized và đèn RGB AURA Sync tinh tế.</p>
+        <p style="font-size:.85rem;color:rgba(245,240,232,.75);line-height:2;margin-bottom:1rem;">Với 16,384 CUDA cores và 24GB GDDR6X, card đồ họa này xử lý mọi tác vụ từ render 8K thời gian thực, AI generation đến gaming ở 4K 240fps không giới hạn. DLSS 3 với AI Frame Generation giúp tăng gấp đôi hiệu năng so với thế hệ trước.</p>
+        <div style="background:rgba(201,168,76,.05);border-left:3px solid var(--gold);padding:1rem;margin-top:1rem;">
+          <div style="font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem;">LUXURY EXCLUSIVE</div>
+          <div style="font-size:.8rem;color:var(--cream);">Mỗi card được kiểm tra stress test 24h, kèm certificate hiệu năng và số serial riêng. Chỉ 50 chiếc được phân phối tại Việt Nam.</div>
+        </div>
+      </div>
+
+      <!-- REVIEWS -->
+      <div class="detail-section" id="ds-reviews">
+        <div class="review-summary">
+          <div style="text-align:center;">
+            <div class="review-big-num">4.9</div>
+            <div style="color:var(--gold);font-size:.9rem;">★★★★★</div>
+            <div class="review-out">128 đánh giá</div>
+          </div>
+          <div class="review-bars" style="flex:1;">
+            <div class="bar-row"><span style="width:14px">5★</span><div class="bar-track"><div class="bar-fill" style="width:85%"></div></div><span>109</span></div>
+            <div class="bar-row"><span style="width:14px">4★</span><div class="bar-track"><div class="bar-fill" style="width:10%"></div></div><span>13</span></div>
+            <div class="bar-row"><span style="width:14px">3★</span><div class="bar-track"><div class="bar-fill" style="width:3%"></div></div><span>4</span></div>
+            <div class="bar-row"><span style="width:14px">2★</span><div class="bar-track"><div class="bar-fill" style="width:1%"></div></div><span>1</span></div>
+            <div class="bar-row"><span style="width:14px">1★</span><div class="bar-track"><div class="bar-fill" style="width:0%"></div></div><span>1</span></div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="rv-header" style="display:flex;justify-content:space-between;"><span class="rv-name">Thanh Minh</span><span class="rv-date">10/03/2026</span></div>
+          <div class="rv-stars">★★★★★</div>
+          <p class="rv-text">"Quái vật thật sự. Chạy Cyberpunk 2077 ở 4K Ultra với path tracing, độ phân giải không drop dưới 90fps. Render Blender dự án 3D giờ từ 4 tiếng xuống còn 45 phút. Đáng từng đồng."</p>
+          <div class="rv-verified">✓ Đã mua tại LUXURY PC</div>
+        </div>
+        <div class="review-card">
+          <div class="rv-header" style="display:flex;justify-content:space-between;"><span class="rv-name">Hoàng Nguyên</span><span class="rv-date">05/03/2026</span></div>
+          <div class="rv-stars">★★★★★</div>
+          <p class="rv-text">"Dịch vụ LUXURY PC tuyệt vời. Card được đóng gói cực kỳ cẩn thận, có certificate kiểm tra. Chạy Stable Diffusion local nhanh hơn RTX 3090 cũ của tôi gấp 3 lần."</p>
+          <div class="rv-verified">✓ Đã mua tại LUXURY PC</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RELATED PRODUCTS -->
+  <section class="related">
+    <div style="text-align:center;margin-bottom:2.5rem;">
+      <span style="font-size:.6rem;letter-spacing:.4em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:.8rem;">Có Thể Bạn Thích</span>
+      <h2 style="font-family:var(--serif);font-size:2rem;font-weight:300;color:var(--white);">Linh Kiện Phù Hợp</h2>
+    </div>
+    <div class="related-grid">
+      <div class="rel-card" onclick="toast('Xem chi tiết CPU i9-14900K')">
+        <div class="rel-img">⚙️</div>
+        <div class="rel-cat">CPU · Intel</div>
+        <div class="rel-name">Core i9-14900K</div>
+        <div class="rel-price">18.990.000₫</div>
+      </div>
+      <div class="rel-card" onclick="toast('Xem chi tiết Mainboard ROG Z790')">
+        <div class="rel-img">🔌</div>
+        <div class="rel-cat">Mainboard · ASUS ROG</div>
+        <div class="rel-name">ROG Maximus Z790</div>
+        <div class="rel-price">12.490.000₫</div>
+      </div>
+      <div class="rel-card" onclick="toast('Xem chi tiết RAM DDR5')">
+        <div class="rel-img">💾</div>
+        <div class="rel-cat">RAM · Corsair</div>
+        <div class="rel-name">Dominator Platinum DDR5</div>
+        <div class="rel-price">6.490.000₫</div>
+      </div>
+      <div class="rel-card" onclick="toast('Xem chi tiết Màn hình OLED')">
+        <div class="rel-img">🖥️</div>
+        <div class="rel-cat">Màn Hình · LG</div>
+        <div class="rel-name">UltraGear 4K OLED</div>
+        <div class="rel-price">22.990.000₫</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const cur=document.getElementById('cursor'),curF=document.getElementById('cursor-f');
+    let mx=0,my=0,fx=0,fy=0;
+    document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+    (function loop(){fx+=(mx-fx)*.12;fy+=(my-fy)*.12;curF.style.left=fx+'px';curF.style.top=fy+'px';requestAnimationFrame(loop);})();
+    document.querySelectorAll('a,button,.thumb,.rel-card').forEach(el=>{
+      el.addEventListener('mouseenter',()=>{cur.style.transform='translate(-50%,-50%) scale(2)';curF.style.width='60px';curF.style.height='60px';});
+      el.addEventListener('mouseleave',()=>{cur.style.transform='translate(-50%,-50%) scale(1)';curF.style.width='36px';curF.style.height='36px';});
+    });
+
+    let toastT;
+    function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),3000);}
+
+    let qty=1;
+    function changeQty(d){qty=Math.max(1,Math.min(7,qty+d));document.getElementById('qty').textContent=qty;}
+
+    function setImg(emoji,thumb){
+      document.getElementById('main-img').childNodes[document.getElementById('main-img').childNodes.length-1].textContent=emoji;
+      document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('active'));
+      thumb.classList.add('active');
+    }
+
+    function addToCart(){
+      let n=parseInt(document.getElementById('cart-num').textContent||0);
+      document.getElementById('cart-num').textContent=n+qty;
+      toast(`✓ Đã thêm ${qty} RTX 4090 Titan vào giỏ hàng!`);
+    }
+    function buyNow(){addToCart();setTimeout(()=>location.href='checkout.html',800);}
+
+    const detailTabs=['specs','desc','reviews'];
+    function setDetailTab(id){
+      detailTabs.forEach(t=>{
+        document.getElementById('ds-'+t)?.classList.toggle('active',t===id);
+      });
+      document.querySelectorAll('.detail-tab').forEach((tab,i)=>{
+        tab.classList.toggle('active',detailTabs[i]===id);
+      });
+    }
+    document.getElementById('tab-reviews').addEventListener('click',()=>document.getElementById('ds-reviews').scrollIntoView({behavior:'smooth'}));
+  </script>
+</body>
+</html>
