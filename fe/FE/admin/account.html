@@ -1,0 +1,179 @@
+﻿<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Người Dùng — Luxury PC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/admin/admin-global.css}">
+    
+    <!-- React & Babel -->
+    <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.6/babel.min.js"></script>
+
+    <style>
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+        .active-badge { background: rgba(34,197,94,0.1); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+        .inactive-badge { background: rgba(239,68,68,0.1); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+    </style>
+
+    <script th:inline="javascript">
+        window.INITIAL_DATA = {
+            users: /*[[${users}]]*/ [],
+            user: /*[[${user}]]*/ {},
+            username: /*[[${#authentication.name}]]*/ 'Admin'
+        };
+    </script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel" th:src="@{/js/react/AdminComponents.jsx}"></script>
+
+    <script type="text/babel">
+/*<![CDATA[*/
+        function UserForm({ user, onClose }) {
+            return (
+                <div className="card active" style={{ animation: 'slideDown 0.3s ease' }}>
+                    <div className="card-header">
+                        <h2>{user?.id ? 'Cập Nhật User' : 'Thêm User Mới'}</h2>
+                        {onClose && (
+                            <button className="icon-btn icon-btn-del" onClick={onClose} title="Thoát">
+                                <i className="fa-solid fa-xmark"></i>
+                            </button>
+                        )}
+                    </div>
+                    <form action="/admin/account/save" method="post">
+                        <input type="hidden" name="id" defaultValue={user?.id || ''} />
+                        
+                        <div className="form-grid">
+                            <div className="input-group">
+                                <label>Username</label>
+                                <input type="text" name="username" defaultValue={user?.username || ''} required />
+                            </div>
+                            <div className="input-group">
+                                <label>Email</label>
+                                <input type="email" name="email" defaultValue={user?.email || ''} required />
+                            </div>
+                            <div className="input-group">
+                                <label>Password</label>
+                                <input type="text" name="password" placeholder="Nhập nếu muốn đổi" />
+                            </div>
+                            <div className="input-group">
+                                <label>Họ tên</label>
+                                <input type="text" name="fullName" defaultValue={user?.fullName || ''} />
+                            </div>
+                            <div className="input-group">
+                                <label>Số điện thoại</label>
+                                <input type="text" name="phone" defaultValue={user?.phone || ''} />
+                            </div>
+                            <div className="input-group">
+                                <label>Địa chỉ</label>
+                                <input type="text" name="address" defaultValue={user?.address || ''} />
+                            </div>
+                            <div className="input-group">
+                                <label>Giới tính</label>
+                                <select name="gender" defaultValue={user?.gender !== false ? "true" : "false"}>
+                                    <option value="true">Nam</option>
+                                    <option value="false">Nữ</option>
+                                </select>
+                            </div>
+                            <div className="input-group">
+                                <label>Trạng thái</label>
+                                <select name="status" defaultValue={user?.status !== false ? "true" : "false"}>
+                                    <option value="true">Hoạt động</option>
+                                    <option value="false">Khóa</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style={{marginTop: '2rem', display: 'flex', gap: '10px'}}>
+                            <button type="submit" className="btn btn-gold">Lưu User</button>
+                            {onClose && <button type="button" className="btn btn-outline" onClick={onClose}>Hủy / Làm mới</button>}
+                        </div>
+                    </form>
+                </div>
+            );
+        }
+
+        function App() {
+            const [showForm, setShowForm] = React.useState(!!window.INITIAL_DATA.user?.id);
+            const data = window.INITIAL_DATA.users || [];
+
+            const columns = [
+                { key: 'id', label: 'ID' },
+                { key: 'username', label: 'Username', render: (row) => <span style={{fontWeight: 600, color: 'var(--gold)'}}>{row.username}</span> },
+                { key: 'email', label: 'Email' },
+                { key: 'fullName', label: 'Họ tên' },
+                { key: 'phone', label: 'SĐT' },
+                { 
+                    key: 'status', 
+                    label: 'Trạng thái', 
+                    render: (row) => row.status 
+                        ? <span className="badge active-badge">Hoạt động</span> 
+                        : <span className="badge inactive-badge">Đã khoá</span>
+                },
+                { 
+                    key: 'actions', 
+                    label: 'Hành động',
+                    sortable: false,
+                    render: (row) => (
+                        <div style={{display: 'flex', gap: '6px', alignItems: 'center'}}>
+                            <a href={`/admin/account/edit/${row.id}`} className="btn btn-sm btn-outline" style={{padding: '0.4rem 0.8rem'}}>Sửa</a>
+                            {row.status ? (
+                                <a href={`/admin/account/lock/${row.id}`} className="btn btn-sm" style={{background: 'var(--mid)', color: 'white', padding: '0.4rem 0.8rem'}}>Khoá</a>
+                            ) : (
+                                <a href={`/admin/account/unlock/${row.id}`} className="btn btn-sm" style={{background: 'var(--mid)', color: 'var(--green)', padding: '0.4rem 0.8rem'}}>Mở khoá</a>
+                            )}
+                            <a href={`/admin/account/delete/${row.id}`} className="btn btn-sm btn-danger" style={{padding: '0.4rem 0.8rem'}} onClick={(e) => {if(!confirm('Xác nhận xoá user này?')) e.preventDefault()}}>Xoá</a>
+                        </div>
+                    )
+                }
+            ];
+
+            return (
+                <React.Fragment>
+                    <AdminSidebar active="account" />
+                    <div className="main-content">
+                        <AdminHeader title={`Quản Lý Người Dùng`} subtitle="Quản lý thông tin và tài khoản của người dùng (không phải ADMIN)" username={window.INITIAL_DATA.username} />
+                        
+                        <div style={{ marginBottom: '1.5rem' }}>
+                            {!showForm && (
+                                <button className="btn btn-gold" onClick={() => setShowForm(true)}>
+                                    <i className="fa-solid fa-plus"></i> Thêm User Mới
+                                </button>
+                            )}
+                        </div>
+
+                        {showForm && (
+                            <UserForm 
+                                user={window.INITIAL_DATA.user} 
+                                onClose={() => {
+                                    setShowForm(false);
+                                    if(window.INITIAL_DATA.user?.id) {
+                                        window.location.href = '/admin/account';
+                                    }
+                                }} 
+                            />
+                        )}
+                        
+                        <div className="card">
+                            <h2 style={{marginBottom: '1.5rem', color: 'var(--gold)'}}><i className="fa-solid fa-users"></i> Danh sách User</h2>
+                            <DataGrid columns={columns} data={data} searchPlaceholder="Tìm kiếm tên, email, sđt..." itemsPerPage={10} />
+                        </div>
+                    </div>
+                </React.Fragment>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    
+/*]]>*/
+</script>
+</body>
+</html>
+
+

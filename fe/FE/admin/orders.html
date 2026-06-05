@@ -1,0 +1,119 @@
+﻿<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Đơn Hàng — Luxury PC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/admin/admin-global.css}">
+    
+    <!-- React & Babel -->
+    <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.6/babel.min.js"></script>
+
+    <style>
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+        .badge-pending { background: rgba(201,168,76,0.1); color: var(--gold); }
+        .badge-paid { background: rgba(34,197,94,0.1); color: var(--green); }
+        .badge-shipping { background: rgba(59,130,246,0.1); color: var(--blue); }
+        .badge-completed { background: rgba(255,255,255,0.1); color: #fff; }
+        .badge-cancelled { background: rgba(239,68,68,0.1); color: var(--red); }
+        .update-btn { background: var(--gold); color: var(--black); border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-weight: 600; font-family: var(--sans); }
+        .update-btn:hover { background: var(--gold-l); }
+    </style>
+
+    <script th:inline="javascript">
+        window.INITIAL_DATA = {
+            orders: /*[[${orders}]]*/ [],
+            username: /*[[${#authentication.name}]]*/ 'Admin'
+        };
+    </script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel" th:src="@{/js/react/AdminComponents.jsx}"></script>
+
+    <script type="text/babel">
+/*<![CDATA[*/
+        function App() {
+            const data = window.INITIAL_DATA.orders || [];
+
+            const columns = [
+                { 
+                    key: 'id', 
+                    label: 'ID', 
+                    render: (row) => '#' + row.id
+                },
+                { 
+                    key: 'fullName', 
+                    label: 'Khách Hàng', 
+                    render: (row) => (
+                        <div>
+                            <div>{row.fullName}</div>
+                            <div style={{fontSize: '0.75rem', color: 'var(--muted)'}}>{row.email}</div>
+                        </div>
+                    )
+                },
+                { 
+                    key: 'createdAt', 
+                    label: 'Ngày Đặt', 
+                    render: (row) => new Date(row.createdAt).toLocaleString('vi-VN')
+                },
+                { 
+                    key: 'totalPrice', 
+                    label: 'Tổng Tiền', 
+                    render: (row) => <span style={{color: 'var(--gold)', fontWeight: 600}}>{new Intl.NumberFormat('vi-VN').format(row.totalPrice)}₫</span>
+                },
+                { 
+                    key: 'status', 
+                    label: 'Trạng Thái', 
+                    render: (row) => (
+                        <span className={`badge badge-${row.status?.toLowerCase()}`}>{row.status}</span>
+                    )
+                },
+                { 
+                    key: 'actions', 
+                    label: 'Hành Động',
+                    sortable: false,
+                    render: (row) => (
+                        <form action="/admin/orders/update-status" method="post" style={{display: 'flex', alignItems: 'center', gap: '5px'}}>
+                            <input type="hidden" name="orderId" value={row.id} />
+                            <select name="status" defaultValue={row.status} style={{background: 'var(--mid)', color: 'white', border: '1px solid rgba(201,168,76,0.2)', padding: '0.4rem', borderRadius: '4px'}}>
+                                <option value="PENDING">Chờ xử lý</option>
+                                <option value="PAID">Đã thanh toán</option>
+                                <option value="SHIPPING">Đang giao</option>
+                                <option value="COMPLETED">Hoàn thành</option>
+                                <option value="CANCELLED">Đã hủy</option>
+                            </select>
+                            <button type="submit" className="update-btn">Cập Nhật</button>
+                        </form>
+                    )
+                }
+            ];
+
+            return (
+                <React.Fragment>
+                    <AdminSidebar active="orders" />
+                    <div className="main-content">
+                        <AdminHeader title={`Quản Lý Đơn Hàng (${data.length} đơn hàng)`} username={window.INITIAL_DATA.username} />
+                        
+                        <div className="card">
+                            <DataGrid columns={columns} data={data} searchPlaceholder="Tìm kiếm ID, tên khách hàng..." itemsPerPage={10} />
+                        </div>
+                    </div>
+                </React.Fragment>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    
+/*]]>*/
+</script>
+</body>
+</html>
+
+

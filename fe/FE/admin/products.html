@@ -1,0 +1,186 @@
+﻿<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Sản Phẩm — Luxury PC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/admin/admin-global.css}">
+
+    <!-- React & Babel -->
+    <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.6/babel.min.js"></script>
+
+    <style>
+        .add-form-container { display: none; }
+        .add-form-container.active { display: block; animation: slideDown 0.3s ease;}
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px);} to { opacity: 1; transform: translateY(0);}}
+    </style>
+
+    <script th:inline="javascript">
+        window.INITIAL_DATA = {
+            products: /*[[${products}]]*/ [],
+            categories: /*[[${categories}]]*/ [],
+            product: /*[[${product}]]*/ {},
+            username: /*[[${#authentication.name}]]*/ 'Admin'
+        };
+    </script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel" th:src="@{/js/react/AdminComponents.jsx}"></script>
+
+    <script type="text/babel">
+/*<![CDATA[*/
+        function ProductForm({ product, categories, onClose }) {
+            const isEdit = !!product?.id;
+            return (
+                <div className="card active" style={{ animation: 'slideDown 0.3s ease' }}>
+                    <div className="card-header">
+                        <h2>{isEdit ? 'Cập Nhật Sản Phẩm' : 'Thêm Sản Phẩm Mới'}</h2>
+                        <button className="icon-btn icon-btn-del" onClick={onClose} title="Thoát">
+                            <i className="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                    <form action="/admin/products/save" method="post" encType="multipart/form-data">
+                        <input type="hidden" name="id" defaultValue={product?.id || ''} />
+                        <div className="form-grid">
+                            <div className="input-group full">
+                                <label>Tên Sản Phẩm *</label>
+                                <input type="text" name="name" required defaultValue={product?.name || ''} placeholder="VD: Card Màn Hình ASUS ROG Strix GeForce RTX 4090" />
+                            </div>
+                            <div className="input-group">
+                                <label>Giá Bán (VNĐ) *</label>
+                                <input type="number" name="price" required defaultValue={product?.price || ''} placeholder="VD: 54990000" />
+                            </div>
+                            <div className="input-group">
+                                <label>Danh Mục *</label>
+                                <select name="category.id" required defaultValue={product?.category?.id || ''}>
+                                    <option value="">-- Chọn danh mục --</option>
+                                    {categories.map(cat => (
+                                        <option key={cat.id} value={cat.id}>{cat.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="input-group full">
+                                <label>Mô Tả Nhanh</label>
+                                <textarea name="description" rows="3" defaultValue={product?.description || ''} placeholder="Mô tả kỹ thuật ..."></textarea>
+                            </div>
+                            <div className="input-group">
+                                <label>Tải Ảnh Lên</label>
+                                <input type="file" name="imageFile" accept="image/*" />
+                            </div>
+                            <div className="input-group">
+                                <label>Số lượng kho</label>
+                                <input type="number" name="stock" defaultValue={product?.stock || 0} />
+                            </div>
+                            {product?.image && (
+                                <div className="input-group full">
+                                    <label>Ảnh hiện tại:</label>
+                                    <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                                        <img src={`/images/products/${product.image}`} style={{width:'100px', border:'1px solid var(--gold)', borderRadius:'4px'}} />
+                                        <span style={{fontSize: '0.8rem', color: 'var(--muted)'}}>{product.image}</span>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                        <div style={{marginTop: '2rem', display: 'flex', gap: '10px'}}>
+                            <button type="submit" className="btn btn-gold">Lưu Sản Phẩm</button>
+                            <button type="button" className="btn btn-outline" onClick={onClose}>Hủy / Làm mới</button>
+                        </div>
+                    </form>
+                </div>
+            );
+        }
+
+        function App() {
+            const [showForm, setShowForm] = React.useState(!!window.INITIAL_DATA.product?.id);
+            const data = window.INITIAL_DATA.products || [];
+
+            const columns = [
+                { 
+                    key: 'name', 
+                    label: 'Sản Phẩm', 
+                    render: (row) => (
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <div className="product-img">
+                                {row.image ? <img src={`/images/products/${row.image}`} style={{width:'100%', height:'100%', objectFit:'cover', borderRadius: '4px'}} /> : <i className="fa-solid fa-microchip"></i>}
+                            </div>
+                            <div className="product-info">
+                                <div className="product-name">{row.name}</div>
+                                <div className="product-cat">ID: {row.id}</div>
+                            </div>
+                        </div>
+                    )
+                },
+                { 
+                    key: 'category', 
+                    label: 'Danh Mục', 
+                    render: (row) => row.category?.name || 'Chưa phân loại'
+                },
+                { 
+                    key: 'price', 
+                    label: 'Giá Bán', 
+                    render: (row) => <span style={{color: 'var(--gold)', fontWeight: 600}}>{new Intl.NumberFormat('vi-VN').format(row.price)}₫</span>
+                },
+                { key: 'stock', label: 'Kho' },
+                { 
+                    key: 'actions', 
+                    label: 'Thao Tác',
+                    sortable: false,
+                    render: (row) => (
+                        <div className="action-btns">
+                            <a href={`/admin/products/edit/${row.id}`} className="icon-btn icon-btn-edit" title="Sửa"><i className="fa-solid fa-pen"></i></a>
+                            <a href={`/admin/products/delete/${row.id}`} className="icon-btn icon-btn-del" title="Xóa" onClick={(e) => {if(!confirm('Xóa sản phẩm này?')) e.preventDefault()}}><i className="fa-solid fa-trash"></i></a>
+                        </div>
+                    )
+                }
+            ];
+
+            return (
+                <React.Fragment>
+                    <AdminSidebar active="products" />
+                    <div className="main-content">
+                        <AdminHeader title={`Quản Lý Sản Phẩm (${data.length})`} username={window.INITIAL_DATA.username} />
+                        
+                        <div style={{ marginBottom: '1.5rem' }}>
+                            {!showForm && (
+                                <button className="btn btn-gold" onClick={() => setShowForm(true)}>
+                                    <i className="fa-solid fa-plus"></i> Thêm Sản Phẩm Mới
+                                </button>
+                            )}
+                        </div>
+
+                        {showForm && (
+                            <ProductForm 
+                                product={window.INITIAL_DATA.product} 
+                                categories={window.INITIAL_DATA.categories} 
+                                onClose={() => {
+                                    setShowForm(false);
+                                    if(window.INITIAL_DATA.product?.id) {
+                                        window.location.href = '/admin/products';
+                                    }
+                                }} 
+                            />
+                        )}
+                        
+                        <div className="card">
+                            <DataGrid columns={columns} data={data} searchPlaceholder="Tìm kiếm tên sản phẩm, danh mục..." itemsPerPage={10} />
+                        </div>
+                    </div>
+                </React.Fragment>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    
+/*]]>*/
+</script>
+</body>
+</html>
+
+

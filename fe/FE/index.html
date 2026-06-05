@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Luxury PC | Công Nghệ Cao Cấp & Xa Xỉ</title>
+    <meta name="description" content="Luxury PC — Nơi công nghệ gặp gỡ sự xa xỉ. Linh kiện máy tính cao cấp nhất, được chọn lọc kỹ lưỡng dành cho người dùng tinh tế." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="./logo.png" />
+    <link rel="stylesheet" href="./css/style.css" />
+</head>
+
+<body>
+    <!-- LOADING SCREEN -->
+    <div class="loader" id="loader">
+        <div class="loader-inner">
+            <div class="loader-logo">LUXURY </div>
+            <div class="loader-line"></div>
+            <div class="loader-text">PC</div>
+        </div>
+    </div>
+    <!-- CURSOR -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-follower" id="cursor-follower"></div>
+
+    <!-- NAVIGATION -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-left">
+            <a href="./all-products.html" class="nav-link" id="nav-linh-kien">Sản Phẩm</a>
+            <a href="./build-pc.html" class="nav-link" id="nav-build-pc">Build PC</a>
+            <a href="#" class="nav-link" id="nav-khuyen-mai">Khuyến Mãi</a>
+        </div>
+        <div class="nav-logo">
+            <a href="./index.html" style="text-decoration:none; color:inherit; display:flex; align-items:center; gap: inherit;">
+                <span class="logo-Luxury">LUXURY</span>
+                <div class="logo-divider"></div>
+                <span class="logo-pc">PC</span>
+            </a>
+        </div>
+        <div class="nav-right">
+            <a href="#" class="nav-link" id="nav-tin-tuc">Tin Tức</a>
+            <a href="#" class="nav-link" id="nav-lien-he">Liên Hệ</a>
+            <a sec:authorize="hasRole('ADMIN')" href="./admin/dashboard.html" class="nav-link">ADMIN</a>
+            <a sec:authorize="isAnonymous()" href="./account/auth.html" class="nav-link">ĐĂNG NHẬP</a>
+            <a sec:authorize="isAuthenticated()" href="./account/profile.html" class="nav-link">HỒ SƠ</a>
+            <button class="nav-search-btn" id="nav-search-btn" aria-label="Tìm kiếm">⌕</button>
+            <button class="nav-cart" id="nav-cart" aria-label="Giỏ hàng">
+                <span class="cart-icon">⊡</span>
+                <span class="cart-count" id="cart-count" th:text="${cartCount}">0</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- SEARCH OVERLAY -->
+    <div class="search-overlay" id="search-overlay">
+        <div class="search-overlay-inner">
+            <div class="search-close-row">
+                <span class="search-brand">LUXURY · PC</span>
+                <button class="search-close" id="search-close" aria-label="Đóng tìm kiếm">✕</button>
+            </div>
+            <div class="search-input-wrap">
+                <span class="search-icon-big">⌕</span>
+                <input type="text" id="search-input" class="search-input" placeholder="Tìm kiếm linh kiện, thương hiệu..." autocomplete="off" aria-label="Tìm kiếm sản phẩm" />
+                <button class="search-clear" id="search-clear" aria-label="Xóa">✕</button>
+            </div>
+            <div class="search-tags">
+                <span class="search-tag-label">Tìm nhanh:</span>
+                <button class="search-tag" data-query="CPU Intel">CPU Intel</button>
+                <button class="search-tag" data-query="RTX 4090">RTX 4090</button>
+                <button class="search-tag" data-query="DDR5">DDR5 RAM</button>
+                <button class="search-tag" data-query="SSD NVMe">SSD NVMe</button>
+                <button class="search-tag" data-query="Màn hình OLED">Màn Hình OLED</button>
+                <button class="search-tag" data-query="Nguồn PSU">Nguồn PSU</button>
+            </div>
+            <div class="search-results" id="search-results">
+                <p class="search-hint">Nhập từ khóa để tìm kiếm sản phẩm tại Luxury PC.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- HERO SECTION -->
+    <section class="hero" id="hero">
+        <!-- <div class="hero-bg">
+            <img th:src="@{/hero_banner.png}" alt="Luxury PC" class="hero-img" id="hero-img" />
+            <div class="hero-overlay"></div>
+        </div> -->
+        <div class="hero-content">
+
+            <h1 class="hero-title">Được Tạo Ra<br /><em>Để Thống Trị</em></h1>
+            <p class="hero-subtitle">Linh kiện máy tính được tuyển chọn dành cho những người không chấp nhận điều tầm thường.</p>
+            <div class="hero-cta">
+                <a href="#products" class="btn-primary" id="hero-explore"><span>Khám Phá Ngay</span></a>
+                <a href="#build" class="btn-secondary" id="hero-build"><span>Build PC Của Bạn</span></a>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- FLASH SALE -->
+    <section class="flash-sale" id="flash-sale">
+        <div class="flash-sale-inner">
+            <div class="flash-sale-left">
+                <div class="flash-badge">🔥 HOT DEAL</div>
+                <h2 class="flash-title" th:if="${flashSale != null}">
+                    <span th:text="${flashSale.name}">Flash Sale</span>
+                </h2>
+                <h2 class="flash-title" th:if="${flashSale == null}">Flash Sale
+                    <span class="flash-title-accent">Hôm Nay</span>
+                </h2>
+                <p class="flash-sub">Ưu đãi cực sốc — số lượng có hạn!</p>
+                <div class="flash-countdown" id="flash-countdown">
+                    <div class="countdown-block">
+                        <span class="countdown-num" id="fs-hours">00</span>
+                        <span class="countdown-label">Giờ</span>
+                    </div>
+                    <div class="countdown-sep">:</div>
+                    <div class="countdown-block">
+                        <span class="countdown-num" id="fs-minutes">00</span>
+                        <span class="countdown-label">Phút</span>
+                    </div>
+                    <div class="countdown-sep">:</div>
+                    <div class="countdown-block">
+                        <span class="countdown-num" id="fs-seconds">00</span>
+                        <span class="countdown-label">Giây</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flash-products">
+                <!-- Flash Sale items from database campaign -->
+                <div th:if="${flashSaleItems != null}" th:each="item : ${flashSaleItems}" class="flash-product-card" th:id="'fp-' + ${item.product.id}">
+                    <div class="flash-discount-badge" th:text="'-' + ${item.discountPercent} + '%'">-25%</div>
+                    <div class="flash-prod-img">
+                        <img th:src="@{${item.product.image != null ? (item.product.image.startsWith('http') ? item.product.image : '/images/products/' + item.product.image) : '/images/placeholder.png'}}" th:alt="${item.product.name}" />
+                    </div>
+                    <div class="flash-prod-info">
+                        <div class="flash-prod-name" th:text="${item.product.name}">Core i7-14700K</div>
+                        <div class="flash-prod-prices">
+                            <span class="flash-old-price" th:text="${#numbers.formatDecimal(item.product.price, 0, 'COMMA', 0, 'POINT')} + '₫'" style="text-decoration:line-through;color:var(--muted);font-size:.8rem;margin-right:6px;">15.000.000₫</span>
+                            <span class="flash-new-price" th:text="${#numbers.formatDecimal(item.salePrice, 0, 'COMMA', 0, 'POINT')} + '₫'">11.475.000₫</span>
+                        </div>
+                        <div style="margin-top:6px;">
+                            <div style="width:100%;height:4px;background:rgba(201,168,76,0.15);border-radius:2px;overflow:hidden;">
+                                <div style="height:100%;background:var(--gold);border-radius:2px;transition:.3s;" th:style="'width:' + ${item.soldPercent} + '%'"></div>
+                            </div>
+                            <div style="font-size:.65rem;color:var(--muted);margin-top:3px;" th:text="'Đã bán ' + ${item.soldCount} + '/' + ${item.saleQuantity}">Đã bán 5/50</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Fallback: old flash sale products (stock < 10) -->
+                <div th:if="${flashSaleItems == null and flashSaleProducts != null}" th:each="p : ${flashSaleProducts}" class="flash-product-card" th:id="'fp-' + ${p.id}">
+                    <div th:if="${p.stock < 10}" class="flash-discount-badge" th:text="'Sắp hết!'">Sắp hết!</div>
+                    <div class="flash-prod-img">
+                        <img th:src="@{${p.image != null ? (p.image.startsWith('http') ? p.image : '/images/products/' + p.image) : '/images/placeholder.png'}}" th:alt="${p.name}" />
+                    </div>
+                    <div class="flash-prod-info">
+                        <div class="flash-prod-name" th:text="${p.name}">Core i7-14700K</div>
+                        <div class="flash-prod-prices">
+                            <span class="flash-new-price" th:text="${#numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT')} + '₫'">11.475.000₫</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INTRO STATEMENT -->
+    <section class="statement">
+        <div class="statement-inner">
+            <div class="statement-line"></div>
+            <p class="statement-text">
+                "Chúng tôi không bán linh kiện. Chúng tôi bán trải nghiệm hiệu năng <em>vượt mọi giới hạn</em>."
+            </p>
+            <div class="statement-line"></div>
+        </div>
+    </section>
+
+    <!-- CATEGORIES -->
+    <section class="categories" id="categories">
+        <div class="section-header">
+            <span class="section-label">Danh Mục</span>
+            <h2 class="section-title">Chọn Dòng Linh Kiện</h2>
+        </div>
+        <div class="cat-grid">
+            <div class="cat-card" id="cat-cpu" data-cat="cpu">
+                <div class="cat-num">01</div>
+                <div class="cat-name">CPU</div>
+                <div class="cat-desc">Bộ vi xử lý</div>
+                <div class="cat-arrow">→</div>
+            </div>
+            <div class="cat-card" id="cat-vga" data-cat="vga">
+                <div class="cat-num">02</div>
+                <div class="cat-name">VGA</div>
+                <div class="cat-desc">Card màn hình</div>
+                <div class="cat-arrow">→</div>
+            </div>
+            <div class="cat-card" id="cat-mainboard" data-cat="mainboard">
+                <div class="cat-num">03</div>
+                <div class="cat-name">Mainboard</div>
+                <div class="cat-desc">Bo mạch chủ</div>
+                <div class="cat-arrow">→</div>
+            </div>
+            <div class="cat-card" id="cat-ram" data-cat="ram">
+                <div class="cat-num">04</div>
+                <div class="cat-name">RAM</div>
+                <div class="cat-desc">Bộ nhớ trong</div>
+                <div class="cat-arrow">→</div>
+            </div>
+            <div class="cat-card" id="cat-ssd" data-cat="ssd">
+                <div class="cat-num">05</div>
+                <div class="cat-name">SSD / HDD</div>
+                <div class="cat-desc">Lưu trữ cao tốc</div>
+                <div class="cat-arrow">→</div>
+            </div>
+            <div class="cat-card" id="cat-monitor" data-cat="monitor">
+                <div class="cat-num">06</div>
+                <div class="cat-name">Màn Hình</div>
+                <div class="cat-desc">Display premium</div>
+                <div class="cat-arrow">→</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURED PRODUCTS -->
+    <section class="products" id="products">
+        <div class="section-header">
+            <span class="section-label">Tuyển Chọn</span>
+            <h2 class="section-title">Linh Kiện Nổi Bật</h2>
+        </div>
+
+        <!-- FILTER & SORT BAR -->
+        <div class="filter-bar" id="filter-bar">
+            <!-- Category Filter -->
+            <div class="filter-group" id="filter-cats">
+                <span class="filter-group-label">Danh Mục</span>
+                <div class="filter-chips">
+                    <button class="filter-chip active" data-cat="all" id="fcat-all">Tất Cả</button>
+                    <button class="filter-chip" data-cat="cpu" id="fcat-cpu">CPU</button>
+                    <button class="filter-chip" data-cat="vga" id="fcat-vga">VGA</button>
+                    <button class="filter-chip" data-cat="ram" id="fcat-ram">RAM</button>
+                    <button class="filter-chip" data-cat="mainboard" id="fcat-mainboard">Mainboard</button>
+                    <button class="filter-chip" data-cat="monitor" id="fcat-monitor">Màn Hình</button>
+                </div>
+            </div>
+
+            <!-- Sort Options -->
+            <div class="filter-sort" id="filter-sort">
+                <span class="filter-group-label">Sắp Xếp</span>
+                <div class="sort-select-wrap">
+                    <select class="sort-select" id="sort-select" aria-label="Sắp xếp sản phẩm">
+                        <option value="default">Mặc Định</option>
+                        <option value="price-asc">Giá: Thấp → Cao</option>
+                        <option value="price-desc">Giá: Cao → Thấp</option>
+                        <option value="popular">Mua Nhiều Nhất</option>
+                        <option value="newest">Mới Nhất</option>
+                    </select>
+                    <span class="sort-arrow">▾</span>
+                </div>
+            </div>
+
+            <!-- Result count -->
+            <div class="filter-result-count">
+                <span class="result-num" id="result-count" th:text="${featuredProducts.size()}">5</span>
+                <span class="result-label">sản phẩm</span>
+            </div>
+        </div>
+
+        <div class="products-grid" id="products-grid">
+            <!-- Featured products from database -->
+            <article th:each="p : ${featuredProducts}" class="product-card" th:classappend="${p.price > 20000000 ? 'large' : ''}" th:id="'prod-' + ${p.id}" th:data-price="${p.price}" th:data-cat="${p.category.name.toLowerCase()}" onclick="location.href='./product-detail.html'" style="cursor: pointer;">
+                <div class="product-img-wrap">
+                    <img th:src="@{${p.image != null ? (p.image.startsWith('http') ? p.image : '/images/products/' + p.image) : '/images/placeholder.png'}}" th:alt="${p.name}" class="product-img" />
+                    <div th:if="${p.price > 30000000}" class="product-badge gold" th:text="'Đỉnh Cao'">Đỉnh Cao</div>
+                    <button class="product-wishlist" aria-label="Yêu thích">♡</button>
+                </div>
+                <div class="product-info">
+                    <span class="product-cat" th:text="${p.category.name} + ' · LUXURY'">CPU · Intel</span>
+                    <h3 class="product-name" th:text="${p.name}">Core i9-14900K</h3>
+                    <p class="product-spec" th:text="${p.description}">Description</p>
+                    <div class="product-price-row">
+                        <span class="product-price" th:text="${#numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT')} + '₫'">18.990.000₫</span>
+                        <button class="btn-add-cart" th:data-id="${p.id}" th:data-name="${p.name}" th:data-price="${p.price}"><span>Thêm Vào Giỏ</span></button>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- VOUCHERS -->
+    <section class="vouchers-section" id="vouchers">
+        <div class="section-header">
+            <span class="section-label">Ưu Đãi</span>
+            <h2 class="section-title">Mã Khuyến Mãi</h2>
+            <p class="voucher-section-sub">Nhấn vào voucher để xem chi tiết điều kiện và cách sử dụng.</p>
+        </div>
+        <div class="voucher-grid">
+            <!-- Dynamic vouchers from database -->
+            <div th:each="v : ${activeVouchers}" class="voucher-card" th:id="'vc-' + ${v.code}" th:data-voucher="${v.code}"
+                 th:data-desc="${v.description}"
+                 th:data-apply="${v.category != null ? v.category.name : 'Tất cả sản phẩm'}"
+                 th:data-expire="${v.endDate != null ? #dates.format(v.endDate, 'dd/MM/yyyy') : 'Không giới hạn'}"
+                 th:data-limit="${v.usageLimit != null ? (v.usageLimit - v.usedCount) + ' lượt còn lại' : 'Không giới hạn'}">
+                <div class="voucher-left">
+                    <div class="voucher-pct">
+                        <span th:if="${v.discountType.name() == 'PERCENTAGE'}" th:text="${v.discountValue.intValue()} + '%'">10%</span>
+                        <span th:if="${v.discountType.name() == 'FIXED_AMOUNT'}" th:text="${#numbers.formatDecimal(v.discountValue / 1000, 0, 'COMMA', 0, 'POINT')} + 'K'">500K</span>
+                    </div>
+                    <div class="voucher-type" th:text="${v.category != null ? v.category.name : 'Giảm Giá'}">Giảm Giá</div>
+                </div>
+                <div class="voucher-right">
+                    <div class="voucher-code" th:text="${v.code}">LUXURY10</div>
+                    <div class="voucher-desc" th:text="${v.description}">Giảm 10% cho tất cả đơn hàng</div>
+                    <div class="voucher-tag" th:text="${v.minOrderAmount != null ? 'Đơn ≥ ' + #numbers.formatDecimal(v.minOrderAmount, 0, 'COMMA', 0, 'POINT') + '₫' : 'Tất cả đơn hàng'}">Tất cả sản phẩm</div>
+                </div>
+                <div class="voucher-scissor">✂</div>
+                <div class="voucher-dots"></div>
+            </div>
+
+            <!-- Empty state if no vouchers -->
+            <div th:if="${activeVouchers == null or activeVouchers.isEmpty()}" style="grid-column: span 3; text-align:center; padding:2rem; color:var(--muted);">
+                <p>Hiện chưa có mã khuyến mãi nào. Hãy quay lại sau!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- BUILD PC SECTION -->
+    <section class="build-section" id="build">
+        <div class="build-bg"></div>
+        <div class="build-content">
+            <span class="section-label light">Dịch Vụ</span>
+            <h2 class="build-title">Build PC<br /><em>Theo Yêu Cầu</em></h2>
+            <p class="build-desc">
+                Đội ngũ chuyên gia của Luxury PC sẽ tư vấn và lắp ráp hệ thống hoàn hảo nhất dành riêng cho bạn — từ workstation đồ họa đến chiến mã gaming không đối thủ.
+            </p>
+            <div class="build-features">
+                <div class="build-feat">
+                    <div class="feat-icon">◈</div>
+                    <div class="feat-text">
+                        <strong>Tư Vấn Miễn Phí</strong>
+                        <span>Chuyên gia phân tích nhu cầu của bạn</span>
+                    </div>
+                </div>
+                <div class="build-feat">
+                    <div class="feat-icon">◈</div>
+                    <div class="feat-text">
+                        <strong>Lắp Ráp Chuyên Nghiệp</strong>
+                        <span>Lắp ráp trong phòng sạch, kiểm tra 100%</span>
+                    </div>
+                </div>
+                <div class="build-feat">
+                    <div class="feat-icon">◈</div>
+                    <div class="feat-text">
+                        <strong>Bảo Hành 3 Năm</strong>
+                        <span>Cam kết chất lượng đẳng cấp hàng đầu</span>
+                    </div>
+                </div>
+            </div>
+            <a href="#" class="btn-primary" id="btn-build-pc"><span>Bắt Đầu Build Ngay</span></a>
+        </div>
+    </section>
+
+    <!-- STATS SECTION -->
+    <section class="stats">
+        <div class="stat-item">
+            <div class="stat-num" data-target="15000">0</div>
+            <div class="stat-label">Khách Hàng Tin Tưởng</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+            <div class="stat-num" data-target="500">0</div>
+            <div class="stat-label">Linh Kiện Chính Hãng</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+            <div class="stat-num" data-target="10">0</div>
+            <div class="stat-label">Năm Kinh Nghiệm</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+            <div class="stat-num" data-target="99">0</div>
+            <div class="stat-label">% Khách Hàng Hài Lòng</div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="testimonials" id="testimonials">
+        <div class="section-header">
+            <span class="section-label">Đánh Giá</span>
+            <h2 class="section-title">Khách Hàng Nói Gì</h2>
+        </div>
+        <div class="testi-slider" id="testi-slider">
+            <div th:each="rev, iter : ${reviews}" class="testi-card" th:classappend="${iter.index == 0 ? 'active' : ''}" th:id="|testi-${rev.id}|">
+                <div class="testi-stars" th:text="${'★'.repeat(rev.stars)}">★★★★★</div>
+                <p class="testi-text" th:text="|&quot;${rev.content}&quot;|">"Content"</p>
+                <div class="testi-author">
+                    <div class="testi-avatar" th:text="${#strings.substring(rev.user.fullName,0,1)}">U</div>
+                    <div>
+                        <strong th:text="${rev.user.fullName}">User Name</strong>
+                        <span th:text="${rev.user.email}">user@email.com</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Default if no reviews -->
+            <div th:if="${#lists.isEmpty(reviews)}" class="testi-card active">
+                <div class="testi-stars">★★★★★</div>
+                <p class="testi-text">"Trải nghiệm tuyệt vời tại Luxury PC."</p>
+                <div class="testi-author">
+                    <div class="testi-avatar">LP</div>
+                    <div>
+                        <strong>Khách Hàng Luxury</strong>
+                        <span>Luxury PC Member</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="testi-dots" th:if="${not #lists.isEmpty(reviews)}">
+            <button th:each="rev, iter : ${reviews}" class="dot-btn" th:classappend="${iter.index == 0 ? 'active' : ''}" th:data-idx="${iter.index}"></button>
+        </div>
+    </section>
+
+    <!-- NEWSLETTER -->
+    <section class="newsletter">
+        <div class="newsletter-inner">
+            <h2 class="newsletter-title">Nhận Ưu Đãi <em>Độc Quyền</em></h2>
+            <p class="newsletter-sub">Đăng ký để nhận thông báo giảm giá, sản phẩm mới nhất và lời khuyên build PC từ chuyên gia.</p>
+            <form class="newsletter-form" id="newsletter-form">
+                <input type="email" id="newsletter-email" placeholder="Email của bạn..." required aria-label="Email đăng ký" />
+                <button type="submit" id="newsletter-submit">Đăng Ký</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-top">
+            <div class="footer-brand">
+                <div class="footer-logo">LUXURY · PC</div>
+                <p>Nơi công nghệ gặp gỡ sự xa xỉ. Linh kiện cao cấp, tư vấn chuyên nghiệp, dịch vụ hoàn hảo.</p>
+            </div>
+            <div class="footer-links-group">
+                <h4>Linh Kiện</h4>
+                <ul>
+                    <li><a href="#">CPU & Bộ Xử Lý</a></li>
+                    <li><a href="#">VGA & Card Đồ Họa</a></li>
+                    <li><a href="#">Mainboard</a></li>
+                    <li><a href="#">RAM & Bộ Nhớ</a></li>
+                    <li><a href="#">SSD & Lưu Trữ</a></li>
+                </ul>
+            </div>
+            <div class="footer-links-group">
+                <h4>Dịch Vụ</h4>
+                <ul>
+                    <li><a href="#">Build PC Theo Yêu Cầu</a></li>
+                    <li><a href="#">Tư Vấn Cấu Hình</a></li>
+                    <li><a href="#">Bảo Hành & Sửa Chữa</a></li>
+                    <li><a href="#">Nâng Cấp Hệ Thống</a></li>
+                    <li><a href="#">PC Gaming Cao Cấp</a></li>
+                </ul>
+            </div>
+            <div class="footer-links-group">
+                <h4>Liên Hệ</h4>
+                <ul>
+                    <li><a href="#">📍 123 Nguyễn Huệ, Q1, TP.HCM</a></li>
+                    <li><a href="#">📞 1800-LUXURY</a></li>
+                    <li><a href="#">✉️ hello@luxurypc.vn</a></li>
+                    <li><a href="#">🕐 T2–CN: 9:00 – 21:00</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Luxury PC. Tất cả quyền được bảo lưu. Bản quyền thuộc Luxury Technology JSC.</p>
+            <div class="footer-social">
+                <a href="#" id="social-fb" aria-label="Facebook">f</a>
+                <a href="#" id="social-yt" aria-label="YouTube">▶</a>
+                <a href="#" id="social-tt" aria-label="TikTok">♪</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- CART DRAWER -->
+    <div class="cart-drawer" id="cart-drawer">
+        <div class="cart-header">
+            <h3>Giỏ Hàng</h3>
+            <button class="cart-close" id="cart-close" aria-label="Đóng giỏ hàng">✕</button>
+        </div>
+        <div class="cart-items" id="cart-items">
+            <p class="cart-empty">Giỏ hàng của bạn đang trống.</p>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total-row">
+                <span>Tổng cộng</span>
+                <span class="cart-total" id="cart-total">0₫</span>
+            </div>
+            <button class="btn-primary full" id="btn-checkout"><span>Thanh Toán Ngay</span></button>
+        </div>
+    </div>
+    <div class="cart-overlay" id="cart-overlay"></div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <!-- VOUCHER MODAL -->
+    <div class="voucher-modal-overlay" id="voucher-modal-overlay">
+        <div class="voucher-modal" id="voucher-modal">
+            <button class="voucher-modal-close" id="voucher-modal-close" aria-label="Đóng">✕</button>
+            <div class="vmodal-badge" id="vmodal-badge">Giảm Giá</div>
+            <div class="vmodal-pct" id="vmodal-pct">10%</div>
+            <div class="vmodal-code-wrap">
+                <span class="vmodal-code-label">Mã Voucher</span>
+                <div class="vmodal-code" id="vmodal-code">LUXURY10</div>
+            </div>
+            <div class="vmodal-divider"></div>
+            <div class="vmodal-info">
+                <div class="vmodal-row">
+                    <span class="vmodal-key">Ưu đãi</span>
+                    <span class="vmodal-val" id="vmodal-desc">Giảm 10% cho tất cả đơn hàng</span>
+                </div>
+                <div class="vmodal-row">
+                    <span class="vmodal-key">Áp dụng</span>
+                    <span class="vmodal-val" id="vmodal-apply">Tất cả sản phẩm</span>
+                </div>
+                <div class="vmodal-row">
+                    <span class="vmodal-key">Thời hạn</span>
+                    <span class="vmodal-val" id="vmodal-expire">31/03/2026</span>
+                </div>
+                <div class="vmodal-row">
+                    <span class="vmodal-key">Lượt dùng</span>
+                    <span class="vmodal-val" id="vmodal-limit">Không giới hạn</span>
+                </div>
+            </div>
+            <button class="vmodal-copy-btn" id="vmodal-copy-btn">Sao Chép Mã Voucher</button>
+            <div class="vmodal-note">Nhập mã tại bước thanh toán để áp dụng ưu đãi.</div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        // Flash Sale countdown - endTime from database
+        window.flashSaleEndTime = /*[[${flashSaleEndTime}]]*/ 0;
+    </script>
+    <script src="./js/script.js"></script>
+</body>
+
+</html>

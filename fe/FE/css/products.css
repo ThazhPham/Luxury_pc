@@ -1,0 +1,4 @@
+body { padding-top: 80px; }
+        .products { padding: 4rem 6rem; min-height: 80vh; }
+        .nav-logo-link { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .nav-logo-link:hover { opacity: 0.9; }

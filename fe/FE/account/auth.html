@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Luxury PC — Đăng Nhập / Đăng Ký</title>
+  <meta name="description"
+    content="Đăng nhập hoặc tạo tài khoản Luxury PC để trải nghiệm mua sắm linh kiện đẳng cấp." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="../css/account/auth.css" />
+</head>
+
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-f" id="cursor-f"></div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a href="../index.html" class="nav-logo">Luxury <span>PC</span></a>
+    <a href="../index.html" class="nav-back">← Quay về trang chủ</a>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="auth-page">
+
+    <!-- LEFT: Brand panel -->
+    <div class="auth-visual">
+      <div class="av-tag">Thành Viên Luxury PC</div>
+      <h1 class="av-title">Gia Nhập<br /><em>Đẳng Cấp</em></h1>
+      <p class="av-sub">Tạo tài khoản để nhận ưu đãi độc quyền, theo dõi đơn hàng và trải nghiệm dịch vụ hội viên cao
+        cấp.</p>
+      <div class="av-perks">
+        <div class="av-perk">
+          <span class="av-perk-icon">◈</span>
+          <span class="av-perk-text">Ưu đãi thành viên lên đến 20%</span>
+        </div>
+        <div class="av-perk">
+          <span class="av-perk-icon">◈</span>
+          <span class="av-perk-text">Theo dõi đơn hàng thời gian thực</span>
+        </div>
+        <div class="av-perk">
+          <span class="av-perk-icon">◈</span>
+          <span class="av-perk-text">Tư vấn build PC ưu tiên 24/7</span>
+        </div>
+        <div class="av-perk">
+          <span class="av-perk-icon">◈</span>
+          <span class="av-perk-text">Danh sách yêu thích cá nhân hóa</span>
+        </div>
+      </div>
+      <div class="av-deco">A</div>
+    </div>
+
+    <!-- RIGHT: Form -->
+    <div class="auth-form-panel">
+      <div class="auth-form-wrap">
+
+        <!-- Tabs -->
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Đăng Nhập</button>
+          <button class="auth-tab" id="tab-register" onclick="switchTab('register')">Đăng Ký</button>
+        </div>
+
+        <!-- =========== LOGIN FORM =========== -->
+        <form class="auth-form active" id="form-login" action="/login" method="post">
+
+          <div class="form-title">Chào mừng trở lại</div>
+          <div class="form-sub">Đăng nhập để tiếp tục trải nghiệm Luxury PC.</div>
+
+          <div class="form-group">
+            <label class="form-label" for="login-username">Email hoặc Tên đăng nhập</label>
+            <div class="form-input-wrap">
+              <input type="text" name="username" id="login-username" class="form-input" placeholder="Email hoặc username"
+                autocomplete="username" />
+            </div>
+            <span class="form-error" id="err-login-username">Vui lòng nhập thông tin đăng nhập.</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="login-pw">Mật khẩu</label>
+            <div class="form-input-wrap">
+              <input type="password" name="password" id="login-pw" class="form-input" placeholder="••••••••"
+                autocomplete="current-password" />
+              <button type="button" class="form-eye" tabindex="-1" onclick="togglePw('login-pw', this)">👁</button>
+            </div>
+            <span class="form-error" name="password" id="err-login-pw">Vui lòng nhập mật khẩu.</span>
+          </div>
+
+          <div class="form-check">
+            <input type="checkbox" id="remember" />
+            <label class="form-check-label" for="remember">Ghi nhớ đăng nhập trong 30 ngày</label>
+          </div>
+
+          <div class="forgot-link"><a href="./forgot-password.html">Quên mật khẩu?</a></div>
+
+          <button type="submit" class="btn-gold">
+            <span class="btn-gold-inner">Đăng Nhập</span>
+          </button>
+
+          <div class="form-divider">hoặc</div>
+
+          <div class="social-row">
+            <a href="/oauth2/authorization/google" class="social-btn" style="text-decoration: none;">
+              <span>G</span> Google
+            </a>
+            <a href="/oauth2/authorization/facebook" class="social-btn" style="text-decoration: none;">
+              <span>f</span> Facebook
+            </a>
+          </div>
+        </form>
+
+        <!-- =========== REGISTER FORM =========== -->
+        <form class="auth-form" id="form-register" action="/api/register" method="post">
+
+          <div class="form-title">Tạo tài khoản</div>
+          <div class="form-sub">Điền thông tin để gia nhập cộng đồng Luxury PC.</div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="reg-fname">Họ</label>
+              <input type="text" id="reg-fname" name="firstName" class="form-input" placeholder="Nguyễn"
+                autocomplete="family-name" />
+              <span class="form-error" id="err-fname">Vui lòng nhập họ.</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="reg-lname">Tên</label>
+              <input type="text" name="lastName" id="reg-lname" class="form-input" placeholder="Văn A"
+                autocomplete="given-name" />
+              <span class="form-error" id="err-lname">Vui lòng nhập tên.</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="reg-email">Email</label>
+            <input type="email" id="reg-email" name="email" class="form-input" placeholder="you@email.com"
+              autocomplete="email" required />
+            <span class="form-error" id="err-reg-email">Vui lòng nhập email hợp lệ.</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="reg-phone">Số điện thoại</label>
+            <input type="tel" id="reg-phone" name="phone" class="form-input" placeholder="0901 234 567"
+              autocomplete="tel" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="reg-pw">Mật khẩu</label>
+            <div class="form-input-wrap">
+              <input type="password" id="reg-pw" name="password" class="form-input" placeholder="Tối thiểu 8 ký tự"
+                autocomplete="new-password" oninput="checkStrength(this.value)" />
+              <button type="button" class="form-eye" tabindex="-1" onclick="togglePw('reg-pw', this)">👁</button>
+            </div>
+            <div class="pw-strength">
+              <div class="pw-bars">
+                <div class="pw-bar" id="bar1"></div>
+                <div class="pw-bar" id="bar2"></div>
+                <div class="pw-bar" id="bar3"></div>
+                <div class="pw-bar" id="bar4"></div>
+              </div>
+              <span class="pw-label" id="pw-label">Nhập mật khẩu</span>
+            </div>
+            <span class="form-error" id="err-reg-pw">Mật khẩu tối thiểu 8 ký tự.</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="reg-pw2">Xác nhận mật khẩu</label>
+            <div class="form-input-wrap">
+              <input type="password" id="reg-pw2" class="form-input" placeholder="Nhập lại mật khẩu"
+                autocomplete="new-password" />
+              <button type="button" class="form-eye" tabindex="-1" onclick="togglePw('reg-pw2', this)">👁</button>
+            </div>
+            <span class="form-error" id="err-reg-pw2">Mật khẩu không khớp.</span>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="reg-invite">Mã giới thiệu (Nếu có)</label>
+            <input type="text" id="reg-invite" name="inviteCode" class="form-input" placeholder="không có vui lòng bỏ qua" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="reg-otp">Mã xác nhận (OTP)</label>
+            <div style="display: flex; gap: 10px;">
+              <input type="text" id="reg-otp" name="otp" class="form-input" placeholder="Nhập 6 số" required
+                style="letter-spacing: 0.2rem; text-align: center;" />
+              <button type="button" class="btn-gold" style="width: auto; white-space: nowrap; padding: 0.85rem 1rem;"
+                id="btn-send-otp" onclick="sendOtpCode()"><span class="btn-gold-inner">Gửi Mã</span></button>
+            </div>
+          </div>
+
+          <div class="form-check">
+            <input type="checkbox" id="agree" required />
+            <label class="form-check-label" for="agree">
+              Tôi đồng ý với <a href="#">Điều khoản dịch vụ</a> và <a href="#">Chính sách bảo mật</a> của Luxury PC
+            </label>
+          </div>
+
+          <button type="submit" class="btn-gold">
+            <span class="btn-gold-inner">Tạo Tài Khoản</span>
+          </button>
+
+          <div class="form-divider">hoặc</div>
+          <div class="social-row">
+            <a href="/oauth2/authorization/google" class="social-btn" style="text-decoration: none;">
+              <span>G</span> Google
+            </a>
+            <a href="/oauth2/authorization/facebook" class="social-btn" style="text-decoration: none;">
+              <span>f</span> Facebook
+            </a>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /* ===== CURSOR ===== */
+    const cur = document.getElementById('cursor');
+    const curF = document.getElementById('cursor-f');
+    let mx = 0, my = 0, fx = 0, fy = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cur.style.left = mx + 'px'; cur.style.top = my + 'px'; });
+    (function loop() { fx += (mx - fx) * .12; fy += (my - fy) * .12; curF.style.left = fx + 'px'; curF.style.top = fy + 'px'; requestAnimationFrame(loop); })();
+    document.querySelectorAll('a,button,input,select').forEach(el => {
+      el.addEventListener('mouseenter', () => { cur.style.transform = 'translate(-50%,-50%) scale(2)'; curF.style.width = '60px'; curF.style.height = '60px'; });
+      el.addEventListener('mouseleave', () => { cur.style.transform = 'translate(-50%,-50%) scale(1)'; curF.style.width = '36px'; curF.style.height = '36px'; });
+    });
+
+    /* ===== TABS ===== */
+    function switchTab(tab) {
+      document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+      document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+      document.getElementById('form-login').classList.toggle('active', tab === 'login');
+      document.getElementById('form-register').classList.toggle('active', tab === 'register');
+    }
+
+    /* ===== TOGGLE PASSWORD ===== */
+    function togglePw(id, btn) {
+      const inp = document.getElementById(id);
+      if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
+      else { inp.type = 'password'; btn.textContent = '👁'; }
+    }
+
+    /* ===== PASSWORD STRENGTH ===== */
+    function checkStrength(pw) {
+      const bars = [document.getElementById('bar1'), document.getElementById('bar2'), document.getElementById('bar3'), document.getElementById('bar4')];
+      const label = document.getElementById('pw-label');
+      bars.forEach(b => { b.className = 'pw-bar'; });
+      if (!pw) { label.textContent = 'Nhập mật khẩu'; return; }
+      let score = 0;
+      if (pw.length >= 8) score++;
+      if (/[A-Z]/.test(pw)) score++;
+      if (/[0-9]/.test(pw)) score++;
+      if (/[^A-Za-z0-9]/.test(pw)) score++;
+      const cls = score <= 1 ? 'weak' : score === 2 ? 'medium' : 'strong';
+      const labels = ['', 'Yếu', 'Yếu', 'Trung bình', 'Mạnh'];
+      for (let i = 0; i < score; i++) bars[i].classList.add(cls);
+      label.textContent = labels[score] || '';
+    }
+
+    /* ===== TOAST ===== */
+    let toastT;
+    function toast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg; el.classList.add('show');
+      clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('show'), 3500);
+    }
+
+    /* ===== VALIDATION ===== */
+    function setErr(id, show) {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle('show', show);
+    }
+    function setInputState(inp, state) {
+      inp.classList.remove('error', 'success');
+      if (state) inp.classList.add(state);
+    }
+
+
+    /* ===== SOCIAL ===== */
+    function socialLogin(provider) {
+      toast(`🔗 Đang kết nối với ${provider}... (Tính năng UI demo)`);
+    }
+
+    /* ===== URL PARAMS NOTIFICATION ===== */
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('error')) {
+        toast('Đăng nhập không thành công. Vui lòng kiểm tra lại email hoặc mật khẩu!');
+      } else if (urlParams.has('exist')) {
+        switchTab('register');
+        toast('Email này đã được sử dụng. Vui lòng dùng email khác!');
+      } else if (urlParams.has('phoneExist')) {
+        switchTab('register');
+        toast('Số điện thoại này đã được sử dụng. Vui lòng dùng số điện thoại khác!');
+      } else if (urlParams.has('invalidEmail')) {
+        switchTab('register');
+        toast('Vui lòng sử dụng địa chỉ email hợp lệ!');
+      } else if (urlParams.has('invalidOtp')) {
+        switchTab('register');
+        toast('Mã OTP không chính xác hoặc đã hết hạn!');
+      } else if (urlParams.has('success')) {
+        switchTab('login');
+        toast('Tạo tài khoản thành công! Bây giờ bạn có thể đăng nhập.');
+      }
+    });
+
+    /* ===== FRONTEND VALIDATION ===== */
+    document.getElementById('form-register').addEventListener('submit', function (e) {
+      const email = document.getElementById('reg-email').value;
+      const phone = document.getElementById('reg-phone').value;
+      const pw1 = document.getElementById('reg-pw').value;
+      const pw2 = document.getElementById('reg-pw2').value;
+      const inviteCode = document.getElementById('reg-invite').value;
+
+      if (pw1 !== pw2) {
+        e.preventDefault();
+        setErr('err-reg-pw2', true);
+        toast('Mật khẩu xác nhận không khớp! Vui lòng kiểm tra lại.');
+        return;
+      } else {
+        setErr('err-reg-pw2', false);
+      }
+
+      setErr('err-reg-email', false);
+
+      const phoneRegex = /^(\+84|84|0)(3|5|7|8|9)[0-9]{8}$/;
+      if (phone && !phoneRegex.test(phone.replace(/\s+/g, ''))) {
+        e.preventDefault();
+        toast('Vui lòng nhập số điện thoại Việt Nam hợp lệ (VD: 09xx, +849xx)!');
+        return;
+      }
+
+      const otp = document.getElementById('reg-otp').value;
+      if (!otp || otp.trim().length !== 6) {
+        e.preventDefault();
+        toast('Vui lòng nhập đúng 6 số của mã OTP!');
+        return;
+      }
+      
+      // Since it's a standard form submission, we don't need to manually add inviteCode 
+      // if we ensure the input has name="inviteCode" and it's inside the form.
+      // But we should double check the form mapping.
+    });
+
+    /* ===== SEND OTP API ===== */
+    function sendOtpCode() {
+      const emailInput = document.getElementById('reg-email');
+      const email = emailInput.value;
+      if (!email || !email.includes('@')) {
+        toast('Vui lòng nhập Email hợp lệ trước khi lấy mã OTP!');
+        emailInput.focus();
+        return;
+      }
+
+      const btn = document.getElementById('btn-send-otp');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="btn-gold-inner">Đang gửi...</span>';
+
+      fetch('/api/send-otp?email=' + encodeURIComponent(email), { method: 'POST' })
+        .then(res => res.text())
+        .then(text => {
+          if (text === 'success') {
+            toast('Đã gửi mã OTP đến email của bạn!');
+            let countdown = 60;
+            const interval = setInterval(() => {
+              countdown--;
+              btn.innerHTML = `<span class="btn-gold-inner">Thử lại (${countdown}s)</span>`;
+              if (countdown <= 0) {
+                clearInterval(interval);
+                btn.innerHTML = '<span class="btn-gold-inner">Gửi Mã</span>';
+                btn.disabled = false;
+              }
+            }, 1000);
+          } else if (text === 'error_exist') {
+            toast('Email này đã được sử dụng!');
+            btn.disabled = false;
+            btn.innerHTML = '<span class="btn-gold-inner">Gửi Mã</span>';
+          } else if (text === 'error_format') {
+            toast('Vui lòng sử dụng tài khoản email hợp lệ!');
+            btn.disabled = false;
+            btn.innerHTML = '<span class="btn-gold-inner">Gửi Mã</span>';
+          } else {
+            toast('Lỗi hệ thống khi gửi email, vui lòng thử lại sau!');
+            btn.disabled = false;
+            btn.innerHTML = '<span class="btn-gold-inner">Gửi Mã</span>';
+          }
+        })
+        .catch(err => {
+          toast('Lỗi kết nối khi lấy mã OTP!');
+          btn.disabled = false;
+          btn.innerHTML = '<span class="btn-gold-inner">Gửi Mã</span>';
+        });
+    }
+
+  </script>
+</body>
+
+</html>

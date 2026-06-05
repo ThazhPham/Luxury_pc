@@ -1,0 +1,32 @@
+:root {
+            --black: #0a0a0a;
+            --deep: #111;
+            --dark: #1a1a1a;
+            --mid: #2a2a2a;
+            --gold: #c9a84c;
+            --gold-l: #e8c97a;
+            --cream: #f5f0e8;
+            --white: #fff;
+            --muted: #888;
+            --red: #ef4444;
+            --green: #22c55e;
+            --sans: 'Montserrat', sans-serif;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { background: var(--black); color: var(--cream); font-family: var(--sans); display: flex; }
+        .sidebar { width: 280px; background: var(--deep); border-right: 1px solid rgba(201,168,76,0.1); padding: 2rem; position: fixed; height: 100vh; }
+        .logo { font-size: 1.5rem; color: var(--gold); letter-spacing: 0.2em; margin-bottom: 3rem; display: block; text-decoration: none; font-weight: 700; text-align: center;}
+        .nav-link { display: flex; align-items: center; color: var(--muted); padding: 1rem; text-decoration: none; border-radius: 4px; margin-bottom: 0.5rem; font-size: 0.9rem; transition: 0.3s; }
+        .nav-link i { width: 25px; font-size: 1.1rem; }
+        .nav-link:hover, .nav-link.active { background: rgba(201,168,76,0.05); color: var(--gold); }
+        .main-content { margin-left: 280px; flex: 1; padding: 3rem; }
+        .table-card { background: var(--dark); padding: 2rem; border: 1px solid rgba(201,168,76,0.1); border-radius: 8px; }
+        .table-h { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; color: var(--muted); font-size: 0.75rem; text-transform: uppercase; padding: 1.2rem; background: rgba(0,0,0,0.2); }
+        td { padding: 1.2rem; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .stock-input { background: var(--mid); color: var(--white); border: 1px solid rgba(201,168,76,0.2); padding: 0.4rem; border-radius: 4px; width: 80px; outline: none; }
+        .type-select { background: var(--mid); color: var(--white); border: 1px solid rgba(201,168,76,0.2); padding: 0.4rem; border-radius: 4px; margin: 0 0.5rem; }
+        button.adj-btn { background: var(--gold); color: var(--black); border: none; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: 600; }
+        .badge { padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; }
+        .badge-low { background: rgba(239, 68, 68, 0.1); color: var(--red); }

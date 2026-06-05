@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Kho Hàng — Luxury PC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/admin/admin-global.css}">
+    
+    <!-- React & Babel -->
+    <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.6/babel.min.js"></script>
+
+    <style>
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+        .badge-low { background: rgba(239,68,68,0.1); color: var(--red); }
+        .adj-btn { background: var(--gold); color: var(--black); border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-weight: 600; font-family: var(--sans); }
+        .adj-btn:hover { background: var(--gold-l); }
+        .stock-input { background: var(--mid); border: 1px solid rgba(201,168,76,0.2); color: white; padding: 0.4rem; border-radius: 4px; margin-right: 0.5rem; width: 80px; font-family: var(--sans); }
+        .type-select { background: var(--mid); border: 1px solid rgba(201,168,76,0.2); color: white; padding: 0.4rem; border-radius: 4px; margin-right: 0.5rem; font-family: var(--sans); }
+    </style>
+
+    <script th:inline="javascript">
+        window.INITIAL_DATA = {
+            inventory: /*[[${inventory}]]*/ [],
+            username: /*[[${#authentication.name}]]*/ 'Admin'
+        };
+    </script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel" th:src="@{/js/react/AdminComponents.jsx}"></script>
+
+    <script type="text/babel">
+/*<![CDATA[*/
+        function App() {
+            const data = window.INITIAL_DATA.inventory || [];
+
+            const columns = [
+                { 
+                    key: 'product.name', 
+                    label: 'Sản Phẩm', 
+                    render: (row) => row.product?.name
+                },
+                { 
+                    key: 'product.category.name', 
+                    label: 'Danh Mục', 
+                    render: (row) => row.product?.category?.name || 'Chưa phân loại'
+                },
+                { 
+                    key: 'quantity', 
+                    label: 'Tồn Kho', 
+                    render: (row) => (
+                        <div>
+                            <span>{row.quantity}</span>
+                            {row.quantity < 10 && <span className="badge badge-low" style={{marginLeft: '5px'}}>Sắp hết</span>}
+                        </div>
+                    )
+                },
+                { 
+                    key: 'lastUpdate', 
+                    label: 'Cập Nhật Cuối', 
+                    render: (row) => row.lastUpdate ? new Date(row.lastUpdate).toLocaleString('vi-VN') : ''
+                },
+                { 
+                    key: 'actions', 
+                    label: 'Điều Chỉnh Kho',
+                    sortable: false,
+                    render: (row) => (
+                        <form action="/admin/inventory/adjust" method="post" style={{display: 'flex', alignItems: 'center'}}>
+                            <input type="hidden" name="productId" value={row.product?.id} />
+                            <input type="number" name="quantity" className="stock-input" placeholder="Số lượng" required min="1" />
+                            <select name="type" className="type-select">
+                                <option value="IMPORT">Nhập Kho</option>
+                                <option value="EXPORT">Xuất Kho</option>
+                            </select>
+                            <input type="text" name="note" className="stock-input" style={{width: '120px'}} placeholder="Ghi chú" />
+                            <button type="submit" className="adj-btn">Xác Nhận</button>
+                        </form>
+                    )
+                }
+            ];
+
+            return (
+                <React.Fragment>
+                    <AdminSidebar active="inventory" />
+                    <div className="main-content">
+                        <AdminHeader title={`Quản Lý Kho Hàng (${data.length} sản phẩm)`} username={window.INITIAL_DATA.username} />
+                        
+                        <div className="card">
+                            <DataGrid columns={columns} data={data} searchPlaceholder="Tìm kiếm sản phẩm..." itemsPerPage={10} />
+                        </div>
+                    </div>
+                </React.Fragment>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    
+/*]]>*/
+</script>
+</body>
+</html>
+
+

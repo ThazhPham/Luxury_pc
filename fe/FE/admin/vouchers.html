@@ -1,0 +1,249 @@
+﻿<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Voucher — Luxury PC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/admin/admin-global.css}">
+    
+    <!-- React & Babel -->
+    <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.6/babel.min.js"></script>
+
+    <style>
+        .toast { padding: 1rem 1.5rem; border-radius: 6px; margin-bottom: 1.5rem; font-size: 0.85rem; display: flex; align-items: center; gap: 10px; }
+        .toast-success { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); color: var(--green); }
+        .toast-error { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: var(--red); }
+        
+        .badge { padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.65rem; font-weight: bold; }
+        .badge-green { background: rgba(34,197,94,0.1); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+        .badge-red { background: rgba(239,68,68,0.1); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+        .badge-gold { background: rgba(201,168,76,0.1); color: var(--gold); border: 1px solid rgba(201,168,76,0.3); }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 500; display: flex; align-items: center; justify-content: center; }
+        .modal { background: var(--dark); border: 1px solid rgba(201,168,76,0.15); border-radius: 8px; padding: 2rem; width: 600px; max-width: 90vw; max-height: 85vh; overflow-y: auto; }
+        .modal-title { font-size: 1.2rem; color: var(--gold); margin-bottom: 1.5rem; font-weight: 600; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+        .form-group { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 1rem; }
+        .form-group label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+        .form-group input, .form-group select { background: var(--black); border: 1px solid rgba(201,168,76,0.15); color: var(--cream); padding: 0.6rem 0.8rem; border-radius: 4px; font-size: 0.85rem; outline: none; font-family: var(--sans); }
+        .form-group input:focus, .form-group select:focus { border-color: var(--gold); }
+        .form-actions { display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem; }
+    </style>
+
+    <script th:inline="javascript">
+        window.INITIAL_DATA = {
+            vouchers: /*[[${vouchers}]]*/ [],
+            categories: /*[[${categories}]]*/ [],
+            successMsg: /*[[${success}]]*/ '',
+            errorMsg: /*[[${error}]]*/ '',
+            username: /*[[${#authentication.name}]]*/ 'Admin'
+        };
+    </script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel" th:src="@{/js/react/AdminComponents.jsx}"></script>
+
+    <script type="text/babel">
+/*<![CDATA[*/
+        function VoucherModal({ categories, onClose }) {
+            const [discountType, setDiscountType] = React.useState('PERCENTAGE');
+
+            return (
+                <div className="modal-overlay" onClick={(e) => { if(e.target === e.currentTarget) onClose(); }}>
+                    <div className="modal">
+                        <div className="modal-title"><i className="fa-solid fa-ticket" style={{marginRight: '8px'}}></i>Tạo Voucher Mới</div>
+                        <form action="/admin/vouchers/save" method="POST">
+                            <input type="hidden" name="id" />
+
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label>Mã Voucher</label>
+                                    <input type="text" name="code" required placeholder="VD: LUXURY10" style={{textTransform: 'uppercase'}} />
+                                </div>
+                                <div className="form-group">
+                                    <label>Loại Giảm Giá</label>
+                                    <select name="discountType" value={discountType} onChange={e => setDiscountType(e.target.value)}>
+                                        <option value="PERCENTAGE">Phần trăm (%)</option>
+                                        <option value="FIXED_AMOUNT">Số tiền cố định (₫)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div className="form-group">
+                                <label>Mô Tả</label>
+                                <input type="text" name="description" placeholder="VD: Giảm 10% cho tất cả đơn hàng" />
+                            </div>
+
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label>Giá Trị Giảm</label>
+                                    <input type="number" name="discountValue" required step="0.01" placeholder="10" />
+                                </div>
+                                {discountType === 'PERCENTAGE' && (
+                                    <div className="form-group">
+                                        <label>Giảm Tối Đa (₫)</label>
+                                        <input type="number" name="maxDiscountAmount" placeholder="Không giới hạn" />
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label>Đơn Tối Thiểu (₫)</label>
+                                    <input type="number" name="minOrderAmount" placeholder="0" />
+                                </div>
+                                <div className="form-group">
+                                    <label>Giới Hạn Lượt Dùng</label>
+                                    <input type="number" name="usageLimit" placeholder="Không giới hạn" />
+                                </div>
+                            </div>
+
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label>Bắt Đầu</label>
+                                    <input type="datetime-local" name="startDate" />
+                                </div>
+                                <div className="form-group">
+                                    <label>Kết Thúc</label>
+                                    <input type="datetime-local" name="endDate" />
+                                </div>
+                            </div>
+
+                            <div className="form-group">
+                                <label>Áp Dụng Cho Danh Mục (để trống = tất cả)</label>
+                                <select name="categoryId">
+                                    <option value="">Tất cả sản phẩm</option>
+                                    {categories.map(cat => (
+                                        <option key={cat.id} value={cat.id}>{cat.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="form-actions">
+                                <button type="button" className="btn" style={{background: 'var(--mid)', color: 'var(--muted)'}} onClick={onClose}>Hủy</button>
+                                <button type="submit" className="btn btn-gold"><i className="fa-solid fa-save"></i> Lưu Voucher</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            );
+        }
+
+        function App() {
+            const [showModal, setShowModal] = React.useState(false);
+            const data = window.INITIAL_DATA.vouchers || [];
+            const { successMsg, errorMsg } = window.INITIAL_DATA;
+
+            const columns = [
+                { key: 'code', label: 'Mã', render: (row) => <span style={{fontWeight: 700, color: 'var(--gold)'}}>{row.code}</span> },
+                { key: 'description', label: 'Mô Tả' },
+                { 
+                    key: 'discountType', 
+                    label: 'Loại', 
+                    render: (row) => (
+                        <span className="badge badge-gold">
+                            {row.discountType === 'PERCENTAGE' ? 'Phần trăm' : 'Cố định'}
+                        </span>
+                    )
+                },
+                { 
+                    key: 'discountValue', 
+                    label: 'Giá Trị', 
+                    render: (row) => row.discountType === 'PERCENTAGE' 
+                        ? `${row.discountValue}%` 
+                        : `${new Intl.NumberFormat('vi-VN').format(row.discountValue)}₫`
+                },
+                { 
+                    key: 'minOrderAmount', 
+                    label: 'Đơn Tối Thiểu', 
+                    render: (row) => row.minOrderAmount ? `${new Intl.NumberFormat('vi-VN').format(row.minOrderAmount)}₫` : <span style={{color: 'var(--muted)'}}>—</span>
+                },
+                { 
+                    key: 'usageLimit', 
+                    label: 'Sử Dụng', 
+                    render: (row) => (
+                        <span>
+                            {row.usedCount}
+                            {row.usageLimit ? `/${row.usageLimit}` : <span style={{color: 'var(--muted)'}}>/ ∞</span>}
+                        </span>
+                    )
+                },
+                { 
+                    key: 'endDate', 
+                    label: 'Thời Hạn', 
+                    render: (row) => <span style={{fontSize: '0.75rem'}}>
+                        {row.endDate ? new Date(row.endDate).toLocaleString('vi-VN') : <span style={{color: 'var(--muted)'}}>Không giới hạn</span>}
+                    </span>
+                },
+                { 
+                    key: 'active', 
+                    label: 'Trạng Thái', 
+                    render: (row) => row.active 
+                        ? <span className="badge badge-green">Hoạt động</span> 
+                        : <span className="badge badge-red">Tắt</span>
+                },
+                { 
+                    key: 'actions', 
+                    label: 'Hành Động',
+                    sortable: false,
+                    render: (row) => (
+                        <div style={{display: 'flex', gap: '6px', alignItems: 'center'}}>
+                            <form action={`/admin/vouchers/toggle/${row.id}`} method="POST" style={{display: 'inline'}}>
+                                <button type="submit" className="btn btn-sm" style={row.active ? {background: 'rgba(239,68,68,0.1)', color: 'var(--red)', border: '1px solid rgba(239,68,68,0.2)'} : {background: 'rgba(34,197,94,0.1)', color: 'var(--green)', border: '1px solid rgba(34,197,94,0.2)'}}>
+                                    {row.active ? 'Tắt' : 'Bật'}
+                                </button>
+                            </form>
+                            <form action={`/admin/vouchers/delete/${row.id}`} method="POST" style={{display: 'inline'}} onSubmit={(e) => {if(!confirm('Xóa voucher này?')) e.preventDefault()}}>
+                                <button type="submit" className="btn btn-sm btn-danger"><i className="fa-solid fa-trash"></i></button>
+                            </form>
+                        </div>
+                    )
+                }
+            ];
+
+            return (
+                <React.Fragment>
+                    <AdminSidebar active="vouchers" />
+                    <div className="main-content">
+                        <AdminHeader title="Quản Lý Voucher" subtitle="Tạo và quản lý mã khuyến mãi cho khách hàng" username={window.INITIAL_DATA.username} />
+                        
+                        {successMsg && <div className="toast toast-success"><i className="fa-solid fa-check-circle"></i> <span>{successMsg}</span></div>}
+                        {errorMsg && <div className="toast toast-error"><i className="fa-solid fa-exclamation-circle"></i> <span>{errorMsg}</span></div>}
+
+                        <div className="card">
+                            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem'}}>
+                                <span style={{fontSize: '1.1rem', fontWeight: 600, color: 'var(--gold)'}}><i className="fa-solid fa-list"></i> Danh Sách Voucher</span>
+                                <button className="btn btn-gold" onClick={() => setShowModal(true)}><i className="fa-solid fa-plus"></i> Tạo Voucher</button>
+                            </div>
+
+                            {data.length > 0 ? (
+                                <DataGrid columns={columns} data={data} searchPlaceholder="Tìm kiếm mã voucher..." itemsPerPage={10} />
+                            ) : (
+                                <div style={{textAlign: 'center', padding: '3rem', color: 'var(--muted)'}}>
+                                    <i className="fa-solid fa-ticket" style={{fontSize: '3rem', marginBottom: '1rem', color: 'rgba(201,168,76,0.2)'}}></i>
+                                    <p>Chưa có voucher nào. Nhấn "Tạo Voucher" để bắt đầu.</p>
+                                </div>
+                            )}
+                        </div>
+
+                        {showModal && <VoucherModal categories={window.INITIAL_DATA.categories} onClose={() => setShowModal(false)} />}
+                    </div>
+                </React.Fragment>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    
+/*]]>*/
+</script>
+</body>
+</html>
+
+

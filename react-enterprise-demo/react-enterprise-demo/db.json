@@ -1,0 +1,20 @@
+{
+  "products": [
+    {
+      "id": "2",
+      "name": "Iphone 15",
+      "price": 2000
+    },
+    {
+      "name": "Iphone 10",
+      "price": 1000,
+      "id": "4pF7qdq9J0Q"
+    },
+    {
+      "name": "Vue ",
+      "price": 1000,
+      "id": "XPTfyZ4Qr1k"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

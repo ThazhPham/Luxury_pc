@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Danh Mục — Luxury PC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/admin/admin-global.css}">
+
+    <!-- React & Babel -->
+    <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.6/babel.min.js"></script>
+
+    <style>
+        .add-form-container { display: none; }
+        .add-form-container.active { display: block; animation: slideDown 0.3s ease;}
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px);} to { opacity: 1; transform: translateY(0);}}
+    </style>
+
+    <script th:inline="javascript">
+        window.INITIAL_DATA = {
+            categories: /*[[${categories}]]*/ [],
+            category: /*[[${category}]]*/ {},
+            username: /*[[${#authentication.name}]]*/ 'Admin'
+        };
+    </script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel" th:src="@{/js/react/AdminComponents.jsx}"></script>
+
+    <script type="text/babel">
+/*<![CDATA[*/
+        function CategoryForm({ category, onClose }) {
+            const isEdit = !!category?.id;
+            return (
+                <div className="card active" style={{ animation: 'slideDown 0.3s ease' }}>
+                    <div className="card-header">
+                        <h2>{isEdit ? 'Sửa Danh Mục' : 'Thêm Danh Mục'}</h2>
+                        <button className="icon-btn icon-btn-del" onClick={onClose} title="Thoát">
+                            <i className="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                    <form action="/admin/categories/save" method="post">
+                        <input type="hidden" name="id" defaultValue={category?.id || ''} />
+                        <div className="input-group" style={{ marginBottom: '1.5rem' }}>
+                            <label>Tên Danh Mục *</label>
+                            <input type="text" name="name" required defaultValue={category?.name || ''} placeholder="VD: Card Màn Hình" />
+                        </div>
+                        <div style={{ display: 'flex', gap: '10px' }}>
+                            <button type="submit" className="btn btn-gold">Lưu Danh Mục</button>
+                            <button type="button" className="btn btn-outline" onClick={onClose}>Hủy / Làm mới</button>
+                        </div>
+                    </form>
+                </div>
+            );
+        }
+
+        function App() {
+            const [showForm, setShowForm] = React.useState(!!window.INITIAL_DATA.category?.id);
+            const data = window.INITIAL_DATA.categories || [];
+
+            const columns = [
+                { key: 'id', label: 'ID' },
+                { 
+                    key: 'name', 
+                    label: 'Tên Danh Mục', 
+                    render: (row) => <span style={{fontWeight: 600, color: '#fff'}}>{row.name}</span>
+                },
+                { 
+                    key: 'actions', 
+                    label: 'Thao Tác',
+                    sortable: false,
+                    render: (row) => (
+                        <div className="action-btns">
+                            <a href={`/admin/categories/edit/${row.id}`} className="icon-btn icon-btn-edit" title="Sửa"><i className="fa-solid fa-pen"></i></a>
+                            <a href={`/admin/categories/delete/${row.id}`} className="icon-btn icon-btn-del" title="Xóa" onClick={(e) => {if(!confirm('Xóa danh mục này có thể ảnh hưởng đến sản phẩm liên quan. Tiếp tục?')) e.preventDefault()}}><i className="fa-solid fa-trash"></i></a>
+                        </div>
+                    )
+                }
+            ];
+
+            return (
+                <React.Fragment>
+                    <AdminSidebar active="categories" />
+                    <div className="main-content">
+                        <AdminHeader title={`Quản Lý Danh Mục (${data.length})`} username={window.INITIAL_DATA.username} />
+                        
+                        <div style={{ marginBottom: '1.5rem' }}>
+                            {!showForm && (
+                                <button className="btn btn-gold" onClick={() => setShowForm(true)}>
+                                    <i className="fa-solid fa-plus"></i> Thêm Danh Mục Mới
+                                </button>
+                            )}
+                        </div>
+
+                        {showForm && (
+                            <CategoryForm 
+                                category={window.INITIAL_DATA.category} 
+                                onClose={() => {
+                                    setShowForm(false);
+                                    if(window.INITIAL_DATA.category?.id) {
+                                        window.location.href = '/admin/categories';
+                                    }
+                                }} 
+                            />
+                        )}
+                        
+                        <div className="card">
+                            <DataGrid columns={columns} data={data} searchPlaceholder="Tìm kiếm danh mục..." itemsPerPage={10} />
+                        </div>
+                    </div>
+                </React.Fragment>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    
+/*]]>*/
+</script>
+</body>
+</html>
+
+

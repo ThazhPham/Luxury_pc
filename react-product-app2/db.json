@@ -1,0 +1,16 @@
+{
+  "products": [],
+  "List": [
+    {
+      "id": "1",
+      "name": "Laptop Asus",
+      "price": 1500
+    },
+    {
+      "id": "2",
+      "name": "Iphone 15",
+      "price": 2000
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

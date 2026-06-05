@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Luxury PC — Hồ Sơ Cá Nhân</title>
+  <meta name="description" content="Quản lý tài khoản và hồ sơ cá nhân Luxury PC của bạn." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/account/profile.css" />
+</head>
+
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-f" id="cursor-f"></div>
+  <script>
+    (function () {
+      function initLuxuryCursor() {
+        var cur = document.getElementById('cursor');
+        var curF = document.getElementById('cursor-f');
+        if (!cur || !curF) return;
+        document.body.classList.add('custom-cursor-enabled');
+        var mx = 0, my = 0, fx = 0, fy = 0;
+        function onMove(e) {
+          mx = e.clientX;
+          my = e.clientY;
+          cur.style.left = mx + 'px';
+          cur.style.top = my + 'px';
+        }
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('pointermove', onMove);
+        function loop() {
+          fx += (mx - fx) * 0.12;
+          fy += (my - fy) * 0.12;
+          curF.style.left = fx + 'px';
+          curF.style.top = fy + 'px';
+          requestAnimationFrame(loop);
+        }
+        requestAnimationFrame(loop);
+        var nodes = document.querySelectorAll('a,button,input,select,textarea,label.toggle');
+        for (var i = 0; i < nodes.length; i++) {
+          (function (el) {
+            el.addEventListener('mouseenter', function () {
+              cur.style.transform = 'translate(-50%,-50%) scale(2)';
+              curF.style.width = '60px';
+              curF.style.height = '60px';
+            });
+            el.addEventListener('mouseleave', function () {
+              cur.style.transform = 'translate(-50%,-50%) scale(1)';
+              curF.style.width = '36px';
+              curF.style.height = '36px';
+            });
+          })(nodes[i]);
+        }
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initLuxuryCursor);
+      } else {
+        initLuxuryCursor();
+      }
+    })();
+  </script>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-left">
+      <a href="../all-products.html" class="nav-link" id="nav-linh-kien">Sản Phẩm</a>
+      <a href="../build-pc.html" class="nav-link" id="nav-build-pc">Build PC</a>
+      <a href="#" class="nav-link" id="nav-khuyen-mai">Khuyến Mãi</a>
+    </div>
+    <div class="nav-logo">
+      <a href="../index.html" style="text-decoration:none; color:inherit; display:flex; align-items:center;">
+        <span class="logo-Luxury">LUXURY</span>
+        <div class="logo-divider"></div>
+        <span class="logo-pc">PC</span>
+      </a>
+    </div>
+    <div class="nav-right">
+      <a href="#" class="nav-link" id="nav-tin-tuc">Tin Tức</a>
+      <a href="#" class="nav-link" id="nav-lien-he">Liên Hệ</a>
+      <a sec:authorize="hasRole('ADMIN')" href="../admin/dashboard.html" class="nav-link">ADMIN</a>
+      <a sec:authorize="isAnonymous()" href="./auth.html" class="nav-link">ĐĂNG NHẬP</a>
+      <a sec:authorize="isAuthenticated()" href="./profile.html" class="nav-link active">HỒ SƠ</a>
+      <button class="nav-search-btn" id="nav-search-btn" aria-label="Tìm kiếm">⌕</button>
+      <a href="../cart.html" class="nav-cart" id="nav-cart" aria-label="Giỏ hàng">
+        <span class="cart-icon">⊡</span>
+        <span class="cart-count" th:text="${cartCount}">0</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- SEARCH OVERLAY -->
+  <div class="search-overlay" id="search-overlay">
+    <div class="search-overlay-inner">
+      <div class="search-close-row">
+        <span class="search-brand">LUXURY · PC</span>
+        <button class="search-close" id="search-close" aria-label="Đóng tìm kiếm">✕</button>
+      </div>
+      <div class="search-input-wrap">
+        <span class="search-icon-big">⌕</span>
+        <input type="text" id="search-input" class="search-input" placeholder="Tìm kiếm linh kiện, thương hiệu..."
+          autocomplete="off" aria-label="Tìm kiếm sản phẩm" />
+        <button class="search-clear" id="search-clear" aria-label="Xóa">✕</button>
+      </div>
+      <div class="search-tags">
+        <span class="search-tag-label">Tìm nhanh:</span>
+        <button class="search-tag" data-query="CPU Intel">CPU Intel</button>
+        <button class="search-tag" data-query="RTX 4090">RTX 4090</button>
+        <button class="search-tag" data-query="DDR5">DDR5 RAM</button>
+        <button class="search-tag" data-query="SSD NVMe">SSD NVMe</button>
+        <button class="search-tag" data-query="Màn hình OLED">Màn Hình OLED</button>
+        <button class="search-tag" data-query="Nguồn PSU">Nguồn PSU</button>
+      </div>
+      <div class="search-results" id="search-results">
+        <p class="search-hint">Nhập từ khóa để tìm kiếm sản phẩm tại Luxury PC.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="profile-page">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar">
+      <div class="sb-avatar-wrap">
+        <div class="avatar-ring">
+          <div class="avatar-inner" th:text="${avatarInitial}">TM</div>
+          <button class="avatar-edit" title="Đổi ảnh">✎</button>
+        </div>
+        <div class="sb-name" th:text="${name}">Thanh Minh</div>
+        <div class="sb-email" th:text="${email}">thanh.minh@email.com</div>
+        <div class="sb-badge" th:text="${userRank != 'None' ? '⭐ ' + userRank : 'Thành viên mới'}">⭐ Thành viên VIP</div>
+      </div>
+
+      <nav class="sb-menu">
+        <div class="sb-section-label">Tài khoản</div>
+        <a class="sb-item active" onclick="setTab('info')" href="#">
+          Thông Tin Cá Nhân
+        </a>
+        <a class="sb-item" onclick="setTab('orders')" href="#">
+          Đơn Hàng Của Tôi
+          <span class="sb-item-badge" th:text="${orders != null ? orders.size() : 0}">3</span>
+        </a>
+        <a class="sb-item" onclick="setTab('vouchers')" href="#">
+          Ví Voucher
+          <span class="sb-item-badge" th:text="${vouchers != null ? vouchers.size() : 0}">0</span>
+        </a>
+        <a class="sb-item" onclick="setTab('wishlist')" href="#">
+          Danh Sách Yêu Thích
+          <span class="sb-item-badge">5</span>
+        </a>
+
+        <div class="sb-section-label">Cài đặt</div>
+        <a class="sb-item" onclick="setTab('security')" href="#">
+          Bảo Mật
+        </a>
+        <a class="sb-item" onclick="setTab('notifications')" href="#">
+          Thông Báo
+        </a>
+        <a class="sb-item" onclick="setTab('address')" href="#">
+          Địa Chỉ Giao Hàng
+        </a>
+      </nav>
+
+      <form th:action="@{/logout}" method="POST">
+        <button type="submit" class="logout-btn">
+          Đăng Xuất
+        </button>
+      </form>
+    </aside>
+
+    <!-- ===== MAIN ===== -->
+    <main class="profile-main">
+
+      <!-- TABS -->
+      <div class="profile-tabs">
+        <button class="profile-tab active" id="pt-info" onclick="setTab('info')">Thông Tin</button>
+        <button class="profile-tab" id="pt-orders" onclick="setTab('orders')">Đơn Hàng</button>
+        <button class="profile-tab" id="pt-vouchers" onclick="setTab('vouchers')">Ví Voucher</button>
+        <button class="profile-tab" id="pt-wishlist" onclick="setTab('wishlist')">Yêu Thích</button>
+        <button class="profile-tab" id="pt-security" onclick="setTab('security')">Bảo Mật</button>
+        <button class="profile-tab" id="pt-notifications" onclick="setTab('notifications')">Thông Báo</button>
+        <button class="profile-tab" id="pt-address" onclick="setTab('address')">Địa Chỉ</button>
+      </div>
+
+      <!-- ============ INFO ============ -->
+      <div class="profile-section active" id="sec-info">
+        <div class="section-head">
+          <div>
+            <div class="section-tag">Tài khoản</div>
+            <div class="section-h">Thông Tin Cá Nhân</div>
+          </div>
+          <button class="btn-edit" onclick="toast('✎ Chế độ chỉnh sửa đã bật!')">Chỉnh Sửa</button>
+        </div>
+
+        <!-- Stats strip -->
+        <div class="stats-strip">
+          <div class="stat-cell">
+            <div class="stat-num" th:text="${totalOrders}">12</div>
+            <div class="stat-lbl">Đơn đã đặt</div>
+          </div>
+          <div class="stat-cell" th:title="${#numbers.formatDecimal(totalSpent, 0, 'COMMA', 0, 'POINT')} + '₫'">
+            <div class="stat-num" th:text="${totalSpent >= 1000000 ? #numbers.formatDecimal(totalSpent / 1000000, 0, 'COMMA', 0, 'POINT') + 'M' : #numbers.formatDecimal(totalSpent, 0, 'COMMA', 0, 'POINT')}">142M</div>
+            <div class="stat-lbl">Tổng chi tiêu</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-num">5</div>
+            <div class="stat-lbl">Yêu thích</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-num" th:text="${userRank}">VIP</div>
+            <div class="stat-lbl">Hạng thành viên</div>
+          </div>
+        </div>
+
+        <!-- Info cards -->
+        <div class="info-grid">
+          <div class="info-card">
+                <label>Họ & Tên</label>
+                <div class="form-val" th:text="${name}">Nguyễn Thanh Minh</div>
+          </div>
+          <div class="info-card">
+                <label>Email</label>
+                <div class="form-val" th:text="${email}">thanh.minh@email.com</div>
+            <div class="ic-sub">✓ Đã xác minh</div>
+          </div>
+          <div class="info-card">
+                <label>Số điện thoại</label>
+                <div class="form-val" th:text="${user != null && user.phone != null ? user.phone : '0987 654 321'}">0987 654 321</div>
+            <div class="ic-sub">✓ Đã xác minh</div>
+          </div>
+          <div class="info-card">
+                <label>Ngày sinh</label>
+                <div class="form-val" th:text="${user != null && user.birthday != null ? #temporals.format(user.birthday, 'dd/MM/yyyy') : '15/08/1995'}">15/08/1995</div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">Thành viên từ</div>
+            <div class="ic-value">03/2023</div>
+            <div class="ic-sub">3 năm gắn bó</div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">Hạng thành viên</div>
+            <div class="ic-value" th:style="${userRank == 'Diamond' ? 'color:#b9f2ff; text-shadow:0 0 8px #b9f2ff;' : (userRank == 'Platinum' ? 'color:#e5e4e2;' : (userRank == 'Silver' ? 'color:#c0c0c0;' : 'color:var(--cream);'))}" th:text="${userRank != 'None' ? '⭐ ' + userRank : 'Thành viên mới'}">⭐ VIP Gold</div>
+            <div class="ic-sub">Dựa trên tổng mức chi tiêu</div>
+          </div>
+        </div>
+
+        <!-- Edit form -->
+        <div style="background:var(--deep);border:1px solid rgba(201,168,76,.1);padding:2rem;margin-bottom:2rem;">
+          <div
+            style="font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;">
+            Cập Nhật Thông Tin</div>
+          <div class="form-2col">
+            <div class="form-group">
+              <label class="form-label">Họ</label>
+              <input type="text" class="form-input" value="Nguyễn" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tên</label>
+              <input type="text" class="form-input" value="Thanh Minh" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-input" value="thanh.minh@email.com" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Số điện thoại</label>
+              <input type="tel" class="form-input" placeholder="0901 234 567" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Ngày sinh</label>
+              <input type="date" class="form-input" value="1998-08-15" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Giới tính</label>
+              <select class="form-select">
+                <option selected>Nam</option>
+                <option>Nữ</option>
+                <option>Khác</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn-save" onclick="toast('✓ Đã lưu thông tin thành công!')">
+            <span class="btn-save-inner">Lưu Thay Đổi</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ============ ORDERS ============ -->
+      <div class="profile-section" id="sec-orders">
+        <div class="section-head">
+          <div>
+            <div class="section-tag">Lịch sử</div>
+            <div class="section-h">Đơn Hàng Của Tôi</div>
+          </div>
+        </div>
+        <style>
+            /* Custom CSS for Accordion */
+            .orders-accordion-wrapper { border: 1px solid rgba(201,168,76,.1); border-radius: 8px; overflow: hidden; margin-top: 20px;}
+            .order-row { background: var(--dark); border-bottom: 1px solid rgba(255,255,255,0.05); }
+            .order-row:last-child { border-bottom: none; }
+            .order-header { display: grid; grid-template-columns: 1.5fr 3fr 1.5fr 1.5fr 1.5fr 0.5fr; align-items: center; padding: 1.5rem; cursor: pointer; transition: 0.3s; }
+            .order-header:hover { background: rgba(201,168,76,.03); }
+            .order-header > div { font-size: 0.85rem; color: var(--cream); }
+            .order-h-id { font-weight: bold; color: var(--white); }
+            .order-h-date { color: var(--muted); font-size: 0.75rem; }
+            
+            .order-details-pane { display: none; background: var(--deep); padding: 1.5rem; border-top: 1px dashed rgba(201,168,76,.2); }
+            .order-details-pane.active { display: block; animation: fadeIn 0.4s ease; }
+            
+            .timeline-track { display: flex; justify-content: space-between; position: relative; margin: 20px 0 40px; }
+            .timeline-track::before { content: ''; position: absolute; top: 12px; left: 0; width: 100%; height: 2px; background: rgba(255,255,255,0.1); z-index: 1;}
+            .tl-step { position: relative; z-index: 2; text-align: center; width: 25%; }
+            .tl-dot { width: 25px; height: 25px; border-radius: 50%; background: var(--dark); border: 2px solid rgba(255,255,255,0.2); margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 10px;}
+            .tl-step.done .tl-dot { background: var(--gold); border-color: var(--gold); color: #000; }
+            .tl-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px;}
+            .tl-step.done .tl-label { color: var(--gold); font-weight: bold; }
+
+            .item-mini-list { background: var(--dark); border-radius: 4px; padding: 1rem; }
+            .item-mini { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px;}
+            .item-mini:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0;}
+            
+            @keyframes fadeIn { from {opacity: 0; transform: translateY(-10px);} to {opacity: 1; transform: translateY(0);} }
+        </style>
+
+        <div class="orders-accordion-wrapper">
+            <!-- Iterate over orders using Thymeleaf -->
+            <div class="order-row" th:each="order : ${orders}">
+                <div class="order-header" th:onclick="'toggleOrder(\'order-' + ${order.id} + '\')'">
+                    <div>
+                        <div class="order-h-id" th:text="'#Luxury-' + ${order.id}">#LUXURY-2603</div>
+                        <div class="order-h-date" th:text="${#calendars.format(order.createdAt, 'dd/MM/yyyy')}">12/03/2026</div>
+                    </div>
+                    <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 15px;"
+                         th:text="${order.orderItems != null && order.orderItems.size() > 0 ? order.orderItems[0].product.name + ' × ' + order.orderItems[0].quantity + (order.orderItems.size() > 1 ? ' (...)' : '') : 'Đơn hàng trống'}">
+                        Sản phẩm...
+                    </div>
+                    <div class="order-total" th:text="${#numbers.formatDecimal(order.totalPrice, 0, 'COMMA', 0, 'POINT')} + '₫'">18.990.000₫</div>
+                    <div>
+                        <span th:class="'order-status status-' + ${order.status.toLowerCase()}"
+                            th:text="${order.status == 'PENDING' ? 'Chờ xử lý' : (order.status == 'PAID' ? 'Đã thanh toán' : (order.status == 'COMPLETED' ? 'Hoàn thành' : (order.status == 'SHIPPING' ? 'Đang giao' : (order.status == 'CANCELED' ? 'Đã hủy' : order.status))))}">
+                        Đang xử lý
+                        </span>
+                    </div>
+                    <div><button class="order-detail-btn">Chi Tiết ▼</button></div>
+                </div>
+                <div class="order-details-pane" th:id="'order-' + ${order.id}">
+                    <div class="timeline-track">
+                        <div class="tl-step done"><div class="tl-dot">✔</div><div class="tl-label">Đã Đặt Hàng</div></div>
+                        <div th:class="${order.status == 'PAID' or order.status == 'SHIPPING' or order.status == 'COMPLETED' ? 'tl-step done' : 'tl-step' }"><div class="tl-dot">✔</div><div class="tl-label">Đã Thanh Toán</div></div>
+                        <div th:class="${order.status == 'SHIPPING' or order.status == 'COMPLETED' ? 'tl-step done' : 'tl-step' }"><div class="tl-dot">🚚</div><div class="tl-label">Đang Giao Vận</div></div>
+                        <div th:class="${order.status == 'COMPLETED' ? 'tl-step done' : 'tl-step' }" th:style="${order.status == 'COMPLETED' ? 'color:var(--green);' : ''}"><div class="tl-dot" th:style="${order.status == 'COMPLETED' ? 'background:var(--green);border-color:var(--green);' : ''}">★</div><div th:style="${order.status == 'COMPLETED' ? 'color:var(--green);' : ''}" class="tl-label">Hoàn Thành</div></div>
+                    </div>
+                    <div class="item-mini-list">
+                        <div style="font-size:0.75rem; color:var(--gold); margin-bottom: 15px; text-transform: uppercase;">Sản phẩm trong đơn hàng</div>
+                        <div class="item-mini" th:each="oi : ${order.orderItems}">
+                            <div style="flex: 1;">
+                                <div th:text="${oi.quantity} + 'x ' + ${oi.product.name}" style="margin-bottom: 5px;">1x Intel Core i9-14900K</div>
+                                <a th:if="${order.status == 'COMPLETED'}" 
+                                   th:href="@{'/product/' + ${oi.product.id}}" 
+                                   style="display:inline-block; font-size:0.65rem; color:var(--gold); text-decoration:none; border:1px solid rgba(201,168,76,0.5); padding:3px 8px; border-radius:3px; transition: 0.3s; cursor:pointer;"
+                                   onmouseover="this.style.background='var(--gold)'; this.style.color='var(--black)';"
+                                   onmouseout="this.style.background='transparent'; this.style.color='var(--gold)';">
+                                   ⭐ Viết Đánh Giá
+                                </a>
+                            </div>
+                            <span style="color:var(--gold);" th:text="${#numbers.formatDecimal(oi.price * oi.quantity, 0, 'COMMA', 0, 'POINT')} + '₫'">18.990.000₫</span>
+                        </div>
+                        <div class="item-mini">
+                            <span>Phí vận chuyển (Hỏa tốc)</span>
+                            <span style="color:var(--gold);">0 ₫</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${orders.size() == 0}">
+              <div style="text-align:center; padding: 2rem; color: var(--muted);">Bạn chưa có đơn hàng nào.</div>
+            </div>
+        </div>
+
+        <script>
+            function toggleOrder(orderId) {
+                const pane = document.getElementById(orderId);
+                if(pane.classList.contains('active')) {
+                    pane.classList.remove('active');
+                } else {
+                    // Close others
+                    document.querySelectorAll('.order-details-pane').forEach(el => el.classList.remove('active'));
+                    pane.classList.add('active');
+                }
+            }
+        </script>
+      </div>
+
+      <!-- ============ VOUCHERS ============ -->
+      <div class="profile-section" id="sec-vouchers">
+        <div class="section-head">
+          <div>
+            <div class="section-tag">Khuyến mãi</div>
+            <div class="section-h">Ví Voucher Của Tôi</div>
+          </div>
+          <button class="btn-edit" onclick="document.getElementById('input-voucher-code').focus()">+ Lưu Mã</button>
+        </div>
+        
+        <div style="background:var(--deep);border:1px solid rgba(201,168,76,.1);padding:1.5rem;margin-bottom:2rem; display:flex; gap:10px;">
+            <input type="text" id="input-voucher-code" class="form-input" style="flex:1" placeholder="Nhập mã voucher để lưu..." />
+            <button class="btn-save" onclick="saveVoucherCode()">Lưu Mã</button>
+        </div>
+
+        <div class="wishlist-grid">
+            <div class="wl-card" th:each="uv : ${vouchers}" style="display:flex; flex-direction:column; justify-content:space-between;">
+                <div class="wl-info">
+                  <div class="wl-cat">Voucher · <span th:text="${uv.voucher.discountType.name() == 'PERCENTAGE' ? 'Giảm %' : 'Giảm Tiền'}">Giảm giá</span></div>
+                  <div class="wl-name" style="font-size:1.3rem; letter-spacing:2px; font-weight:700;" th:text="${uv.voucher.code}">CODE</div>
+                  <div class="wl-price" style="font-size:0.85rem; color:var(--cream); margin-top:5px;" th:text="${uv.voucher.description}">Mô tả voucher</div>
+                  <div style="font-size:0.75rem; color:var(--muted); margin-top:10px;">
+                      ĐH Tối thiểu: <span style="color:var(--gold);" th:text="${#numbers.formatDecimal(uv.voucher.minOrderAmount, 0, 'COMMA', 0, 'POINT')} + '₫'">0₫</span><br/>
+                      HSD: <span th:text="${uv.voucher.endDate != null ? #calendars.format(uv.voucher.endDate, 'dd/MM/yyyy') : 'Vô thời hạn'}">Vô thời hạn</span>
+                  </div>
+                </div>
+                <div style="padding:1rem; border-top:1px dashed rgba(201,168,76,.2); text-align:center;">
+                  <span class="order-status status-shipping">Sẵn sàng sử dụng</span>
+                </div>
+            </div>
+            <div th:if="${vouchers == null or vouchers.size() == 0}" style="grid-column: span 3; text-align: center; color: var(--muted); padding: 2rem;">
+                Bạn chưa có mã voucher nào. Hãy tìm thêm ở trang chủ!
+            </div>
+        </div>
+
+        <script>
+            function saveVoucherCode() {
+                const code = document.getElementById('input-voucher-code').value;
+                if (!code) {
+                    toast('Vui lòng nhập mã!');
+                    return;
+                }
+                fetch('/api/user-voucher/save?code=' + encodeURIComponent(code), {
+                    method: 'POST'
+                })
+                .then(res => res.json())
+                .then(data => {
+                    toast(data.message);
+                    if (data.success) {
+                        setTimeout(() => location.reload(), 1000);
+                    }
+                })
+                .catch(err => {
+                    toast('Đã có lỗi xảy ra.');
+                });
+            }
+        </script>
+      </div>
+
+      <!-- ============ WISHLIST ============ -->
+      <div class="profile-section" id="sec-wishlist">
+        <div class="section-head">
+          <div>
+            <div class="section-tag">Bộ sưu tập</div>
+            <div class="section-h">Danh Sách Yêu Thích</div>
+          </div>
+          <button class="btn-edit" onclick="toast('🗑 Đã xóa tất cả khỏi danh sách yêu thích.')">Xóa Tất Cả</button>
+        </div>
+        <div class="wishlist-grid">
+          <div class="wl-card">
+            <div class="wl-img">🖥️<button class="wl-remove" title="Xóa"
+                onclick="toast('✓ Đã xóa khỏi danh sách yêu thích.')">✕</button></div>
+            <div class="wl-info">
+              <div class="wl-cat">CPU · Intel</div>
+              <div class="wl-name">Core i9-14900K</div>
+              <div class="wl-price">18.990.000₫</div>
+            </div>
+          </div>
+          <div class="wl-card">
+            <div class="wl-img">🎮<button class="wl-remove" title="Xóa"
+                onclick="toast('✓ Đã xóa khỏi danh sách yêu thích.')">✕</button></div>
+            <div class="wl-info">
+              <div class="wl-cat">VGA · NVIDIA</div>
+              <div class="wl-name">RTX 4090 Titan</div>
+              <div class="wl-price">42.990.000₫</div>
+            </div>
+          </div>
+          <div class="wl-card">
+            <div class="wl-img">💾<button class="wl-remove" title="Xóa"
+                onclick="toast('✓ Đã xóa khỏi danh sách yêu thích.')">✕</button></div>
+            <div class="wl-info">
+              <div class="wl-cat">RAM · Corsair</div>
+              <div class="wl-name">Dominator Platinum DDR5</div>
+              <div class="wl-price">6.490.000₫</div>
+            </div>
+          </div>
+          <div class="wl-card">
+            <div class="wl-img">🔌<button class="wl-remove" title="Xóa"
+                onclick="toast('✓ Đã xóa khỏi danh sách yêu thích.')">✕</button></div>
+            <div class="wl-info">
+              <div class="wl-cat">Mainboard · ASUS ROG</div>
+              <div class="wl-name">ROG Maximus Z790 Luxury</div>
+              <div class="wl-price">12.490.000₫</div>
+            </div>
+          </div>
+          <div class="wl-card">
+            <div class="wl-img">🌬️<button class="wl-remove" title="Xóa"
+                onclick="toast('✓ Đã xóa khỏi danh sách yêu thích.')">✕</button></div>
+            <div class="wl-info">
+              <div class="wl-cat">Tản Nhiệt · Noctua</div>
+              <div class="wl-name">NH-D15 Chromax Black</div>
+              <div class="wl-price">1.890.000₫</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ SECURITY ============ -->
+      <div class="profile-section" id="sec-security">
+        <div class="section-head">
+          <div>
+            <div class="section-tag">Tài khoản</div>
+            <div class="section-h">Bảo Mật</div>
+          </div>
+        </div>
+        <div class="security-list">
+          <div class="sec-item">
+            <div class="sec-icon">🔑</div>
+            <div class="sec-info">
+              <div class="sec-title">Mật khẩu</div>
+              <div class="sec-sub">Cập nhật lần cuối: 12/01/2026 · Sử dụng mật khẩu mạnh với ít nhất 8 ký tự.</div>
+              <div class="sec-status-ok">● Cài đặt hoàn chỉnh</div>
+            </div>
+            <button class="btn-sec" onclick="location.href='./forgot-password.html'">Đổi Mật Khẩu</button>
+          </div>
+          <div class="sec-item">
+            <div class="sec-icon">📱</div>
+            <div class="sec-info">
+              <div class="sec-title">Xác thực 2 yếu tố (2FA)</div>
+              <div class="sec-sub">Bảo vệ tài khoản bằng mã OTP qua SMS hoặc ứng dụng xác thực.</div>
+              <div class="sec-status-warn">● Chưa bật</div>
+            </div>
+            <button class="btn-sec" onclick="toast('📱 Tính năng 2FA đang được phát triển!')">Bật 2FA</button>
+          </div>
+          <div class="sec-item">
+            <div class="sec-icon">📧</div>
+            <div class="sec-info">
+              <div class="sec-title">Email xác minh</div>
+              <div class="sec-sub">thanh.minh@email.com đã được xác minh và liên kết với tài khoản.</div>
+              <div class="sec-status-ok">● Đã xác minh</div>
+            </div>
+            <button class="btn-sec" onclick="toast('✓ Email đã được xác minh.')">Xem Chi Tiết</button>
+          </div>
+          <div class="sec-item">
+            <div class="sec-icon">🖥️</div>
+            <div class="sec-info">
+              <div class="sec-title">Phiên đăng nhập</div>
+              <div class="sec-sub">Hiện tại: Chrome · Windows 11 · TP.HCM — Đăng nhập 12/03/2026 16:45</div>
+              <div class="sec-status-ok">● Thiết bị hiện tại</div>
+            </div>
+            <button class="btn-sec" onclick="toast('🚪 Đã đăng xuất khỏi tất cả thiết bị khác.')">Đăng Xuất
+              Khác</button>
+          </div>
+        </div>
+        <div class="danger-zone">
+          <div class="danger-title">⚠️ Vùng nguy hiểm</div>
+          <div class="danger-sub">Xóa tài khoản sẽ xóa vĩnh viễn tất cả dữ liệu của bạn bao gồm lịch sử đơn hàng, danh
+            sách yêu thích và điểm tích lũy. Thao tác này không thể hoàn tác.</div>
+          <button class="btn-danger" onclick="toast('⚠️ Vui lòng liên hệ 1800-Luxury-PC để xóa tài khoản.')">Xóa Tài
+            Khoản</button>
+        </div>
+      </div>
+
+      <!-- ============ NOTIFICATIONS ============ -->
+      <div class="profile-section" id="sec-notifications">
+        <div class="section-head">
+          <div>
+            <div class="section-tag">Cài đặt</div>
+            <div class="section-h">Thông Báo</div>
+          </div>
+          <button class="btn-save" onclick="toast('✓ Đã lưu cài đặt thông báo!')">
+            <span class="btn-save-inner">Lưu</span>
+          </button>
+        </div>
+        <div style="font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;">
+          Email & SMS</div>
+        <div class="notif-list">
+          <div class="notif-item">
+            <div class="notif-info">
+              <div class="notif-title">Cập nhật đơn hàng</div>
+              <div class="notif-sub">Nhận thông báo khi trạng thái đơn hàng thay đổi</div>
+            </div>
+            <label class="toggle"><input type="checkbox" name="orderUpdates" th:checked="${notificationSettings == null || notificationSettings['orderUpdates']}" /><span class="toggle-slider"></span></label>
+          </div>
+          <div class="notif-item">
+            <div class="notif-info">
+              <div class="notif-title">Flash Sale & Khuyến mãi</div>
+              <div class="notif-sub">Nhận thông báo về các chương trình giảm giá đặc biệt</div>
+            </div>
+            <label class="toggle"><input type="checkbox" name="flashSale" th:checked="${notificationSettings == null || notificationSettings['flashSale']}" /><span class="toggle-slider"></span></label>
+          </div>
+          <div class="notif-item">
+            <div class="notif-info">
+              <div class="notif-title">Sản phẩm mới</div>
+              <div class="notif-sub">Thông báo khi có linh kiện mới về kho</div>
+            </div>
+            <label class="toggle"><input type="checkbox" name="newProducts" th:checked="${notificationSettings != null && notificationSettings['newProducts']}" /><span class="toggle-slider"></span></label>
+          </div>
+          <div class="notif-item">
+            <div class="notif-info">
+              <div class="notif-title">Bản tin hàng tuần</div>
+              <div class="notif-sub">Email tổng hợp xu hướng công nghệ & review mỗi thứ Hai</div>
+            </div>
+            <label class="toggle"><input type="checkbox" name="weeklyNewsletter" th:checked="${notificationSettings == null || notificationSettings['weeklyNewsletter']}" /><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ ADDRESS ============ -->
+      <div class="profile-section" id="sec-address">
+        <div class="section-head">
+          <div>
+            <div class="section-tag">Giao hàng</div>
+            <div class="section-h">Địa Chỉ Giao Hàng</div>
+          </div>
+          <button class="btn-edit" onclick="toast('📍 Thêm địa chỉ mới (UI demo)')">+ Thêm Địa Chỉ</button>
+        </div>
+
+        <!-- Saved address cards -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-bottom:2rem;">
+          <div style="background:var(--deep);border:1px solid var(--gold);padding:1.5rem;position:relative;">
+            <div
+              style="font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.8rem;display:flex;align-items:center;gap:.5rem;">
+              📍 Địa chỉ mặc định
+            </div>
+            <div style="font-size:.9rem;color:var(--white);margin-bottom:.3rem;font-weight:500;">Nguyễn Thanh Minh</div>
+            <div style="font-size:.8rem;color:var(--muted);line-height:1.7;">
+              123 Nguyễn Huệ, Phường Bến Nghé<br>Quận 1, TP. Hồ Chí Minh<br>📞 0901 234 567
+            </div>
+            <div style="display:flex;gap:.5rem;margin-top:1rem;">
+              <button class="btn-sec" onclick="toast('✎ Chỉnh sửa địa chỉ')">Sửa</button>
+            </div>
+          </div>
+          <div style="background:var(--deep);border:1px solid rgba(201,168,76,.1);padding:1.5rem;">
+            <div
+              style="font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:.8rem;">
+              📍 Công ty</div>
+            <div style="font-size:.9rem;color:var(--white);margin-bottom:.3rem;font-weight:500;">Nguyễn Thanh Minh</div>
+            <div style="font-size:.8rem;color:var(--muted);line-height:1.7;">
+              45 Đinh Tiên Hoàng, Phường Đa Kao<br>Quận 1, TP. Hồ Chí Minh<br>📞 0901 234 567
+            </div>
+            <div style="display:flex;gap:.5rem;margin-top:1rem;">
+              <button class="btn-sec" onclick="toast('✎ Chỉnh sửa địa chỉ')">Sửa</button>
+              <button class="btn-sec" onclick="toast('🗑 Đã xóa địa chỉ')">Xóa</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add address form -->
+        <div style="background:var(--deep);border:1px solid rgba(201,168,76,.1);padding:2rem;">
+          <div
+            style="font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;">
+            Thêm Địa Chỉ Mới</div>
+          <div class="form-2col">
+            <div class="form-group">
+              <label class="form-label">Họ và tên</label>
+              <input type="text" class="form-input" placeholder="Người nhận" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Số điện thoại</label>
+              <input type="tel" class="form-input" placeholder="0901 234 567" />
+            </div>
+            <div class="form-group full">
+              <label>Địa chỉ</label>
+              <input type="text" class="form-control" th:value="${user != null && user.address != null ? user.address : '123 Đường Nguyễn Văn Linh, P. Bình Hiên, Q. Hải Châu, TP. Đà Nẵng'}" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Quận / Huyện</label>
+              <select class="form-select">
+                <option value="">Chọn quận/huyện</option>
+                <option>Quận 1</option>
+                <option>Quận 2</option>
+                <option>Quận 3</option>
+                <option>Bình Thạnh</option>
+                <option>Thủ Đức</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tỉnh / Thành phố</label>
+              <select class="form-select">
+                <option selected>TP. Hồ Chí Minh</option>
+                <option>Hà Nội</option>
+                <option>Đà Nẵng</option>
+                <option>Cần Thơ</option>
+                <option>Bình Dương</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn-save" onclick="toast('✓ Đã lưu địa chỉ giao hàng mới!')">
+            <span class="btn-save-inner">Lưu Địa Chỉ</span>
+          </button>
+        </div>
+      </div>
+
+    </main><!-- end profile-main -->
+  </div><!-- end profile-page -->
+
+  <div class="order-modal-backdrop" id="order-modal-backdrop" onclick="closeOrderModal()">
+    <div class="order-modal" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeOrderModal()">✕</button>
+      <div class="modal-head">
+        <div>
+          <div class="section-tag">Chi tiết đơn hàng</div>
+          <h3>Đơn hàng của bạn</h3>
+        </div>
+      </div>
+      <div class="modal-content" id="order-modal-content"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const cur = document.getElementById('cursor'), curF = document.getElementById('cursor-f');
+    let mx = 0, my = 0, fx = 0, fy = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cur.style.left = mx + 'px'; cur.style.top = my + 'px'; });
+    (function loop() { fx += (mx - fx) * .12; fy += (my - fy) * .12; curF.style.left = fx + 'px'; curF.style.top = fy + 'px'; requestAnimationFrame(loop); })();
+    document.querySelectorAll('a,button,input,select,label.toggle').forEach(el => {
+      el.addEventListener('mouseenter', () => { cur.style.transform = 'translate(-50%,-50%) scale(2)'; curF.style.width = '60px'; curF.style.height = '60px'; });
+      el.addEventListener('mouseleave', () => { cur.style.transform = 'translate(-50%,-50%) scale(1)'; curF.style.width = '36px'; curF.style.height = '36px'; });
+    });
+
+    const searchOverlay = document.getElementById('search-overlay');
+    const navSearchBtn = document.getElementById('nav-search-btn');
+    const searchCloseBtn = document.getElementById('search-close');
+    const searchInput = document.getElementById('search-input');
+    const searchClearBtn = document.getElementById('search-clear');
+    const searchResults = document.getElementById('search-results');
+
+    function openSearch() {
+      if (!searchOverlay) return;
+      searchOverlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => searchInput?.focus(), 320);
+    }
+
+    function closeSearch() {
+      if (!searchOverlay) return;
+      searchOverlay.classList.remove('open');
+      document.body.style.overflow = '';
+      if (searchInput) searchInput.value = '';
+      searchClearBtn?.classList.remove('visible');
+      if (searchResults) searchResults.innerHTML = '<p class="search-hint">Nhập từ khóa để tìm kiếm sản phẩm tại Luxury PC.</p>';
+    }
+
+    navSearchBtn?.addEventListener('click', openSearch);
+    searchCloseBtn?.addEventListener('click', closeSearch);
+    searchOverlay?.addEventListener('click', e => { if (e.target === searchOverlay) closeSearch(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && searchOverlay?.classList.contains('open')) closeSearch(); });
+
+    searchInput?.addEventListener('input', () => {
+      const q = searchInput.value.trim();
+      if (q.length) searchClearBtn?.classList.add('visible');
+      else searchClearBtn?.classList.remove('visible');
+      if (searchResults) {
+        searchResults.innerHTML = q ? `<p class="search-hint">Không tìm thấy kết quả cho "${q}".</p>` : '<p class="search-hint">Nhập từ khóa để tìm kiếm sản phẩm tại Luxury PC.</p>';
+      }
+    });
+
+    searchClearBtn?.addEventListener('click', () => {
+      if (!searchInput) return;
+      searchInput.value = '';
+      searchClearBtn.classList.remove('visible');
+      if (searchResults) searchResults.innerHTML = '<p class="search-hint">Nhập từ khóa để tìm kiếm sản phẩm tại Luxury PC.</p>';
+      searchInput.focus();
+    });
+
+    document.querySelectorAll('.search-tag').forEach(tag => {
+      tag.addEventListener('click', () => {
+        const q = tag.dataset.query || '';
+        if (!searchInput) return;
+        searchInput.value = q;
+        searchClearBtn?.classList.add('visible');
+        if (searchResults) searchResults.innerHTML = `<p class="search-hint">Không tìm thấy kết quả cho "${q}".</p>`;
+        searchInput.focus();
+      });
+    });
+
+    /* TOAST */
+    let toastT;
+    function toast(msg) { const el = document.getElementById('toast'); el.textContent = msg; el.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('show'), 3500); }
+
+    /* TABS */
+    const tabIds = ['info', 'orders', 'wishlist', 'security', 'notifications', 'address'];
+    function setTab(id) {
+      tabIds.forEach(t => {
+        document.getElementById('sec-' + t)?.classList.toggle('active', t === id);
+        document.getElementById('pt-' + t)?.classList.toggle('active', t === id);
+        // Sidebar
+        document.querySelectorAll('.sb-item').forEach(el => {
+          if (el.getAttribute('onclick') && el.getAttribute('onclick').includes("'" + t + "'")) {
+            el.classList.toggle('active', t === id);
+          } else if (t === id && el.getAttribute('onclick')?.includes(id)) {
+            el.classList.add('active');
+          }
+        });
+      });
+      // Update all sidebar items
+      document.querySelectorAll('.sb-item').forEach(el => {
+        el.classList.remove('active');
+        if (el.getAttribute('onclick')?.includes("'" + id + "'")) el.classList.add('active');
+      });
+      return false;
+    }
+
+    const demoOrders = {
+      'Luxury-2603': {
+        id: '#Luxury-2603', date: '12/03/2026', status: 'Đang xử lý', total: '18.990.000₫', address: '123 Nguyễn Huệ, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh', items: [
+          { name: 'Intel Core i9-14900K', quantity: 1, price: '18.990.000₫', image: 'https://via.placeholder.com/120x120/151515/e5c56c?text=CPU', link: '/product/2603', detail: 'CPU Intel mạnh mẽ cho hệ thống cao cấp.' }
+        ]
+      },
+      'Luxury-2589': {
+        id: '#Luxury-2589', date: '28/02/2026', status: 'Đang giao', total: '42.990.000₫', address: '123 Nguyễn Huệ, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh', items: [
+          { name: 'RTX 4090 Titan', quantity: 1, price: '42.990.000₫', image: 'https://via.placeholder.com/120x120/151515/e5c56c?text=VGA', link: '/product/2589', detail: 'Card đồ họa cao cấp tối ưu cho game 4K.' }
+        ]
+      },
+      'Luxury-2441': {
+        id: '#Luxury-2441', date: '15/01/2026', status: 'Đã nhận', total: '12.490.000₫', address: '123 Nguyễn Huệ, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh', items: [
+          { name: 'ROG Maximus Z790', quantity: 1, price: '12.490.000₫', image: 'https://via.placeholder.com/120x120/151515/e5c56c?text=MB', link: '/product/2441', detail: 'Mainboard ASUS ROG cao cấp dành cho game thủ.' }
+        ]
+      },
+      'Luxury-2210': {
+        id: '#Luxury-2210', date: '20/11/2025', status: 'Đã nhận', total: '22.990.000₫', address: '123 Nguyễn Huệ, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh', items: [
+          { name: 'LG UltraGear OLED', quantity: 1, price: '22.990.000₫', image: 'https://via.placeholder.com/120x120/151515/e5c56c?text=LCD', link: '/product/2210', detail: 'Màn hình OLED 4K 27 inch với màu sắc siêu thực.' }
+        ]
+      }
+    };
+    const orderModalState = { currentOrder: null, stars: 0 };
+    function viewOrder(orderId) {
+      const order = demoOrders[orderId];
+      if (!order) { toast('⚠️ Không tìm thấy đơn hàng.'); return; }
+      openOrderModal(order);
+    }
+    function openOrderModal(order) {
+      orderModalState.currentOrder = order; orderModalState.stars = 0;
+      const content = document.getElementById('order-modal-content');
+      const itemsHtml = order.items.map(item => `
+        <div class="order-item-card">
+          <img src="${item.image}" alt="${item.name}" />
+          <div>
+            <a href="${item.link}" class="product-link">
+              <span class="product-name">${item.name}</span>
+              <span class="product-meta">${item.detail}</span>
+            </a>
+            <div class="product-meta">Số lượng: ${item.quantity}</div>
+            <div class="item-price">${item.price}</div>
+          </div>
+        </div>
+      `).join('');
+      let reviewHtml = '';
+      if (order.status === 'Đã nhận') {
+        const reviewProduct = order.items[0] || {};
+        const reviewProductId = reviewProduct.link ? reviewProduct.link.split('/').pop() : reviewProduct.name || '';
+        const reviewProductName = reviewProduct.name || '';
+        reviewHtml = `
+          <div class="review-panel">
+            <input type="hidden" id="review-product-id" value="${reviewProductId}" />
+            <input type="hidden" id="review-product-name" value="${reviewProductName.replace(/"/g, '&quot;')}" />
+            <label>Đánh giá sản phẩm</label>
+            <div class="review-stars">
+              ${[1, 2, 3, 4, 5].map(st => `<button type="button" onclick="rate(${st})" class="star-${st}">★</button>`).join('')}
+            </div>
+            <textarea id="review-comment" class="review-comment" placeholder="Viết nhận xét của bạn..."></textarea>
+            <button type="button" class="review-submit" onclick="submitReview()">Gửi đánh giá</button>
+          </div>
+        `;
+      }
+      content.innerHTML = `
+        <div class="modal-row"><span>Mã đơn</span><strong>${order.id}</strong></div>
+        <div class="modal-row"><span>Ngày đặt</span><strong>${order.date}</strong></div>
+        <div class="modal-row"><span>Trạng thái</span><strong>${order.status}</strong></div>
+        <div class="order-items">
+          <div class="order-item-head">
+            <span>Sản phẩm</span><span>Số lượng</span><span>Giá</span>
+          </div>
+          ${itemsHtml}
+          <div class="order-summary"><span>Địa chỉ giao hàng</span><strong>${order.address}</strong></div>
+          <div class="order-summary"><span>Tổng tiền</span><strong>${order.total}</strong></div>
+        </div>
+        ${reviewHtml}
+      `;
+      document.getElementById('order-modal-backdrop').classList.add('open');
+      document.querySelectorAll('.order-modal .review-stars button').forEach(btn => btn.classList.remove('active'));
+    }
+    function closeOrderModal() {
+      document.getElementById('order-modal-backdrop').classList.remove('open');
+    }
+    function rate(star) {
+      orderModalState.stars = star;
+      document.querySelectorAll('.order-modal .review-stars button').forEach((btn, index) => {
+        btn.classList.toggle('active', index < star);
+      });
+    }
+
+    function getStoredReviews() {
+      try {
+        return JSON.parse(localStorage.getItem('luxuryReviews') || '[]');
+      } catch {
+        return [];
+      }
+    }
+
+    function saveReview(productId, productName, rating, comment) {
+      if (!productId || rating < 1 || rating > 5) return false;
+      const reviews = getStoredReviews();
+      reviews.push({
+        id: Date.now(),
+        productId: String(productId),
+        productName: productName || '',
+        rating,
+        comment: comment || '',
+        date: new Date().toLocaleDateString('vi-VN')
+      });
+      localStorage.setItem('luxuryReviews', JSON.stringify(reviews));
+      return true;
+    }
+
+    function submitReview() {
+      if (orderModalState.stars === 0) { toast('❗ Vui lòng chọn số sao.'); return; }
+      const comment = document.getElementById('review-comment')?.value.trim() || '';
+      const productId = document.getElementById('review-product-id')?.value || '';
+      const productName = document.getElementById('review-product-name')?.value || '';
+      if (saveReview(productId, productName, orderModalState.stars, comment)) {
+        toast(`✓ Đã lưu đánh giá ${orderModalState.stars} sao cho ${productName}`);
+      } else {
+        toast('⚠️ Không thể lưu đánh giá.');
+      }
+      closeOrderModal();
+    }
+
+    /* CURSOR JS */
+    const cursor = document.getElementById('cursor');
+    const cursorF = document.getElementById('cursor-f');
+    if (cursor && cursorF) {
+      let mx = 0, my = 0, fx = 0, fy = 0;
+      document.addEventListener('mousemove', e => {
+        mx = e.clientX;
+        my = e.clientY;
+        cursor.style.left = mx + 'px';
+        cursor.style.top = my + 'px';
+      });
+      (function loop() {
+        fx += (mx - fx) * 0.12;
+        fy += (my - fy) * 0.12;
+        cursorF.style.left = fx + 'px';
+        cursorF.style.top = fy + 'px';
+        requestAnimationFrame(loop);
+      })();
+      document.querySelectorAll('a, button, .profile-tab, input, select, textarea, .sb-item, .wl-card').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          cursor.style.transform = 'translate(-50%, -50%) scale(2)';
+          cursorF.style.width = '60px';
+          cursorF.style.height = '60px';
+          cursorF.style.backgroundColor = 'rgba(201, 168, 76, 0.1)';
+        });
+        el.addEventListener('mouseleave', () => {
+          cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+          cursorF.style.width = '36px';
+          cursorF.style.height = '36px';
+          cursorF.style.backgroundColor = 'transparent';
+        });
+      });
+    }
+  </script>
+</body>
+</html>

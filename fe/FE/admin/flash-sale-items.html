@@ -1,0 +1,158 @@
+﻿<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sản Phẩm Flash Sale — Luxury PC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/admin/admin-global.css}">
+    
+    <!-- React & Babel -->
+    <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.6/babel.min.js"></script>
+
+    <style>
+        .back-link { color: var(--gold); text-decoration: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 1.5rem; }
+        .back-link:hover { color: var(--gold-l); }
+        .toast { padding: 1rem 1.5rem; border-radius: 6px; margin-bottom: 1.5rem; font-size: 0.85rem; display: flex; align-items: center; gap: 10px; }
+        .toast-success { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); color: var(--green); }
+        .toast-error { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: var(--red); }
+        
+        .form-row { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 1rem; align-items: end; }
+        .form-group { display: flex; flex-direction: column; gap: 0.3rem; }
+        .form-group label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+        .form-group input, .form-group select { background: var(--black); border: 1px solid rgba(201,168,76,0.15); color: var(--cream); padding: 0.6rem 0.8rem; border-radius: 4px; font-size: 0.85rem; outline: none; font-family: var(--sans); }
+        .form-group input:focus, .form-group select:focus { border-color: var(--gold); }
+        
+        .progress-bar { width: 100%; height: 6px; background: var(--mid); border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--gold); border-radius: 3px; transition: 0.3s; }
+        .discount-tag { color: var(--red); font-weight: 700; font-size: 0.75rem; }
+        .original-price { text-decoration: line-through; color: var(--muted); font-size: 0.75rem; margin-left: 6px; }
+    </style>
+
+    <script th:inline="javascript">
+        window.INITIAL_DATA = {
+            flashSale: /*[[${flashSale}]]*/ {},
+            items: /*[[${items}]]*/ [],
+            products: /*[[${products}]]*/ [],
+            successMsg: /*[[${success}]]*/ '',
+            errorMsg: /*[[${error}]]*/ '',
+            username: /*[[${#authentication.name}]]*/ 'Admin'
+        };
+    </script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel" th:src="@{/js/react/AdminComponents.jsx}"></script>
+
+    <script type="text/babel">
+/*<![CDATA[*/
+        function App() {
+            const { flashSale, items, products, successMsg, errorMsg, username } = window.INITIAL_DATA;
+            const data = items || [];
+
+            const columns = [
+                { key: 'product.name', label: 'Sản Phẩm', render: (row) => <span style={{fontWeight: 600, color: 'var(--white)'}}>{row.product?.name}</span> },
+                { key: 'originalPrice', label: 'Giá Gốc', render: (row) => <span className="original-price">{new Intl.NumberFormat('vi-VN').format(row.product?.price || 0)}₫</span> },
+                { key: 'salePrice', label: 'Giá Sale', render: (row) => <span style={{color: 'var(--gold)', fontWeight: 700}}>{new Intl.NumberFormat('vi-VN').format(row.salePrice)}₫</span> },
+                { key: 'discount', label: 'Giảm', render: (row) => <span className="discount-tag">-{row.discountPercent}%</span> },
+                { key: 'soldCount', label: 'Đã Bán', render: (row) => <span>{row.soldCount}/{row.saleQuantity}</span> },
+                { 
+                    key: 'progress', 
+                    label: 'Tiến Trình', 
+                    render: (row) => (
+                        <div style={{minWidth: '120px'}}>
+                            <div className="progress-bar">
+                                <div className="progress-fill" style={{width: `${row.soldPercent}%`}}></div>
+                            </div>
+                            <div style={{fontSize: '0.65rem', color: 'var(--muted)', marginTop: '3px'}}>{row.soldPercent}% đã bán</div>
+                        </div>
+                    )
+                },
+                { 
+                    key: 'actions', 
+                    label: 'Hành Động',
+                    sortable: false,
+                    render: (row) => (
+                        <form action={`/admin/flash-sales/${flashSale.id}/items/remove/${row.id}`} method="POST" onSubmit={(e) => {if(!confirm('Xóa sản phẩm này khỏi Flash Sale?')) e.preventDefault()}}>
+                            <button type="submit" className="btn btn-sm btn-danger"><i className="fa-solid fa-trash"></i> Xóa</button>
+                        </form>
+                    )
+                }
+            ];
+
+            return (
+                <React.Fragment>
+                    <AdminSidebar active="flash-sales" />
+                    <div className="main-content">
+                        <a href="/admin/flash-sales" className="back-link"><i className="fa-solid fa-arrow-left"></i> Quay lại danh sách Flash Sale</a>
+
+                        <div className="header">
+                            <div className="title">
+                                <h1><i className="fa-solid fa-cubes" style={{color: 'var(--gold)', marginRight: '10px'}}></i>Sản Phẩm Flash Sale</h1>
+                                <p>Chương trình: <strong style={{color: 'var(--gold)'}}>{flashSale.name}</strong>
+                                   — {flashSale.startTime ? new Date(flashSale.startTime).toLocaleString('vi-VN') : ''} đến {flashSale.endTime ? new Date(flashSale.endTime).toLocaleString('vi-VN') : ''}
+                                </p>
+                            </div>
+                        </div>
+                        
+                        {successMsg && <div className="toast toast-success"><i className="fa-solid fa-check-circle"></i> <span>{successMsg}</span></div>}
+                        {errorMsg && <div className="toast toast-error"><i className="fa-solid fa-exclamation-circle"></i> <span>{errorMsg}</span></div>}
+
+                        <div className="card" style={{marginBottom: '2rem'}}>
+                            <div style={{fontSize: '1.1rem', fontWeight: 600, marginBottom: '1rem', color: 'var(--gold)'}}><i className="fa-solid fa-plus-circle"></i> Thêm Sản Phẩm Vào Flash Sale</div>
+                            <form action={`/admin/flash-sales/${flashSale.id}/items/add`} method="POST">
+                                <div className="form-row">
+                                    <div className="form-group">
+                                        <label>Sản Phẩm</label>
+                                        <select name="productId" required>
+                                            <option value="">-- Chọn sản phẩm --</option>
+                                            {products.map(p => (
+                                                <option key={p.id} value={p.id}>
+                                                    {p.name} — {new Intl.NumberFormat('vi-VN').format(p.price)}₫
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Giá Sale (₫)</label>
+                                        <input type="number" name="salePrice" required placeholder="VD: 15000000" />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Số Lượng Sale</label>
+                                        <input type="number" name="saleQuantity" required placeholder="VD: 50" defaultValue="50" />
+                                    </div>
+                                    <button type="submit" className="btn btn-gold" style={{height: 'fit-content'}}><i className="fa-solid fa-plus"></i> Thêm</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div className="card">
+                            <div style={{fontSize: '1.1rem', fontWeight: 600, marginBottom: '1.5rem', color: 'var(--gold)'}}><i className="fa-solid fa-list"></i> Sản Phẩm Trong Chương Trình ({data.length})</div>
+
+                            {data.length > 0 ? (
+                                <DataGrid columns={columns} data={data} searchPlaceholder="Tìm kiếm sản phẩm..." itemsPerPage={10} />
+                            ) : (
+                                <div style={{textAlign: 'center', padding: '3rem', color: 'var(--muted)'}}>
+                                    <i className="fa-solid fa-cubes" style={{fontSize: '3rem', marginBottom: '1rem', color: 'rgba(201,168,76,0.2)'}}></i>
+                                    <p>Chưa có sản phẩm nào trong chương trình này. Thêm sản phẩm ở form bên trên.</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </React.Fragment>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    
+/*]]>*/
+</script>
+</body>
+</html>
+
+

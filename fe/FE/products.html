@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Luxury PC | Sản Phẩm</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/products.css" />
+</head>
+<body>
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-follower" id="cursor-follower"></div>
+
+    <!-- NAVIGATION -->
+    <nav class="navbar scrolled" id="navbar">
+        <div class="nav-left">
+            <a href="./index.html" class="nav-link">Trang Chủ</a>
+            <a href="./build-pc.html" class="nav-link">Build PC</a>
+        </div>
+        <a href="./index.html" class="nav-logo-link">
+            <div class="nav-logo">
+                <span class="logo-Luxury" style="color:var(--gold); font-size:1.8rem; font-family:var(--font-serif); letter-spacing:4px;">LUXURY</span>
+                <div class="logo-divider" style="width:1px; height:24px; background:var(--gold); margin:0 8px;"></div>
+                <span class="logo-pc" style="color:#888; font-size:0.8rem; font-weight:600; letter-spacing:2px;">PC</span>
+            </div>
+        </a>
+        <div class="nav-right">
+            <a href="./account/auth.html" class="nav-link">Đăng Nhập</a>
+            <button class="nav-search-btn" id="nav-search-btn">⌕</button>
+            <button class="nav-cart" id="nav-cart">
+                <span class="cart-icon">⊡</span>
+                <span class="cart-count">0</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- SEARCH OVERLAY -->
+    <!-- (Simplified layout for search toggle if script.js requires it) -->
+    <div class="search-overlay" id="search-overlay">
+        <div class="search-overlay-inner">
+            <div class="search-close-row">
+                <span class="search-brand">LUXURY · PC</span>
+                <button class="search-close" id="search-close">✕</button>
+            </div>
+            <div class="search-input-wrap">
+                <span class="search-icon-big">⌕</span>
+                <input type="text" id="search-input" class="search-input" placeholder="Tìm kiếm linh kiện..." autocomplete="off" />
+                <button class="search-clear" id="search-clear">✕</button>
+            </div>
+            <div class="search-results" id="search-results">
+                <p class="search-hint">Nhập từ khóa để tìm kiếm.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <section class="products" id="products">
+        <div class="section-header">
+            <span class="section-label">Danh Mục</span>
+            <h2 class="section-title">Tất Cả Linh Kiện</h2>
+        </div>
+
+        <div class="products-grid" id="products-grid">
+            <article class="product-card" th:each="product : ${allProducts}">
+                <div class="product-img-wrap" style="padding:2rem; text-align:center;">
+                    <img th:src="@{${product.image != null ? product.image : '/images/default.png'}}" alt="Product" style="max-height:180px; object-fit:contain;" />
+                </div>
+                <div class="product-info">
+                    <span class="product-cat" th:text="${product.category != null ? product.category.name : 'Khác'}">Danh mục</span>
+                    <h3 class="product-name" th:text="${product.name}">Tên sản phẩm</h3>
+                    <p class="product-spec" th:text="${product.description != null ? product.description : 'Sản phẩm cao cấp'}">Description</p>
+                    <div class="product-price-row">
+                        <span class="product-price" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + '₫'">Giá</span>
+                        <button class="btn-add-cart"><span>Thêm Báo Giá</span></button>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer style="text-align:center; padding:2rem; border-top:1px solid rgba(201,168,76,0.3); color:var(--muted); font-size:0.8rem;">
+        <p>© 2026 Luxury PC. Tất cả quyền được bảo lưu.</p>
+    </footer>
+
+    <script src="./js/script.js"></script>
+</body>
+</html>

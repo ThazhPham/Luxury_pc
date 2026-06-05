@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Luxury PC — RTX 4090 Titan Edition</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/style.css" />
+  <link rel="stylesheet" href="./css/product-detail.css" />
+</head>
+
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-f" id="cursor-f"></div>
+
+  <!-- NAVIGATION -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-left">
+      <a href="./index.html" class="nav-link" id="nav-linh-kien">Trang Chủ</a>
+      <a href="./build-pc.html" class="nav-link" id="nav-build-pc">Build PC</a>
+      <a href="#" class="nav-link" id="nav-khuyen-mai">Khuyến Mãi</a>
+    </div>
+    <div class="nav-logo">
+      <a href="./index.html" style="text-decoration:none; color:inherit; display:flex; align-items:center;">
+        <span class="logo-Luxury">LUXURY</span>
+        <div class="logo-divider"></div>
+        <span class="logo-pc">PC</span>
+      </a>
+    </div>
+    <div class="nav-right">
+      <a href="#" class="nav-link" id="nav-tin-tuc">Tin Tức</a>
+      <a href="#" class="nav-link" id="nav-lien-he">Liên Hệ</a>
+      <a sec:authorize="hasRole('ADMIN')" href="./admin/dashboard.html" class="nav-link">ADMIN</a>
+      <a sec:authorize="isAnonymous()" href="./account/auth.html" class="nav-link">ĐĂNG NHẬP</a>
+      <a sec:authorize="isAuthenticated()" href="./account/profile.html" class="nav-link">HỒ SƠ</a>
+      <button class="nav-search-btn" id="nav-search-btn" aria-label="Tìm kiếm">⌕</button>
+      <a href="./cart.html" class="nav-cart" id="nav-cart" aria-label="Giỏ hàng">
+        <span class="cart-icon">⊡</span>
+        <span class="cart-count" id="cart-count" th:text="${cartCount}">0</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- SEARCH OVERLAY -->
+  <div class="search-overlay" id="search-overlay">
+    <div class="search-overlay-inner">
+      <div class="search-close-row">
+        <span class="search-brand">LUXURY · PC</span>
+        <button class="search-close" id="search-close" aria-label="Đóng tìm kiếm">✕</button>
+      </div>
+      <div class="search-input-wrap">
+        <span class="search-icon-big">⌕</span>
+        <input type="text" id="search-input" class="search-input" placeholder="Tìm kiếm linh kiện, thương hiệu..."
+          autocomplete="off" aria-label="Tìm kiếm sản phẩm" />
+        <button class="search-clear" id="search-clear" aria-label="Xóa">✕</button>
+      </div>
+      <div class="search-tags">
+        <span class="search-tag-label">Tìm nhanh:</span>
+        <button class="search-tag" data-query="CPU Intel">CPU Intel</button>
+        <button class="search-tag" data-query="RTX 4090">RTX 4090</button>
+        <button class="search-tag" data-query="DDR5">DDR5 RAM</button>
+        <button class="search-tag" data-query="SSD NVMe">SSD NVMe</button>
+        <button class="search-tag" data-query="Màn hình OLED">Màn Hình OLED</button>
+        <button class="search-tag" data-query="Nguồn PSU">Nguồn PSU</button>
+      </div>
+      <div class="search-results" id="search-results">
+        <p class="search-hint">Nhập từ khóa để tìm kiếm sản phẩm tại Luxury PC.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <a href="./index.html">Trang chủ</a>
+    <span>›</span>
+    <a href="./all-products.html" th:text="${product.category.name}">VGA</a>
+    <span>›</span>
+    <span class="current" th:text="${product.name}">RTX 4090 Titan Edition</span>
+  </div>
+
+  <!-- PRODUCT LAYOUT -->
+  <div class="product-layout">
+
+    <!-- LEFT: Images -->
+    <div class="img-panel">
+      <div class="main-img-wrap" id="main-img">
+        <div class="img-badge-wrap">
+          <span th:if="${product.price > 30000000}" class="img-badge badge-top">Đỉnh Cao</span>
+          <span th:if="${product.stock < 10}" class="img-badge badge-new">Sắp Hết</span>
+        </div>
+        <img th:src="@{${product.image != null ? product.image : '/images/placeholder.png'}}" th:alt="${product.name}"
+          style="max-width: 100%; height: auto;" />
+      </div>
+      <div class="thumb-row">
+        <div class="thumb active" onclick="setImg('view1',this)"></div>
+        <div class="thumb" onclick="setImg('view2',this)"></div>
+        <div class="thumb" onclick="setImg('view3',this)"></div>
+        <div class="thumb" onclick="setImg('view4',this)"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Info -->
+    <div class="info-panel">
+      <div class="prod-tag" th:text="${product.category.name} + ' · LUXURY Exclusive'">VGA · NVIDIA · LUXURY Exclusive
+      </div>
+      <h1 class="prod-title" th:text="${product.name}">RTX 4090<br />Titan Edition</h1>
+      <div class="prod-sub" th:text="${product.description}">ASUS ROG × LUXURY PC Limited — Chỉ 50 chiếc tại Việt Nam
+      </div>
+
+      <div class="rating-row">
+        <span class="stars">☆☆☆☆☆</span>
+        <span class="rating-count">0.0/5</span>
+        <a href="#reviews" class="rating-link" onclick="setDetailTab('reviews')">Chưa có đánh giá</a>
+      </div>
+
+      <div class="price-block">
+        <div class="price-main" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + '₫'">
+          42.990.000₫</div>
+        <div class="price-old" th:text="${#numbers.formatDecimal(product.price * 1.2, 0, 'COMMA', 0, 'POINT')} + '₫'">
+          49.990.000₫</div>
+        <div class="price-save"
+          th:text="'Tiết kiệm ' + ${#numbers.formatDecimal(product.price * 0.2, 0, 'COMMA', 0, 'POINT')} + '₫'">Tiết
+          kiệm 7.000.000₫</div>
+        <div class="installment">Trả góp 0%: <b>3.582.500₫/tháng</b> × 12 tháng</div>
+      </div>
+
+      <div class="specs-quick">
+        <div class="spec-chip">
+          <div class="spec-chip-key">VRAM</div>
+          <div class="spec-chip-val">24GB GDDR6X</div>
+        </div>
+        <div class="spec-chip">
+          <div class="spec-chip-key">CUDA Cores</div>
+          <div class="spec-chip-val">16,384</div>
+        </div>
+        <div class="spec-chip">
+          <div class="spec-chip-key">Boost Clock</div>
+          <div class="spec-chip-val">2.61 GHz</div>
+        </div>
+        <div class="spec-chip">
+          <div class="spec-chip-key">TDP</div>
+          <div class="spec-chip-val">450W</div>
+        </div>
+      </div>
+
+      <div class="qty-row">
+        <span class="qty-label">Số lượng</span>
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="changeQty(-1)">−</button>
+          <div class="qty-num" id="qty">1</div>
+          <button class="qty-btn" onclick="changeQty(1)">+</button>
+        </div>
+        <span class="stock-label" th:text="'● Còn ' + ${product.stock} + ' sản phẩm'">● Còn 7 sản phẩm</span>
+      </div>
+
+      <div class="action-buttons">
+        <form th:action="@{/cart/add}" method="post" style="display:flex; flex-direction:column; gap:0.8rem;">
+          <input type="hidden" name="id" th:value="${product.id}" />
+          <input type="hidden" name="name" th:value="${product.name}" />
+          <input type="hidden" name="price" th:value="${product.price}" />
+          <input type="hidden" name="quantity" id="form-qty" value="1" />
+          <button type="submit" class="btn-primary-lg"><span>Thêm Vào Giỏ Hàng</span></button>
+        </form>
+        <button class="btn-outline-lg" onclick="toast('♥ Đã thêm vào danh sách yêu thích!')">♡ Thêm Vào Yêu
+          Thích</button>
+      </div>
+
+      <div class="perks-row">
+        <div class="perk"><span class="perk-icon">✈</span> Miễn phí giao hàng</div>
+        <div class="perk"><span class="perk-icon">🛡</span> Bảo hành 3 năm</div>
+        <div class="perk"><span class="perk-icon">↩</span> Đổi trả 30 ngày</div>
+        <div class="perk"><span class="perk-icon">✓</span> Hàng chính hãng</div>
+      </div>
+
+      <!-- Detail Tabs -->
+      <div class="detail-tabs">
+        <button class="detail-tab active" onclick="setDetailTab('specs')">Thông Số Kỹ Thuật</button>
+        <button class="detail-tab" onclick="setDetailTab('desc')">Mô Tả</button>
+        <button class="detail-tab" id="tab-reviews" onclick="setDetailTab('reviews')" th:text="'Đánh Giá (' + ${reviewCount != null ? reviewCount : 0} + ')'">Đánh Giá (0)</button>
+      </div>
+
+      <!-- SPECS -->
+      <div class="detail-section active" id="ds-specs">
+        <table class="spec-table">
+          <tr>
+            <td>Kiến trúc</td>
+            <td>Ada Lovelace</td>
+          </tr>
+          <tr>
+            <td>CUDA Cores</td>
+            <td>16,384</td>
+          </tr>
+          <tr>
+            <td>Bộ nhớ</td>
+            <td>24GB GDDR6X</td>
+          </tr>
+          <tr>
+            <td>Băng thông bộ nhớ</td>
+            <td>1,008 GB/s</td>
+          </tr>
+          <tr>
+            <td>Bus bộ nhớ</td>
+            <td>384-bit</td>
+          </tr>
+          <tr>
+            <td>Xung nhịp Base / Boost</td>
+            <td>2.23 GHz / 2.61 GHz</td>
+          </tr>
+          <tr>
+            <td>TDP</td>
+            <td>450W</td>
+          </tr>
+          <tr>
+            <td>Kết nối</td>
+            <td>3× DisplayPort 1.4a, 1× HDMI 2.1</td>
+          </tr>
+          <tr>
+            <td>PCIe</td>
+            <td>PCIe 4.0 × 16</td>
+          </tr>
+          <tr>
+            <td>Nguồn yêu cầu</td>
+            <td>Tối thiểu 850W</td>
+          </tr>
+          <tr>
+            <td>Kích thước</td>
+            <td>348 × 140 × 58 mm</td>
+          </tr>
+          <tr>
+            <td>Trọng lượng</td>
+            <td>2.18 kg</td>
+          </tr>
+          <tr>
+            <td>Bảo hành</td>
+            <td>36 tháng (LUXURY PC + ASUS)</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- DESCRIPTION -->
+      <div class="detail-section" id="ds-desc">
+        <p style="font-size:.85rem;color:rgba(245,240,232,.75);line-height:2;margin-bottom:1rem;">RTX 4090 Titan Edition
+          là đỉnh cao của kiến trúc Ada Lovelace — được thiết kế lại đặc biệt bởi LUXURY PC với hệ thống tản nhiệt 3
+          quạt ROG Strix, backplate nhôm CNC anodized và đèn RGB AURA Sync tinh tế.</p>
+        <p style="font-size:.85rem;color:rgba(245,240,232,.75);line-height:2;margin-bottom:1rem;">Với 16,384 CUDA cores
+          và 24GB GDDR6X, card đồ họa này xử lý mọi tác vụ từ render 8K thời gian thực, AI generation đến gaming ở 4K
+          240fps không giới hạn. DLSS 3 với AI Frame Generation giúp tăng gấp đôi hiệu năng so với thế hệ trước.</p>
+        <div style="background:rgba(201,168,76,.05);border-left:3px solid var(--gold);padding:1rem;margin-top:1rem;">
+          <div
+            style="font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem;">
+            LUXURY EXCLUSIVE</div>
+          <div style="font-size:.8rem;color:var(--cream);">Mỗi card được kiểm tra stress test 24h, kèm certificate hiệu
+            năng và số serial riêng. Chỉ 50 chiếc được phân phối tại Việt Nam.</div>
+        </div>
+      </div>
+
+      <!-- REVIEWS -->
+      <div class="detail-section" id="ds-reviews">
+        
+        <style>
+          .review-stats-box { display: flex; background: rgba(10,10,10,0.5); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 2rem; margin-bottom: 2rem; gap: 2rem; position: relative;}
+          .rs-left { text-align: center; border-right: 1px solid rgba(255,255,255,0.05); padding-right: 3rem; min-width: 180px; display: flex; flex-direction: column; justify-content: center;}
+          .rs-score { font-size: 3.5rem; color: var(--gold); font-family: var(--sans); font-weight: 500; line-height: 1; margin-bottom: 0.3rem; }
+          .rs-stars { color: var(--gold); font-size: 1.2rem; margin-bottom: 0.5rem; letter-spacing: 2px;}
+          .rs-count { color: var(--muted); font-size: 0.8rem; }
+          .rs-right { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 0.6rem; padding-right: 4rem;}
+          .rs-bar-row { display: flex; align-items: center; gap: 1rem; font-size: 0.8rem; color: var(--muted); }
+          .rs-bar-wrap { flex: 1; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+          .rs-bar-fill { height: 100%; background: var(--gold); width: 0%; }
+          .rs-bar-count { min-width: 15px; text-align: right; font-family: monospace; font-size: 0.9rem;}
+          
+          .btn-write-review-circle {
+            position: absolute;
+            bottom: 20px;
+            right: 30px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid var(--gold);
+            background: transparent;
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 1.2rem;
+            opacity: 0.7;
+          }
+          .btn-write-review-circle:hover {
+            opacity: 1;
+            background: var(--gold);
+            color: var(--black);
+            transform: scale(1.1);
+          }
+        </style>
+
+        <div class="review-stats-box">
+          <div class="rs-left">
+            <div class="rs-score" th:text="${#numbers.formatDecimal(avgRating, 1, 1)}">0.0</div>
+            <div class="rs-stars">
+              <span th:each="i : ${#numbers.sequence(1, 5)}" th:text="${avgRating != null && i <= avgRating ? '★' : '☆'}">☆</span>
+            </div>
+            <div class="rs-count" th:text="${reviewCount > 0 ? reviewCount + ' đánh giá' : 'Chưa có đánh giá'}">Chưa có đánh giá</div>
+          </div>
+          <div class="rs-right">
+            <!-- Simulated bars -->
+            <div class="rs-bar-row"><span>5★</span><div class="rs-bar-wrap"><div class="rs-bar-fill" th:style="'width:' + (${reviewCount > 0 && avgRating >= 4.5 ? '80%' : '0%'})"></div></div><span class="rs-bar-count" th:text="${reviewCount > 0 && avgRating >= 4.5 ? reviewCount : 0}">0</span></div>
+            <div class="rs-bar-row"><span>4★</span><div class="rs-bar-wrap"><div class="rs-bar-fill" th:style="'width:' + (${reviewCount > 0 && avgRating >= 3.5 && avgRating < 4.5 ? '100%' : '0%'})"></div></div><span class="rs-bar-count" th:text="${reviewCount > 0 && avgRating >= 3.5 && avgRating < 4.5 ? reviewCount : 0}">0</span></div>
+            <div class="rs-bar-row"><span>3★</span><div class="rs-bar-wrap"><div class="rs-bar-fill" th:style="'width:' + (${reviewCount > 0 && avgRating >= 2.5 && avgRating < 3.5 ? '100%' : '0%'})"></div></div><span class="rs-bar-count" th:text="${reviewCount > 0 && avgRating >= 2.5 && avgRating < 3.5 ? reviewCount : 0}">0</span></div>
+            <div class="rs-bar-row"><span>2★</span><div class="rs-bar-wrap"><div class="rs-bar-fill" th:style="'width:' + (${reviewCount > 0 && avgRating >= 1.5 && avgRating < 2.5 ? '100%' : '0%'})"></div></div><span class="rs-bar-count" th:text="${reviewCount > 0 && avgRating >= 1.5 && avgRating < 2.5 ? reviewCount : 0}">0</span></div>
+            <div class="rs-bar-row"><span>1★</span><div class="rs-bar-wrap"><div class="rs-bar-fill" th:style="'width:' + (${reviewCount > 0 && avgRating < 1.5 ? '100%' : '0%'})"></div></div><span class="rs-bar-count" th:text="${reviewCount > 0 && avgRating > 0 && avgRating < 1.5 ? reviewCount : 0}">0</span></div>
+          </div>
+          <button class="btn-write-review-circle" title="Viết đánh giá" onclick="toggleReviewForm()">✎</button>
+        </div>
+
+        <div class="customer-review-section">
+          <div class="customer-review-top" style="margin-bottom: 1.5rem;">
+            <h3 style="font-family:var(--sans); font-size:1.1rem; letter-spacing:0.1em; text-transform:uppercase;">ĐÁNH GIÁ NỔI BẬT</h3>
+          </div>
+          
+          <div id="review-form-container" style="display: none; background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+            <p sec:authorize="isAnonymous()">Vui lòng <a href="#" style="color:var(--gold)">đăng nhập</a> để gửi đánh giá.</p>
+            <form class="customer-review-form" sec:authorize="isAuthenticated()" th:action="@{'/product/' + ${product.id} + '/review'}" method="post" style="margin-top:0;">
+              <label style="display:block; margin-bottom:10px; color:var(--gold); font-size:0.85rem;">Viết đánh giá của bạn</label>
+              <div class="review-form-stars" style="margin-bottom:10px;">
+                <input type="hidden" name="stars" id="form-stars" value="5" />
+                <button type="button" class="form-star-btn active" onclick="setFormStars(1)" style="border:none;background:none;color:var(--gold);font-size:1.5rem;cursor:pointer;">★</button>
+                <button type="button" class="form-star-btn active" onclick="setFormStars(2)" style="border:none;background:none;color:var(--gold);font-size:1.5rem;cursor:pointer;">★</button>
+                <button type="button" class="form-star-btn active" onclick="setFormStars(3)" style="border:none;background:none;color:var(--gold);font-size:1.5rem;cursor:pointer;">★</button>
+                <button type="button" class="form-star-btn active" onclick="setFormStars(4)" style="border:none;background:none;color:var(--gold);font-size:1.5rem;cursor:pointer;">★</button>
+                <button type="button" class="form-star-btn active" onclick="setFormStars(5)" style="border:none;background:none;color:var(--gold);font-size:1.5rem;cursor:pointer;">★</button>
+              </div>
+              <textarea name="content" class="review-input" required placeholder="Gửi nhận xét của bạn..." style="width:100%; min-height:80px; background:rgba(0,0,0,0.5); border:1px solid rgba(201,168,76,0.2); color:#fff; padding:10px; border-radius:4px; margin-bottom:10px;"></textarea>
+              <button type="submit" style="background:var(--gold); color:#000; border:none; padding:8px 20px; font-weight:bold; cursor:pointer; border-radius:4px;">Gửi Đánh Giá</button>
+            </form>
+          </div>
+          
+          <script>
+             function toggleReviewForm() {
+                 const form = document.getElementById('review-form-container');
+                 form.style.display = form.style.display === 'none' ? 'block' : 'none';
+             }
+             function setFormStars(val) {
+                 document.getElementById('form-stars').value = val;
+                 const btns = document.querySelectorAll('.form-star-btn');
+                 btns.forEach((b, i) => {
+                     b.style.color = (i < val) ? 'var(--gold)' : 'var(--muted)';
+                 });
+             }
+          </script>
+          
+          <div class="customer-review-list">
+             <div th:each="rv : ${reviews}" class="customer-review-card" style="padding:1.5rem; border-bottom:1px solid rgba(255,255,255,0.05); background:transparent;">
+               <div class="rv-header" style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                 <span class="rv-name" th:text="${rv.user.fullName != null && !rv.user.fullName.isEmpty() ? rv.user.fullName : rv.user.username}" style="font-weight:600; color:var(--white);">User</span>
+                 <span class="rv-date" th:text="${rv.createdAt != null} ? ${#temporals.format(rv.createdAt, 'dd/MM/yyyy HH:mm')} : ''" style="color:var(--muted); font-size:0.8rem;">Date</span>
+               </div>
+               <div class="rv-stars" style="color:var(--gold); margin-bottom:10px; font-size:0.9rem;">
+                 <span th:each="i : ${#numbers.sequence(1, 5)}" th:text="${i <= rv.stars ? '★' : '☆'}">☆</span>
+               </div>
+               <p class="rv-text" th:text="${rv.content}" style="color:var(--cream); font-size:0.9rem; line-height:1.6;"></p>
+             </div>
+             <div th:if="${reviews == null || reviews.size() == 0}" class="customer-review-empty" style="color:var(--muted); font-style:italic;">Chưa có đánh giá nào từ khách hàng.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RELATED PRODUCTS -->
+  <section class="related">
+    <div style="text-align:center;margin-bottom:2.5rem;">
+      <span
+        style="font-size:.6rem;letter-spacing:.4em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:.8rem;">Có
+        Thể Bạn Thích</span>
+      <h2 style="font-family:var(--serif);font-size:2rem;font-weight:300;color:var(--white);">Linh Kiện Phù Hợp</h2>
+    </div>
+    <div class="related-grid">
+      <div class="rel-card" onclick="toast('Xem chi tiết CPU i9-14900K')">
+        <div class="rel-img">⚙️</div>
+        <div class="rel-cat">CPU · Intel</div>
+        <div class="rel-name">Core i9-14900K</div>
+        <div class="rel-price">18.990.000₫</div>
+      </div>
+      <div class="rel-card" onclick="toast('Xem chi tiết Mainboard ROG Z790')">
+        <div class="rel-img">🔌</div>
+        <div class="rel-cat">Mainboard · ASUS ROG</div>
+        <div class="rel-name">ROG Maximus Z790</div>
+        <div class="rel-price">12.490.000₫</div>
+      </div>
+      <div class="rel-card" onclick="toast('Xem chi tiết RAM DDR5')">
+        <div class="rel-img">💾</div>
+        <div class="rel-cat">RAM · Corsair</div>
+        <div class="rel-name">Dominator Platinum DDR5</div>
+        <div class="rel-price">6.490.000₫</div>
+      </div>
+      <div class="rel-card" onclick="toast('Xem chi tiết Màn hình OLED')">
+        <div class="rel-img">🖥️</div>
+        <div class="rel-cat">Màn Hình · LG</div>
+        <div class="rel-name">UltraGear 4K OLED</div>
+        <div class="rel-price">22.990.000₫</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        const loader = document.getElementById('loader');
+        if (loader) loader.classList.add('hidden');
+      }, 500);
+    });
+
+    const cur = document.getElementById('cursor'), curF = document.getElementById('cursor-f');
+    let mx = 0, my = 0, fx = 0, fy = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cur.style.left = mx + 'px'; cur.style.top = my + 'px'; });
+    (function loop() { fx += (mx - fx) * .12; fy += (my - fy) * .12; curF.style.left = fx + 'px'; curF.style.top = fy + 'px'; requestAnimationFrame(loop); })();
+    document.querySelectorAll('a,button,.thumb,.rel-card').forEach(el => {
+      el.addEventListener('mouseenter', () => { cur.style.transform = 'translate(-50%,-50%) scale(2)'; curF.style.width = '60px'; curF.style.height = '60px'; });
+      el.addEventListener('mouseleave', () => { cur.style.transform = 'translate(-50%,-50%) scale(1)'; curF.style.width = '36px'; curF.style.height = '36px'; });
+    });
+
+    let toastT;
+    function toast(msg) { const el = document.getElementById('toast'); el.textContent = msg; el.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('show'), 3000); }
+
+    const searchOverlay = document.getElementById('search-overlay');
+    const navSearchBtn = document.getElementById('nav-search-btn');
+    const searchCloseBtn = document.getElementById('search-close');
+    const searchInput = document.getElementById('search-input');
+    const searchClearBtn = document.getElementById('search-clear');
+    const searchResults = document.getElementById('search-results');
+
+    function openSearch() {
+      if (!searchOverlay) return;
+      searchOverlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => searchInput?.focus(), 300);
+    }
+
+    function closeSearch() {
+      if (!searchOverlay) return;
+      searchOverlay.classList.remove('open');
+      document.body.style.overflow = '';
+      if (searchInput) searchInput.value = '';
+      searchClearBtn?.classList.remove('visible');
+      if (searchResults) searchResults.innerHTML = '<p class="search-hint">Nhập từ khóa để tìm kiếm sản phẩm tại Luxury PC.</p>';
+    }
+
+    navSearchBtn?.addEventListener('click', openSearch);
+    searchCloseBtn?.addEventListener('click', closeSearch);
+    searchOverlay?.addEventListener('click', e => { if (e.target === searchOverlay) closeSearch(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && searchOverlay?.classList.contains('open')) closeSearch(); });
+
+    searchInput?.addEventListener('input', () => {
+      const q = searchInput.value.trim();
+      if (q.length) searchClearBtn?.classList.add('visible');
+      else searchClearBtn?.classList.remove('visible');
+      if (searchResults) {
+        searchResults.innerHTML = q ? `<p class="search-hint">Không tìm thấy kết quả cho "${q}".</p>` : '<p class="search-hint">Nhập từ khóa để tìm kiếm sản phẩm tại Luxury PC.</p>';
+      }
+    });
+
+    searchClearBtn?.addEventListener('click', () => {
+      if (!searchInput) return;
+      searchInput.value = '';
+      searchClearBtn.classList.remove('visible');
+      if (searchResults) searchResults.innerHTML = '<p class="search-hint">Nhập từ khóa để tìm kiếm sản phẩm tại Luxury PC.</p>';
+      searchInput.focus();
+    });
+
+    document.querySelectorAll('.search-tag').forEach(tag => {
+      tag.addEventListener('click', () => {
+        const q = tag.dataset.query || '';
+        if (!searchInput) return;
+        searchInput.value = q;
+        searchClearBtn?.classList.add('visible');
+        if (searchResults) searchResults.innerHTML = `<p class="search-hint">Không tìm thấy kết quả cho "${q}".</p>`;
+        searchInput.focus();
+      });
+    });
+
+    // LocalStorage review logic was completely removed as it's now handled by the backend database!
+
+    let qty = 1;
+    function changeQty(d) { 
+        qty = Math.max(1, Math.min(7, qty + d)); 
+        document.getElementById('qty').textContent = qty; 
+        if(document.getElementById('form-qty')) {
+            document.getElementById('form-qty').value = qty;
+        }
+    }
+
+    function setImg(emoji, thumb) {
+      document.getElementById('main-img').childNodes[document.getElementById('main-img').childNodes.length - 1].textContent = emoji;
+      document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+      thumb.classList.add('active');
+    }
+
+    function updateCartCount() {
+      // The session-based cart count is handled by Thymeleaf using 'cartCount' attribute in the Header now.
+    }
+
+    function addToCart() {
+      const productId = productReviewInfo?.dataset.productId || 'unknown';
+      const productName = productReviewInfo?.dataset.productName || 'Sản phẩm';
+      const productPriceText = document.querySelector('.price-main')?.textContent || '0₫';
+      const productPrice = parseInt(productPriceText.replace(/[₫.,]/g, '')) || 0;
+      const productImage = document.querySelector('.main-img img')?.src || '/images/placeholder.png';
+
+      // Lấy cart từ localStorage
+      let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+      // Kiểm tra sản phẩm đã có trong cart chưa
+      const existingItem = cart.find(item => item.id === productId);
+      if (existingItem) {
+        existingItem.quantity += qty;
+      } else {
+        cart.push({
+          id: productId,
+          name: productName,
+          price: productPrice,
+          image: productImage,
+          quantity: qty
+        });
+      }
+
+      // Lưu lại cart
+      localStorage.setItem('cart', JSON.stringify(cart));
+
+      // Cập nhật số trên icon cart
+      updateCartCount();
+
+      toast(`✓ Đã thêm ${qty} ${productName} vào giỏ hàng!`);
+    }
+    function buyNow() { addToCart(); setTimeout(() => location.href = 'checkout.html', 800); }
+
+    const detailTabs = ['specs', 'desc', 'reviews'];
+    function setDetailTab(id) {
+      detailTabs.forEach(t => {
+        document.getElementById('ds-' + t)?.classList.toggle('active', t === id);
+      });
+      document.querySelectorAll('.detail-tab').forEach((tab, i) => {
+        tab.classList.toggle('active', detailTabs[i] === id);
+      });
+    }
+    document.getElementById('tab-reviews').addEventListener('click', () => document.getElementById('ds-reviews').scrollIntoView({ behavior: 'smooth' }));
+
+    // Initialize cart count on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      updateCartCount();
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,26 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Laptop Asus",
+      "price": 1500
+    },
+    {
+      "id": 2,
+      "name": "Iphone 15",
+      "price": 2000
+    }
+  ],
+  "List": [
+    {
+      "id": 1,
+      "name": "Laptop Asus",
+      "price": 1500
+    },
+    {
+      "id": 2,
+      "name": "Iphone 15",
+      "price": 2000
+    }
+  ]
+}

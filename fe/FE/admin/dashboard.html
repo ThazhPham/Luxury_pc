@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard — Luxury PC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/admin/dashboard.css}" />
+    <link rel="stylesheet" th:href="@{/css/admin/admin-global.css}">
+    
+    <!-- React & Babel -->
+    <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.6/babel.min.js"></script>
+
+    <style>
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+        .badge-red { background: rgba(239,68,68,0.1); color: var(--red); }
+    </style>
+
+    <script th:inline="javascript">
+        window.INITIAL_DATA = {
+            pendingCount: /*[[${pendingCount}]]*/ 0,
+            lowStock: /*[[${lowStock}]]*/ [],
+            topProducts: /*[[${topProducts}]]*/ [],
+            revenue: /*[[${revenue}]]*/ [],
+            username: /*[[${#authentication.name}]]*/ 'Admin'
+        };
+    </script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel" th:src="@{/js/react/AdminComponents.jsx}"></script>
+
+    <script type="text/babel">
+        /*<![CDATA[*/
+        function DashboardChart() {
+            const chartRef = React.useRef(null);
+
+            React.useEffect(() => {
+                const rawRevenue = window.INITIAL_DATA.revenue;
+                let labels = [];
+                let values = [];
+
+                if (rawRevenue && rawRevenue.length > 0) {
+                    labels = rawRevenue.map(item => item.month);
+                    values = rawRevenue.map(item => item.revenue);
+                } else {
+                    labels = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6'];
+                    values = [250000000, 310000000, 280000000, 452500000, 480000000, 500000000];
+                }
+
+                if(chartRef.current) {
+                    const ctx = chartRef.current.getContext('2d');
+                    let gradient = ctx.createLinearGradient(0, 0, 0, 400);
+                    gradient.addColorStop(0, 'rgba(201, 168, 76, 0.6)');
+                    gradient.addColorStop(1, 'rgba(201, 168, 76, 0.05)');
+
+                    const chart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Doanh Thu (VNĐ)',
+                                data: values,
+                                borderColor: '#c9a84c',
+                                backgroundColor: gradient,
+                                borderWidth: 3,
+                                pointBackgroundColor: '#fff',
+                                pointBorderColor: '#c9a84c',
+                                pointBorderWidth: 2,
+                                pointRadius: 4,
+                                pointHoverRadius: 6,
+                                fill: true,
+                                tension: 0.4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            let label = context.dataset.label || '';
+                                            if (label) { label += ': '; }
+                                            if (context.parsed.y !== null) {
+                                                label += new Intl.NumberFormat('vi-VN').format(context.parsed.y) + ' ₫';
+                                            }
+                                            return label;
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    grid: { color: 'rgba(255,255,255,0.05)' },
+                                    ticks: { 
+                                        color: '#888',
+                                        callback: function(value) {
+                                            return (value / 1000000) + ' Tr';
+                                        }
+                                    }
+                                },
+                                x: {
+                                    grid: { display: false },
+                                    ticks: { color: '#888' }
+                                }
+                            }
+                        }
+                    });
+                    
+                    return () => {
+                        chart.destroy();
+                    }
+                }
+            }, []);
+
+            return (
+                <div className="chart-container">
+                    <div style={{fontSize: '1.1rem', fontWeight: 600, marginBottom: '1.5rem', color: 'var(--gold)', borderBottom: '1px solid rgba(201,168,76,0.1)', paddingBottom: '1rem'}}>
+                        <i className="fa-solid fa-chart-area"></i> Biểu Đồ Doanh Thu Học Kỳ 1 - 2026
+                    </div>
+                    <canvas ref={chartRef} height="80"></canvas>
+                </div>
+            );
+        }
+
+        function App() {
+            const currentMonth = new Date().getMonth() + 1;
+            const { pendingCount, lowStock, username } = window.INITIAL_DATA;
+            
+            // Dummy data if empty
+            let topProducts = window.INITIAL_DATA.topProducts || [];
+            if(topProducts.length === 0) {
+                topProducts = [
+                    { id: 1, name: 'RTX 4090 Global', totalQty: 15 },
+                    { id: 2, name: 'Intel Core i9-14900K', totalQty: 42 },
+                    { id: 3, name: 'RTX 4090 Asus ROG', totalQty: 28 },
+                    { id: 4, name: 'RAM Corsair DDR5 64GB', totalQty: 120 },
+                ];
+            }
+
+            const topProductsCols = [
+                { key: 'name', label: 'Tên Linh Kiện' },
+                { 
+                    key: 'totalQty', 
+                    label: 'Đã Bán', 
+                    render: (row) => <div style={{textAlign: 'right', fontWeight: 'bold', color: 'var(--gold)'}}>{row.totalQty}</div>
+                }
+            ];
+
+            const lowStockCols = [
+                { key: 'product.name', label: 'Sản Phẩm', render: (row) => row.product?.name },
+                { key: 'quantity', label: 'Tồn Kho', render: (row) => <span style={{fontWeight: 'bold'}}>{row.quantity}</span> },
+                { key: 'status', label: 'Trạng Thái', render: () => <span className="badge badge-red">Chỉ còn ít</span> }
+            ];
+
+            return (
+                <React.Fragment>
+                    <AdminSidebar active="dashboard" />
+                    <div className="main-content">
+                        <AdminHeader title="Bảng Điều Khiển" subtitle={`Tổng quan tình hình kinh doanh tháng ${currentMonth}`} username={username} />
+
+                        <div className="stats-grid">
+                            <div className="stat-card">
+                                <i className="fa-solid fa-wallet stat-icon"></i>
+                                <div className="stat-label">Doanh Thu Tháng</div>
+                                <div className="stat-value">452.500.000₫</div>
+                            </div>
+                            <div className="stat-card">
+                                <i className="fa-solid fa-cart-shopping stat-icon"></i>
+                                <div className="stat-label">Đơn Hàng Mới</div>
+                                <div className="stat-value">{pendingCount || 0}</div>
+                            </div>
+                            <div className="stat-card">
+                                <i className="fa-solid fa-triangle-exclamation stat-icon"></i>
+                                <div className="stat-label">Cảnh Báo Kho</div>
+                                <div className="stat-value">{lowStock?.length || 0}</div>
+                            </div>
+                            <div className="stat-card">
+                                <i className="fa-solid fa-users stat-icon"></i>
+                                <div className="stat-label">Tổng Khách Hàng</div>
+                                <div className="stat-value">1,248</div>
+                            </div>
+                        </div>
+
+                        <DashboardChart />
+
+                        <div className="dashboard-grid">
+                            <div className="card">
+                                <div style={{fontSize: '1.1rem', fontWeight: 600, marginBottom: '1.5rem', color: 'var(--gold)'}}><i className="fa-solid fa-fire"></i> Sản Phẩm Bán Chạy Nhất</div>
+                                <DataGrid columns={topProductsCols} data={topProducts} itemsPerPage={5} showPagination={false} searchPlaceholder="Tìm sản phẩm..." />
+                            </div>
+
+                            <div className="card">
+                                <div style={{fontSize: '1.1rem', fontWeight: 600, marginBottom: '1.5rem', color: 'var(--gold)'}}><i className="fa-solid fa-circle-exclamation"></i> Cảnh Báo Kho Hàng (Sắp Hết)</div>
+                                {lowStock && lowStock.length > 0 ? (
+                                    <DataGrid columns={lowStockCols} data={lowStock} itemsPerPage={5} showPagination={false} />
+                                ) : (
+                                    <div style={{textAlign: 'center', color: 'var(--green)', padding: '2rem 0'}}>
+                                        <i className="fa-solid fa-check-circle" style={{fontSize: '2rem', marginBottom: '10px'}}></i><br />
+                                        Tất cả sản phẩm đều đủ hàng.
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </React.Fragment>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+        /*]]>*/
+    </script>
+</body>
+</html>
