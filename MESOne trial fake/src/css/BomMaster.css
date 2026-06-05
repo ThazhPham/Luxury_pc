@@ -1,0 +1,301 @@
+/* =========================
+   PAGE
+========================= */
+
+.bom-page {
+    padding: 16px;
+    background: #f5f7fb;
+    min-height: 100%;
+}
+
+/* =========================
+   FORM
+========================= */
+
+.bom-form {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.bom-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.bom-header h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+/* =========================
+   SEARCH GRID
+========================= */
+
+.bom-form-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.bom-form-grid input,
+.bom-form-grid select {
+    height: 42px;
+    border: 1px solid #d0d5dd;
+    border-radius: 8px;
+    padding: 0 12px;
+    outline: none;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.bom-form-grid input:focus,
+.bom-form-grid select:focus {
+    border-color: #2563eb;
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+/* =========================
+   ACTION BUTTONS
+========================= */
+
+.bom-form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.bom-form-actions button {
+    min-width: 110px;
+    height: 40px;
+    border-radius: 8px;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* ADD */
+
+.bom-form-actions button:nth-child(1) {
+    background: #6366f1;
+    color: white;
+}
+
+.bom-form-actions button:nth-child(1):hover {
+    background: #4f46e5;
+}
+
+/* SEARCH */
+
+.bom-form-actions button:nth-child(2) {
+    background: #2563eb;
+    color: white;
+}
+
+.bom-form-actions button:nth-child(2):hover {
+    background: #1d4ed8;
+}
+
+/* REFRESH */
+
+.bom-form-actions button:nth-child(3) {
+    background: #10b981;
+    color: white;
+}
+
+.bom-form-actions button:nth-child(3):hover {
+    background: #059669;
+}
+
+/* CLEAR */
+
+.bom-form-actions button:nth-child(4) {
+    background: #f59e0b;
+    color: white;
+}
+
+.bom-form-actions button:nth-child(4):hover {
+    background: #d97706;
+}
+
+/* =========================
+   GRID
+========================= */
+
+.bom-grid-wrapper {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.bom-total {
+    margin-top: 12px;
+    font-weight: 600;
+}
+
+/* =========================
+   POPUP FORM
+========================= */
+
+.bom-popup-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 20px;
+}
+
+.bom-popup-form textarea,
+.popup-actions {
+    grid-column: span 2;
+}
+
+.bom-popup-form input,
+.bom-popup-form select,
+.bom-popup-form textarea {
+
+    color: #333;
+    width: 100%;
+    padding: 12px 14px;
+
+    border: 1px solid #dcdfe6;
+    border-radius: 8px;
+
+    outline: none;
+
+    font-size: 14px;
+
+    transition: all 0.2s ease;
+
+    background: #fff;
+
+    box-sizing: border-box;
+}
+
+.bom-popup-form input:focus,
+.bom-popup-form select:focus,
+.bom-popup-form textarea:focus {
+
+    border-color: #409eff;
+
+    box-shadow:
+        0 0 0 3px rgba(64, 158, 255, 0.15);
+}
+
+.bom-popup-form input[readonly] {
+
+    background: #f5f7fa;
+    color: #666;
+}
+
+.bom-popup-form textarea {
+
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* =========================
+   POPUP BUTTONS
+========================= */
+
+.popup-actions {
+
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.popup-actions button {
+
+    border: none;
+
+    padding: 10px 18px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    transition: all 0.2s ease;
+}
+
+/* SAVE */
+
+.popup-actions button:first-child {
+
+    background: #1677ff;
+    color: white;
+}
+
+.popup-actions button:first-child:hover {
+
+    background: #0958d9;
+}
+
+/* CANCEL */
+
+.popup-actions button:last-child {
+
+    background: #f1f1f1;
+    color: #333;
+}
+
+.popup-actions button:last-child:hover {
+
+    background: #d9d9d9;
+}
+
+/* =========================
+   DEVEXTREME
+========================= */
+
+.dx-popup-content {
+    padding: 0 !important;
+}
+
+.dx-popup-title {
+
+    font-size: 18px !important;
+    font-weight: 600;
+    padding: 16px 20px !important;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 768px) {
+
+    .bom-popup-form {
+        grid-template-columns: 1fr;
+    }
+
+    .bom-popup-form textarea,
+    .popup-actions {
+        grid-column: span 1;
+    }
+
+    .bom-form-actions {
+        justify-content: stretch;
+    }
+
+    .bom-form-actions button {
+        flex: 1;
+    }
+}
+

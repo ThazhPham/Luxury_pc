@@ -1,0 +1,370 @@
+/* =====================================================
+   ItemMaster.css — Full stylesheet matching reference UI
+   ===================================================== */
+
+/* ---- Page ---- */
+.app-content {
+    position: relative;
+    width: 100%;
+}
+
+.page-title {
+    margin: 0 0 14px 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a2a3a;
+}
+
+/* =====================================================
+   TOAST
+   ===================================================== */
+.im-toast {
+    position: fixed;
+    top: 18px;
+    right: 22px;
+    z-index: 9999;
+    padding: 11px 18px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: 0 4px 16px rgba(0,0,0,.15);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: slideInRight .25s ease;
+}
+.im-toast--success { background:#e6f9ed; color:#1a7a45; border-left:4px solid #27ae60; }
+.im-toast--error   { background:#fde8e8; color:#b91c1c; border-left:4px solid #e53e3e; }
+
+@keyframes slideInRight {
+    from { transform: translateX(50px); opacity: 0; }
+    to   { transform: translateX(0);    opacity: 1; }
+}
+
+/* =====================================================
+   OVERLAY DETAIL — giống ảnh: full-width, tall
+   ===================================================== */
+.overlay-detail {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 650px;
+    background: #fff;
+    border: 1px solid #d0d7de;
+    border-radius: 4px;
+    box-shadow: 0 6px 24px rgba(0,0,0,.10);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ---- Header ---- */
+.overlay-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: #f7f8fa;
+    border-bottom: 1px solid #e0e3e8;
+    flex-shrink: 0;
+}
+
+.overlay-header__left h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a2a3a;
+}
+
+.overlay-header__actions {
+    display: flex;
+    gap: 4px;
+}
+
+.overlay-icon-btn {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    border-radius: 4px;
+    font-size: 15px;
+    cursor: pointer;
+    color: #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .15s;
+}
+
+.overlay-icon-btn:hover {
+    background: #e5e7eb;
+    color: #111;
+}
+
+/* ---- Body ---- */
+.overlay-body {
+    flex: 1;
+    overflow: auto;
+    padding: 0;
+}
+
+/* ---- Footer ---- */
+.overlay-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 16px;
+    border-top: 1px solid #e0e3e8;
+    background: #f7f8fa;
+    flex-shrink: 0;
+}
+
+/* =====================================================
+   BUTTONS
+   ===================================================== */
+.btn-save {
+    padding: 8px 40px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    background: #1a56db;
+    color: #fff;
+    transition: background .2s;
+    min-width: 100px;
+}
+.btn-save:hover:not(:disabled) { background: #1348c0; }
+.btn-save:disabled { background: #93aee8; cursor: not-allowed; }
+
+.btn-saving {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.spinner {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 2px solid rgba(255,255,255,.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* =====================================================
+   FORM LAYOUT — giống ảnh
+   ===================================================== */
+.im-form {
+    padding: 12px 16px 16px;
+}
+
+/* 2-column row */
+.im-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 12px;
+    margin-bottom: 6px;
+}
+
+.im-field {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+/* Labels — nhỏ, xám, nằm trên input */
+.im-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 2px;
+    padding-left: 2px;
+}
+
+/* Input chung */
+.im-input {
+    height: 32px;
+    padding: 0 10px;
+    font-size: 13px;
+    color: #111827;
+    background: #fff;
+    border: 1px solid #d0d7de;
+    border-radius: 3px;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color .15s, box-shadow .15s;
+}
+.im-input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37,99,235,.15);
+}
+
+/* Readonly — giống ảnh: nền xám nhạt */
+.im-input--readonly {
+    background: #f0f2f5;
+    color: #555;
+    cursor: default;
+    border-color: #e0e3e8;
+}
+.im-input--readonly:focus {
+    border-color: #e0e3e8;
+    box-shadow: none;
+}
+
+/* Select — giống ảnh: có mũi tên dropdown */
+.im-select {
+    height: 32px;
+    padding: 0 28px 0 10px;
+    font-size: 13px;
+    color: #111827;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b7280'/%3E%3C/svg%3E") no-repeat right 10px center;
+    border: 1px solid #d0d7de;
+    border-radius: 3px;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    transition: border-color .15s, box-shadow .15s;
+}
+.im-select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37,99,235,.15);
+}
+
+/* =====================================================
+   CHECKBOX SECTION — giống ảnh: lưới 4 cột
+   ===================================================== */
+.im-checkbox-section {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px 12px;
+    margin: 10px 0 8px;
+    padding: 10px 12px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+}
+
+.im-checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    color: #374151;
+    cursor: pointer;
+    /* user-select: none; */
+    white-space: nowrap;
+}
+
+.im-checkbox-item input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+    accent-color: #2563eb;
+    flex-shrink: 0;
+}
+
+/* =====================================================
+   IMAGE UPLOAD — giống ảnh
+   ===================================================== */
+.im-image-section {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.im-upload-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 16px;
+    background: #fff;
+    border: 1px solid #d0d7de;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #374151;
+    cursor: pointer;
+    width: fit-content;
+    transition: background .15s;
+}
+.im-upload-btn:hover { background: #f3f4f6; }
+
+.im-drop-zone {
+    min-height: 80px;
+    border: 2px dashed #d0d7de;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fafbfc;
+    transition: border-color .15s, background .15s;
+    cursor: pointer;
+}
+.im-drop-zone--active {
+    border-color: #2563eb;
+    background: #eff6ff;
+}
+
+.im-drop-hint {
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+.im-img-preview {
+    max-width: 100%;
+    max-height: 120px;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+/* =====================================================
+   EMPTY TAB placeholder
+   ===================================================== */
+.im-empty-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: #9ca3af;
+    gap: 8px;
+}
+.im-empty-tab span { font-size: 32px; }
+.im-empty-tab p { font-size: 13px; margin: 0; }
+
+/* =====================================================
+   LEGACY (giữ lại)
+   ===================================================== */
+.main-tabs { margin-top:20px; border:1px solid #ddd; background:#fff; }
+.tab-header { display:flex; border-bottom:1px solid #ddd; }
+.tab-item { padding:12px 20px; cursor:pointer; border-right:1px solid #ddd; background:#f5f5f5; }
+.tab-item.active { background:#fff; font-weight:bold; }
+.close-tab { margin-left:10px; color:red; cursor:pointer; }
+.tab-body { padding:20px; }
+
+/* Form group cũ (BomMaster dùng) */
+.detail-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px,1fr));
+    gap: 16px 20px;
+}
+.form-group { display:flex; flex-direction:column; gap:5px; }
+.form-group label { font-size:11px; font-weight:600; color:#6b7280; text-transform:uppercase; }
+.form-group input {
+    height:32px; padding:0 10px; font-size:13px;
+    border:1px solid #d0d7de; border-radius:3px; outline:none;
+    width:100%; box-sizing:border-box;
+}
+.form-group input:focus { border-color:#2563eb; box-shadow:0 0 0 2px rgba(37,99,235,.15); }
+.form-group input.input-readonly { background:#f0f2f5; color:#555; border-color:#e0e3e8; }
